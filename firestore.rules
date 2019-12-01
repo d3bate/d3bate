@@ -1,5 +1,9 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /calendar/{event} {
+        allow read: if request.auth.uid != null && request.auth.emailVerified;
+        allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+    }
     match /{document=**} {
       allow read, write: if false;
     }
