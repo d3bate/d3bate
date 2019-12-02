@@ -1,0 +1,64 @@
+.authForm {
+    text-align: left;
+    padding: 70px 0;
+}
+
+.authInput {
+    margin: 10px;
+    padding: 10px;
+    width: 50%;
+    border: 2px solid black;
+    background: lightgrey;
+}
+
+.boldText {
+    font-weight: bold;
+}
+
+.authSubmit {
+    margin-left: 10px;
+    padding: 10px;
+    border: 2px solid black;
+}
+
+.calendarRowWeek {
+    border: 1px solid blue;
+}
+
+.calendarColumnDay {
+    text-align: center;
+    width: calc(70% / 7);
+    float: left;
+}
+
+.calendarLineBreak {
+    border: none;
+    width: 70%;
+}
+
+.navbar-column {
+    padding-bottom: 100%;
+    width: 25%;
+    background: #EAEDED;
+    float: left;
+}
+
+.content-column {
+    width: 100%;
+    padding-left: 26%;
+}
+
+.navbar-item {
+    border: 2px solid black;
+    padding: 32px 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+@media screen and (max-width: 786px) {
+    .navbar-column {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+}
