@@ -4,6 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "debating",
     "public": "app/build",
     "ignore": [
       "firebase.json",

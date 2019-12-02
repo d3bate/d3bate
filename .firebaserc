@@ -5,7 +5,7 @@
   "targets": {
     "debating-cc8a6": {
       "hosting": {
-        "frontend": [
+        "webapp": [
           "debating"
         ]
       }
