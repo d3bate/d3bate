@@ -29,6 +29,13 @@ class Register extends React.Component {
                     .catch(() => {
 
                     })
+                resultingUserObject.user.sendEmailVerification()
+                    .then(() => {
+
+                    })
+                    .catch(() => {
+
+                    })
             })
             .catch(() => {
 

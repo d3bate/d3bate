@@ -20,7 +20,7 @@ function App() {
                         <Route exact path='/'><h1>Hello!</h1></Route>
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
-                        <Route path='/calendar/:year/:month/:week' render={(match) =>
+                        <Route path='/calendar/:year/:month' render={(match) =>
                             <Calendar match={match}/>
                         }/>
                     </Switch>

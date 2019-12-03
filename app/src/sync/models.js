@@ -1,5 +1,5 @@
 import {action, decorate, observable} from "mobx";
-import {auth} from "../sync";
+import {auth, firebase, Collection} from "../sync";
 
 class User {
     userObject = null;
@@ -12,7 +12,7 @@ class User {
 decorate(User, {
     userObject: observable,
     setUser: action
-})
+});
 
 export const user = new User();
 

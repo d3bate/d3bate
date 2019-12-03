@@ -1,15 +1,37 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import {firebase} from "../sync";
+import {Collection, firebase} from "../sync";
+import {observer} from "mobx-react";
 
+class DatePicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth()
+        }
+    }
 
-class Calendar extends React.Component {
+    render() {
+        return <div className="DatePicker">
+            <form className="DatePickerForm">
+                <input type="" className="authInput"/>
+                <input type="" className="authInput"/>
+            </form>
+        </div>
+    }
+}
+
+const Calendar = observer(class Calendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             params: this.props.match.match.params,
-            events: null
         };
+
+        this._col = new Collection('calendar', {
+            query: (ref) => ref.where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
+        });
 
         let weeks = [];
         let day = 1;
@@ -23,51 +45,50 @@ class Calendar extends React.Component {
             weeks.push(days);
         }
         this.state.weeks = weeks;
-        this.loadEvents = this.loadEvents.bind(this);
-        this.loadEvents()
-            .then()
-    }
-
-    async loadEvents() {
-        let docs = await firebase.firestore().collection('calendar')
-            .where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
-            .where('startTime', '<', new Date(this.state.params.year + '-' + (this.state.params.month + 1) + '-' + 1))
-            .get();
-        this.setState({events: docs})
+        this.findEvent = this.findEvent.bind(this);
     }
 
     findEvent(day) {
-        for (let event of this.state.events.docs) {
-            if (new Date(event.data().startTime.seconds * 1000).getDate() === day) {
-                return event;
-            }
-        }
+        let filteredDocs = this._col.docs.filter(doc => {
+            return new Date(doc.data.startTime.seconds * 1000).getDate() === day;
+        });
 
-        return false;
+        if (!filteredDocs.length > 0) {
+            filteredDocs = false;
+        }
+        return filteredDocs
     }
 
     render() {
         if (!JSON.parse(localStorage.getItem('user'))) {
             return <Redirect to='/login'/>
         }
-        if (!this.state.events) {
+        if (!this._col.isLoaded) {
             return <h1>Loading data</h1>
         }
         return <div className='calendarContainer'>
             <h1>The calendar</h1>
             <h3>Month {this.state.params.month} of {this.state.params.year}</h3>
             {this.state.weeks.map((week, weekIndex) => {
-
                 return <>
                     <div className='calendarRowWeek' key={weekIndex}>
                         {week.map((day, dayIndex) => {
                             let foundEvent = this.findEvent(day);
-                            return <div className='calendarColumnDay' key={dayIndex}>
-                                <p className="boldText">
-                                    {day}
-                                </p>
-                                {foundEvent ? <p>{foundEvent.data().type}</p> : null}
-                            </div>
+                            if (foundEvent) {
+                                return <div className='calendarColumnDay' key={dayIndex}>
+                                    <p className="boldText">
+                                        {day}
+                                    </p>
+                                    <p>{foundEvent[0].data.type}</p>
+                                </div>
+                            }
+                            else {
+                                return <div className='calendarColumnDay' key={dayIndex}>
+                                    <p className="boldText">
+                                        {day}
+                                    </p>
+                                </div>
+                            }
                         })}
                     </div>
                     <hr className='calendarLineBreak'/>
@@ -75,7 +96,7 @@ class Calendar extends React.Component {
             })}
         </div>
     }
-}
+})
 
 class EditCalendar extends React.Component {
     constructor(props) {

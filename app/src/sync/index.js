@@ -1,4 +1,5 @@
 import * as firebase from "firebase";
+import {Collection, Document, initFirestorter} from 'firestorter';
 
 let user = null;
 
@@ -13,19 +14,19 @@ firebase.initializeApp({
     measurementId: "G-S4E4G91RGX"
 });
 
+initFirestorter({firebase: firebase});
+
 firebase.analytics();
 
 let auth = firebase.auth();
 
 auth.onAuthStateChanged((user) => {
     if (user) {
-        window.user = user;
         localStorage.setItem('user', JSON.stringify(user))
     }
     else {
-        window.user = null;
         localStorage.setItem('user', JSON.stringify(null))
     }
 });
 
-export {user, firebase, auth}
+export {user, firebase, auth, Collection, Document}

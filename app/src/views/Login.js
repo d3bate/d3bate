@@ -17,7 +17,6 @@ class Login extends React.Component {
         event.preventDefault();
         auth.signInWithEmailAndPassword(this.state.email, this.state.password)
             .then((newUser) => {
-                user = newUser
             });
         this.setState({redirect: true})
     }
