@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Register} from "./views/Register";
 import {Login} from "./views/Login";
 import {Navbar} from "./components/Navbar";
-import {Calendar} from "./views/Calendar";
+import {Calendar, EditCalendar} from "./views/Calendar";
 
 
 function App() {
@@ -22,6 +22,9 @@ function App() {
                         <Route exact path='/register' component={Register}/>
                         <Route path='/calendar/:year/:month' render={(match) =>
                             <Calendar match={match}/>
+                        }/>
+                        <Route path='edit/calendar/:year/:month' render={(match) =>
+                            <EditCalendar match={match}/>
                         }/>
                     </Switch>
                 </div>

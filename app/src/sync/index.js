@@ -23,7 +23,7 @@ let auth = firebase.auth();
 auth.onAuthStateChanged((user) => {
     if (user) {
         localStorage.setItem('user', JSON.stringify(user));
-        firebase.firestore().collection('users').doc(newUser.user.uid).get().then(result => {
+        firebase.firestore().collection('users').doc(user.uid).get().then(result => {
             localStorage.setItem('userDocument', JSON.stringify(result.data()))
         })
     }

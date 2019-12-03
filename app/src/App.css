@@ -36,6 +36,16 @@
     width: 70%;
 }
 
+.DatePickerInput {
+    border: 2px solid black;
+    background: lightgrey;
+}
+
+.DatePickerSubmit {
+    margin-left: 10px;
+    border: 2px solid black;
+}
+
 .navbar-column {
     padding-bottom: 100%;
     width: 25%;

@@ -7,16 +7,38 @@ class DatePicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            year: new Date().getFullYear(),
-            month: new Date().getMonth()
+            year: this.props.initialYear,
+            month: this.props.initialMonth,
+            redirectUrl: null,
+            redirect: false
         }
     }
 
+
     render() {
+        console.log(this.state.redirectUrl)
+        if (this.redirect)
+            return <Redirect to={this.state.redirectUrl}/>;
+
         return <div className="DatePicker">
-            <form className="DatePickerForm">
-                <input type="" className="authInput"/>
-                <input type="" className="authInput"/>
+            <form className="DatePickerForm" onSubmit={(event) => {
+                event.preventDefault();
+                this.setState({
+                    redirect: true,
+                    redirectUrl: '/calendar/' + this.state.year + '/' + this.state.month
+                })
+            }}>
+                YEAR: <input type="" className="DatePickerInput" value={this.state.year} onChange={(event) => {
+                this.setState({
+                    year: event.target.value
+                })
+            }
+            }/>
+                &nbsp; MONTH: <input type="" className="DatePickerInput" value={this.state.month} onChange={(event) => {
+                this.setState({month: event.target.value})
+            }
+            }/>
+                <input type="submit" value="GO => " className="DatePickerSubmit"/>
             </form>
         </div>
     }
@@ -68,6 +90,7 @@ const Calendar = observer(class Calendar extends React.Component {
         }
         return <div className='calendarContainer'>
             <h1>The calendar</h1>
+            <DatePicker initialYear={this.state.params.year} initialMonth={this.state.params.month}/>
             <h3>Month {this.state.params.month} of {this.state.params.year}</h3>
             {this.state.weeks.map((week, weekIndex) => {
                 return <>
@@ -96,7 +119,16 @@ const Calendar = observer(class Calendar extends React.Component {
             })}
         </div>
     }
-})
+});
+
+class ViewEvent extends React.Component {
+    render() {
+        return <div className="ViewEvent">
+            <h3 className="ViewEventTitle">{this.props.doc.data.type}</h3>
+            <p>{new Date(this.props.doc.data.startTime.seconds).toString()}</p>
+        </div>
+    }
+}
 
 class EditCalendar extends React.Component {
     constructor(props) {
@@ -112,11 +144,22 @@ class EditCalendar extends React.Component {
 
 
     render() {
-        if (!JSON.parse(localStorage.getItem('userDocument')).admin) {
-            return <Redirect to='/'/>
-        }
+        console.log(JSON.parse(localStorage.getItem('userDocument')));
+        if (!JSON.parse(localStorage.getItem('userDocument')).admin === true)
+            return <Redirect to='/'/>;
+
+        if (!this._col.isLoaded)
+            return <h3>Loading data</h3>;
+        return <>
+            <div className="ViewCalendar">
+                {this._col.docs.map(doc => {
+                    return <ViewEvent doc={doc}/>
+                })}
+            </div>
+        </>
+
     }
 }
 
 
-export {Calendar}
+export {Calendar, EditCalendar}
