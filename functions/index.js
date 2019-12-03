@@ -11,10 +11,15 @@ const emailDomain = '@latymer-upper.org';
 
 const emailRegex = new RegExp(emailDomain + '\\s*$');
 
-exports.disableNonDomainAccounts = functions.auth.user().onCreate((user) => {
+exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
     let email = user.email;
 
     if (!emailRegex.test(email)) {
         functions.app.admin.auth().updateUser(user.uid, {disabled: true})
     }
+
+    functions.app.admin.firestore().doc('/users/' + user.uid).set({
+        userId: user.uid,
+        admin: false
+    })
 });
