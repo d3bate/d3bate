@@ -1,6 +1,6 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import {Collection, firebase} from "../sync";
+import {Collection} from "../sync";
 import {observer} from "mobx-react";
 
 class DatePicker extends React.Component {
@@ -102,26 +102,19 @@ class EditCalendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            events: null
+            params: this.props.match.match.params,
         };
-        this.loadEvents = this.loadEvents.bind(this);
-        this.loadEvents()
-            .then()
+
+        this._col = new Collection('calendar', {
+            query: (ref) => ref.where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
+        });
     }
 
-    async loadEvents() {
-        let docs = await firebase.firestore().collection('calendar')
-            .where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
-            .get();
-        this.setState({events: docs})
-    }
 
     render() {
-        if (this.events) {
-
+        if (!JSON.parse(localStorage.getItem('userDocument')).admin) {
+            return <Redirect to='/'/>
         }
-        return <>
-        </>
     }
 }
 
