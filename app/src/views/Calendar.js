@@ -3,6 +3,21 @@ import {Redirect} from "react-router-dom";
 import {Collection} from "../sync";
 import {observer} from "mobx-react";
 
+const months = {
+    1: 'January',
+    2: 'February',
+    3: 'March',
+    4: 'April',
+    5: 'May',
+    6: 'June',
+    7: 'July',
+    8: 'August',
+    9: 'September',
+    10: 'October',
+    11: 'November',
+    12: 'December'
+};
+
 class DatePicker extends React.Component {
     constructor(props) {
         super(props);
@@ -51,7 +66,7 @@ const Calendar = observer(class Calendar extends React.Component {
         };
 
         this._col = new Collection('calendar', {
-            query: (ref) => ref.where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
+            query: (ref) => ref.where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
         });
 
         let weeks = [];
@@ -82,23 +97,22 @@ const Calendar = observer(class Calendar extends React.Component {
     }
 
     setRedirectUrl(url) {
-        this.setState({redirectUrl: url})
+        this.props.match.history.push(url);
     }
 
     render() {
-        if (!JSON.parse(localStorage.getItem('user'))) {
-            return <Redirect to='/login'/>
-        }
+        if (!JSON.parse(localStorage.getItem('user')))
+            return <Redirect to='/login'/>;
         if (this.state.redirectUrl)
             return <Redirect to={this.state.redirectUrl}/>;
-        if (!this._col.isLoaded) {
-            return <h1>Loading data</h1>
-        }
+        if (!this._col.isLoaded)
+            return <h1>Loading data</h1>;
+
         return <div className='calendarContainer'>
             <h1>The calendar</h1>
             <DatePicker initialYear={this.state.params.year} initialMonth={this.state.params.month}
                         setRedirectUrl={this.setRedirectUrl}/>
-            <h3>Month {this.state.params.month} of {this.state.params.year}</h3>
+            <h3>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h3>
             {this.state.weeks.map((week, weekIndex) => {
                 return <>
                     <div className='calendarRowWeek' key={weekIndex}>
