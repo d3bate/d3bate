@@ -79,6 +79,10 @@ const Calendar = observer(class Calendar extends React.Component {
             query: (ref) => ref.where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
         });
 
+        this._attendingcol = new Collection('attendance', {
+            query: (ref) => ref.where('uid', '==', localStorage.getItem('user').uid)
+        });
+
         let weeks = [];
         let day = 1;
 
@@ -129,6 +133,7 @@ const Calendar = observer(class Calendar extends React.Component {
                     console.log(date.getDate());
                     return <div className="calendarColumnDay" key={dayIndex}>
                         <p>{days[date.getDay()]}</p>
+                        <input type="checkbox"/>
                     </div>
                 })}
             </div>
@@ -244,6 +249,29 @@ class ViewEvent extends React.Component {
         </div>
     }
 }
+
+
+const AddEvent = observer(class AddEvent extends React.Component {
+    constructor(props) {
+        super(props);
+        this._col = new Collection('users');
+        let date = new Date();
+        this.state = {
+            type: "training",
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            day: date.getDate()
+        }
+    }
+
+    render() {
+        return <div className="ViewEvent">
+            <form>
+
+            </form>
+        </div>
+    }
+});
 
 
 const EditCalendar = observer(class EditCalendar extends React.Component {
