@@ -41,6 +41,11 @@
     width: 70%;
 }
 
+.CancelButton {
+    border: 2px solid black;
+    background: darkorange;
+}
+
 .DatePickerInput {
     border: 2px solid black;
     background: lightgrey;
@@ -59,8 +64,9 @@
 }
 
 .content-column {
-    width: 100%;
+    width: calc(100 - 30%);
     padding-left: 26%;
+    padding-right: 4%;
 }
 
 .navbar-item {
@@ -68,6 +74,19 @@
     padding: 32px 10px;
     margin: 10px;
     text-align: center;
+}
+
+.SubmitButton {
+    background: olivedrab;
+    border: 2px solid black;
+    margin: 5px;
+}
+
+.ViewEvent {
+    background: mediumvioletred;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 @media screen and (max-width: 786px) {
@@ -78,6 +97,8 @@
     }
 
     .content-column {
-        padding: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        width: 100%;
     }
 }
