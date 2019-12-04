@@ -180,11 +180,13 @@ class EditCalendar extends React.Component {
         this._col = new Collection('calendar', {
             query: (ref) => ref.where('startTime', '>', new Date(this.state.params.year + '-' + this.state.params.month + '-' + 1))
         });
+        console.log(this._col);
     }
 
 
     render() {
-        console.log(JSON.parse(localStorage.getItem('userDocument')));
+        if (!JSON.parse(localStorage.getItem('user')))
+            return <Redirect to='/login'/>
         if (!JSON.parse(localStorage.getItem('userDocument')).admin === true)
             return <Redirect to='/'/>;
 

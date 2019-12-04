@@ -23,7 +23,7 @@ function App() {
                         <Route path='/calendar/:year/:month' render={(match) =>
                             <Calendar match={match}/>
                         }/>
-                        <Route path='edit/calendar/:year/:month' render={(match) =>
+                        <Route path='/edit/calendar/:year/:month' render={(match) =>
                             <EditCalendar match={match}/>
                         }/>
                     </Switch>

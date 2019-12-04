@@ -24,6 +24,7 @@
 .calendarRowWeek {
     border: 1px solid blue;
 }
+
 .calendarRowWeekTop {
     border: 1px solid red;
     z-index: -1;
@@ -53,7 +54,7 @@
 .navbar-column {
     padding-bottom: 100%;
     width: 25%;
-    background: #EAEDED;
+    background: #ed5738;
     float: left;
 }
 
@@ -63,7 +64,7 @@
 }
 
 .navbar-item {
-    border: 2px solid black;
+    border: 2px solid white;
     padding: 32px 10px;
     margin: 10px;
     text-align: center;
@@ -75,6 +76,7 @@
         padding: 10px;
         margin-bottom: 10px;
     }
+
     .content-column {
         padding: 0;
     }

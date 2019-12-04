@@ -20,6 +20,7 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
 
     functions.app.admin.firestore().doc('/users/' + user.uid).set({
         userId: user.uid,
-        admin: false
+        admin: false,
+        email: user.email
     })
 });

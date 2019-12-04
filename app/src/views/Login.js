@@ -1,6 +1,6 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import {auth, firebase} from "../sync";
+import {auth} from "../sync";
 
 class Login extends React.Component {
     constructor(props) {
@@ -17,9 +17,8 @@ class Login extends React.Component {
         event.preventDefault();
         auth.signInWithEmailAndPassword(this.state.email, this.state.password)
             .then((newUser) => {
-
+                this.setState({redirect: true})
             });
-        this.setState({redirect: true})
     }
 
     render() {
