@@ -18,6 +18,16 @@ const months = {
     12: 'December'
 };
 
+const days = {
+    1: 'MON',
+    2: 'TUE',
+    3: 'WED',
+    4: 'THUR',
+    5: 'FRI',
+    6: 'SAT',
+    7: 'SUN'
+};
+
 class DatePicker extends React.Component {
     constructor(props) {
         super(props);
@@ -113,6 +123,15 @@ const Calendar = observer(class Calendar extends React.Component {
             <DatePicker initialYear={this.state.params.year} initialMonth={this.state.params.month}
                         setRedirectUrl={this.setRedirectUrl}/>
             <h3>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h3>
+            <div className="calendarRowWeekTop" style={{marginBottom: 50}}>
+                {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
+                    let date = new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day);
+                    console.log(date.getDate());
+                    return <div className="calendarColumnDay" key={dayIndex}>
+                        <p>{days[date.getDay()]}</p>
+                    </div>
+                })}
+            </div>
             {this.state.weeks.map((week, weekIndex) => {
                 return <>
                     <div className='calendarRowWeek' key={weekIndex}>
@@ -172,6 +191,8 @@ class EditCalendar extends React.Component {
         if (!this._col.isLoaded)
             return <h3>Loading data</h3>;
         return <>
+            <h3>Edit the calendar</h3>
+            <p>Please note that this requires administrator privileges.</p>
             <div className="ViewCalendar">
                 {this._col.docs.map(doc => {
                     return <ViewEvent doc={doc}/>

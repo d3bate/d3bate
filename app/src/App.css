@@ -24,6 +24,10 @@
 .calendarRowWeek {
     border: 1px solid blue;
 }
+.calendarRowWeekTop {
+    border: 1px solid red;
+    z-index: -1;
+}
 
 .calendarColumnDay {
     text-align: center;
@@ -70,5 +74,8 @@
         width: 100%;
         padding: 10px;
         margin-bottom: 10px;
+    }
+    .content-column {
+        padding: 0;
     }
 }
