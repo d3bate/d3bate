@@ -67,6 +67,52 @@ class DatePicker extends React.Component {
     }
 }
 
+
+const AttendanceCheckbox = observer(class AttendanceCheckbox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            doc: this.props.doc[0],
+            attending: this.props.doc[0] ? this.props.doc[0].data.attending : false,
+        };
+        this.updateStatus = this.updateStatus.bind(this);
+    }
+
+    updateStatus(event) {
+        const target = event.target;
+        const isAttending = target.type === 'checkbox' ? target.checked : target.value;
+        this.setState({
+            attending: isAttending
+        });
+        if (this.state.doc) {
+            console.log(this.state.doc);
+            this.state.doc.update({
+                attending: isAttending
+            })
+        }
+        else {
+            this.props.events.add({
+                attending: isAttending,
+                userID: JSON.parse(localStorage.getItem('user')).uid,
+                eventID: this.props.eventID
+            })
+                .then(doc => {
+                    this.setState({
+                        doc: doc
+                    })
+                })
+
+        }
+    }
+
+    render() {
+        return <>
+            <input type="checkbox" checked={this.state.attending} onChange={this.updateStatus}/>
+        </>
+    }
+});
+
+
 const Calendar = observer(class Calendar extends React.Component {
     constructor(props) {
         super(props);
@@ -79,9 +125,10 @@ const Calendar = observer(class Calendar extends React.Component {
             query: (ref) => ref.where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
         });
 
-        this._attendingcol = new Collection('attendance', {
-            query: (ref) => ref.where('uid', '==', localStorage.getItem('user').uid)
+        this._events = new Collection('attendance', {
+            query: (ref) => ref.where('userID', '==', JSON.parse(localStorage.getItem('user')).uid)
         });
+
 
         let weeks = [];
         let day = 1;
@@ -110,6 +157,13 @@ const Calendar = observer(class Calendar extends React.Component {
         return filteredDocs;
     }
 
+    findAttendance(eventID) {
+        return this._events.docs.filter(doc => {
+            return doc.data.eventID === eventID
+        })
+    }
+
+
     setRedirectUrl(url) {
         this.props.match.history.push(url);
     }
@@ -119,24 +173,27 @@ const Calendar = observer(class Calendar extends React.Component {
             return <Redirect to='/login'/>;
         if (this.state.redirectUrl)
             return <Redirect to={this.state.redirectUrl}/>;
-        if (!this._col.isLoaded)
+        if (!this._col.isLoaded || !this._events.isLoaded)
             return <h1>Loading data</h1>;
 
         return <div className='calendarContainer'>
             <h1>The calendar</h1>
+
             <DatePicker initialYear={this.state.params.year} initialMonth={this.state.params.month}
                         setRedirectUrl={this.setRedirectUrl}/>
+
             <h3>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h3>
+
             <div className="calendarRowWeekTop" style={{marginBottom: 50}}>
                 {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
                     let date = new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day);
-                    console.log(date.getDate());
                     return <div className="calendarColumnDay" key={dayIndex}>
                         <p>{days[date.getDay()]}</p>
-                        <input type="checkbox"/>
+
                     </div>
                 })}
             </div>
+
             {this.state.weeks.map((week, weekIndex) => {
                 return <>
                     <div className='calendarRowWeek' key={weekIndex}>
@@ -148,6 +205,9 @@ const Calendar = observer(class Calendar extends React.Component {
                                         {day}
                                     </p>
                                     <p>{foundEvent[0].data.type}</p>
+                                    <AttendanceCheckbox doc={this.findAttendance(foundEvent[0].id)}
+                                                        events={this._events} eventID={foundEvent[0].id}/>
+
                                 </div>
                             }
                             else {
