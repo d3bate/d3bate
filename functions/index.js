@@ -24,3 +24,15 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
         email: user.email
     })
 });
+
+
+exports.createDebatingClub = functions.https.onCall((data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('failed-precondition', 'This function may only be executed by an authenticated user.')
+    }
+    let clubName = data['clubName'];
+    if (!clubName) {
+        throw new functions.https.HttpsError('invalid-argument', 'All debating clubs must have a name.')
+    }
+
+});
