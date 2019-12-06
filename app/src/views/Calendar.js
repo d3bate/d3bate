@@ -186,7 +186,7 @@ const Calendar = observer(class Calendar extends React.Component {
         if (!this._col.isLoaded || !this._events.isLoaded)
             return <h1>Loading data</h1>;
 
-        return <div className='calendarContainer'>
+        return <div className='container'>
             <h1>The calendar</h1>
 
             <DatePicker initialYear={this.state.params.year} initialMonth={this.state.params.month}

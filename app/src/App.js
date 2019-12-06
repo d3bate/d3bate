@@ -12,10 +12,10 @@ function App() {
     return <>
         <Router>
             <div className='columns'>
-                <div className='navbar-column'>
+                <div className='col-4'>
                     <Navbar/>
                 </div>
-                <div className='content-column'>
+                <div className='col-8'>
                     <Switch>
                         <Route exact path='/'><h1>Hello!</h1></Route>
                         <Route exact path='/login' component={Login}/>

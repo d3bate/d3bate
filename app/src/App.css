@@ -11,6 +11,11 @@
     background: lightgrey;
 }
 
+body {
+    font-family: "Helvetica Neue", sans-serif;
+
+}
+
 .boldText {
     font-weight: bold;
 }
@@ -56,24 +61,25 @@
     border: 2px solid black;
 }
 
-.navbar-column {
-    padding-bottom: 100%;
-    width: 25%;
-    background: #ed5738;
-    float: left;
+.navbar {
+    background: #4e4fed;
+    font-weight: bold;
+    padding: 5% 4%;
 }
 
 .content-column {
     width: calc(100 - 30%);
     padding-left: 26%;
     padding-right: 4%;
+    background: rgba(198, 198, 198, 0.25);
 }
 
-.navbar-item {
-    padding: 32px 10px;
-    margin: 10px;
-    text-align: center;
-    background: lightgrey;
+.navbar-item, .navbar-item > a {
+    color: yellow;
+    font-size: 150%;
+    text-decoration: none;
+    display: inline;
+    padding-right: 20px;
 }
 
 .SubmitButton {
@@ -100,5 +106,91 @@
         padding-left: 10px;
         padding-right: 10px;
         width: 100%;
+    }
+}
+
+/* GRID STYLINGS */
+
+.container {
+    width: 80%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.row {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.row:last-child {
+    margin-bottom: 0;
+}
+
+.row .col {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.row .col-1 {
+    width: 8.333333333333332%;
+}
+
+.row .col-2 {
+    width: 16.666666666666664%;
+}
+
+.row .col-3 {
+    width: 25%;
+}
+
+.row .col-4 {
+    width: 33.33333333333333%;
+}
+
+.row .col-5 {
+    width: 41.66666666666667%;
+}
+
+.row .col-6 {
+    width: 50%;
+}
+
+.row .col-7 {
+    width: 58.333333333333336%;
+}
+
+.row .col-8 {
+    width: 66.66666666666666%;
+}
+
+.row .col-9 {
+    width: 75%;
+}
+
+.row .col-10 {
+    width: 83.33333333333334%;
+}
+
+.row .col-11 {
+    width: 91.66666666666666%;
+}
+
+.row .col-12 {
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .row .col,
+    .row [class^='col-'],
+    .row [class*=" col-"] {
+        flex-grow: 0;
+        flex-basis: 100%;
+    }
+
+    .navbar-item, .navbar-item > a {
+        display: block;
     }
 }

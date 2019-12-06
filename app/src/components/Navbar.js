@@ -22,7 +22,7 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
         if (user.userObject) {
             return <>
                 <div className='navbar-item'>
-                    <p>Hi {user.userObject.displayName}</p>
+                    <Link to='/'>Profile (dead link)</Link>
                 </div>
                 <div className='navbar-item'>
                     <a href='#' onClick={(event) => {
@@ -49,10 +49,14 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
 
 class Navbar extends React.Component {
     render() {
+        let currentDate = new Date();
         return <>
             <nav className="navbar">
                 <div className="navbar-item">
-                    <Link to='/calendar'>Calendar</Link>
+                    <Link to='/'>Home</Link>
+                </div>
+                <div className="navbar-item">
+                    <Link to={'/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth()+1)}>Calendar</Link>
                 </div>
                 <AuthComponent/>
             </nav>
