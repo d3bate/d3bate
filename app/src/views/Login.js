@@ -21,6 +21,7 @@ class Login extends React.Component {
             })
             .catch(error => {
                 alert(error);
+                alert(this.state.email);
             });
     }
 

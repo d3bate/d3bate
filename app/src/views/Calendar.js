@@ -2,6 +2,8 @@ import React from 'react';
 import {Redirect} from "react-router-dom";
 import {Collection} from "../sync";
 import {observer} from "mobx-react";
+import * as moment from "moment";
+
 
 const months = {
     1: 'January',
@@ -129,9 +131,9 @@ const Calendar = observer(class Calendar extends React.Component {
 
         this._col = new Collection('calendar', {
             query: (ref) => ref
-                .where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
+                .where('startTime', '>', moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD').toDate())
                 .where('startTime', '<',
-                    this.incrementDate(new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1)))
+                    this.incrementDate(moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD').toDate()))
         });
 
 
@@ -196,7 +198,7 @@ const Calendar = observer(class Calendar extends React.Component {
 
             <div className="calendarRowWeekTop" style={{marginBottom: 50}}>
                 {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
-                    let date = new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day);
+                    let date = moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day).toDate();
                     return <div className="calendarColumnDay" key={dayIndex}>
                         <p>{days[date.getDay()]}</p>
 
@@ -262,7 +264,7 @@ class ViewEvent extends React.Component {
                     <form onSubmit={event => {
                         event.preventDefault();
                         this.props.doc.update({
-                            startTime: new Date(this.state.year + '-' + this.state.month + '-' + this.state.day),
+                            startTime: moment(this.state.year + '-' + this.state.month + '-' + this.state.day).toDate(),
                             type: this.state.type
                         });
                         this.setState({
@@ -353,7 +355,7 @@ const EditCalendar = observer(class EditCalendar extends React.Component {
         };
 
         this._col = new Collection('calendar', {
-            query: (ref) => ref.where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
+            query: (ref) => ref.where('startTime', '>', moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1).toDate())
         });
     }
 
