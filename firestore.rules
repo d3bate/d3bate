@@ -5,9 +5,9 @@ service cloud.firestore {
         allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
     }
     match /attendance/{document} {
-      allow read: if request.auth.uid == request.resource.data.person_uid || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
-      allow create: if request.auth.uid == request.resource.data.person_uid;
-      allow update: if request.auth.uid == resource.data.person_uid;
+      allow read: if request.auth.uid == request.resource.data.userID || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+      allow create: if request.auth.uid == request.resource.data.userID;
+      allow update: if request.auth.uid == resource.data.userID;
     }
     match /users/{userID} {
         allow read: if request.auth.uid == userID;
