@@ -85,7 +85,6 @@ const AttendanceCheckbox = observer(class AttendanceCheckbox extends React.Compo
             attending: isAttending
         });
         if (this.state.doc) {
-            console.log(this.state.doc);
             this.state.doc.update({
                 attending: isAttending
             })
@@ -121,9 +120,20 @@ const Calendar = observer(class Calendar extends React.Component {
             redirectUrl: null
         };
 
+
+        // Thanks to https://stackoverflow.com/questions/563406/add-days-to-javascript-date#answer-19691491
+        this.incrementDate = date => {
+            let result = new Date(date);
+            return new Date(result.setDate(result.getDate() + 28));
+        };
+
         this._col = new Collection('calendar', {
-            query: (ref) => ref.where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
+            query: (ref) => ref
+                .where('startTime', '>', new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1))
+                .where('startTime', '<',
+                    this.incrementDate(new Date(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1)))
         });
+
 
         this._events = new Collection('attendance', {
             query: (ref) => ref.where('userID', '==', JSON.parse(localStorage.getItem('user')).uid)

@@ -11,7 +11,14 @@ Sentry.init({
     beforeSend(event, hint) {
         // Check if it is an exception, and if so, show the report dialog
         if (event.exception) {
-            Sentry.showReportDialog({eventId: event.event_id});
+            Sentry.showReportDialog({
+                eventId: event.event_id,
+                title: "Uh oh...",
+                subtitle: "Unfortunately it looks like we've encountered a bug...",
+                subtitle2: "We'd appreciate it if you'd fill in the form below which will send your report to the team which writes this (freely available) software. If you can code, please consider investing the time in making a pull request to our source repository.",
+                labelComments: "What were you doing when the crash happened?",
+
+            });
         }
         return event;
     }
