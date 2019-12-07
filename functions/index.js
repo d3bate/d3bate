@@ -1,4 +1,7 @@
 const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+
+admin.initializeApp();
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -7,32 +10,38 @@ const functions = require('firebase-functions');
 //  response.send("Hello from Firebase!");
 // });
 
-const emailDomain = '@latymer-upper.org';
-
 const emailRegex = new RegExp(emailDomain + '\\s*$');
 
 exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
     let email = user.email;
+    // Debating club ids are simply the domain name of the school
+    let clubID = email.split('@')[1];
+    admin.firestore().collection('clubs').doc(clubID).get()
+        .then(doc => {
+            if (!doc.exists) {
+                admin.firestore().collection('clubs').doc(clubID).set({
+                    creator: user.uid,
+                    created: new Date(),
+                    administrators: [user.uid],
+                    users: [user.uid]
+                });
+                admin.firestore().collection('users').doc(user.uid).set({
+                    name: user.displayName,
+                    uid: user.uid,
+                    email: user.email
+                })
+            }
+            else {
+                admin.firestore().collection('users').doc(user.uid).set({
+                    name: user.displayName,
+                    uid: user.uid,
+                    email: user.email
+                });
+                let docData = doc.data();
+                docData.users.push(user.uid);
+                doc.update(docData);
+            }
+        })
 
-    if (!emailRegex.test(email)) {
-        functions.app.admin.auth().updateUser(user.uid, {disabled: true})
-    }
-
-    functions.app.admin.firestore().doc('/users/' + user.uid).set({
-        userId: user.uid,
-        admin: false,
-        email: user.email
-    })
-});
-
-
-exports.createDebatingClub = functions.https.onCall((data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('failed-precondition', 'This function may only be executed by an authenticated user.')
-    }
-    let clubName = data['clubName'];
-    if (!clubName) {
-        throw new functions.https.HttpsError('invalid-argument', 'All debating clubs must have a name.')
-    }
 
 });
