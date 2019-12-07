@@ -10,8 +10,6 @@ admin.initializeApp();
 //  response.send("Hello from Firebase!");
 // });
 
-const emailRegex = new RegExp(emailDomain + '\\s*$');
-
 exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
     let email = user.email;
     // Debating club ids are simply the domain name of the school
