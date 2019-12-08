@@ -32,12 +32,13 @@ decorate(AppState, {
 export const appState = new AppState();
 
 auth.onAuthStateChanged(uObject => {
-    user.setUser(uObject);
-    firebase.firestore().collection('users').doc(uObject.uid)
+    appState.setUser(uObject);
+    firebase.firestore().collection('users').doc(uObject.uid).get()
         .then(result => {
             appState.setUserDocument(result)
-        })
-    firebase.firestore().collection('clubMemberships').where('user', '==', uObject.uid)
+        });
+    firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
+        .get()
         .then(result => {
             appState.setDebatingClubs(result)
         })

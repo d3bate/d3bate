@@ -22,7 +22,6 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                     created: new Date(),
                 });
                 admin.firestore().collection('users').doc(user.uid).set({
-                    name: user.displayName,
                     uid: user.uid,
                     email: user.email
                 });

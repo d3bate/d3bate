@@ -1,25 +1,18 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import {auth} from "../sync";
-import {user} from "../sync/models";
+import {appState} from "../sync/models";
 import {observer} from "mobx-react";
 
 
 const AuthComponent = observer(class AuthComponent extends React.Component {
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        this.listner = auth.onAuthStateChanged(
-            authUser => {
-                this.setState({user: authUser});
-            }
-        )
+        console.log(appState)
     }
 
     render() {
-        if (user.userObject) {
+        if (appState.user) {
             return <>
                 <div className='navbar-item'>
                     <Link to='/'>Profile (dead link)</Link>

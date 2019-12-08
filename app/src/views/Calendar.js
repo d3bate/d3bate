@@ -3,6 +3,7 @@ import {Redirect} from "react-router-dom";
 import {Collection} from "../sync";
 import {observer} from "mobx-react";
 import * as moment from "moment";
+import {appState} from "../sync/models";
 
 
 const months = {
@@ -30,9 +31,11 @@ const days = {
     7: 'SUN'
 };
 
+console.log(appState.debatingClubs);
+
 const calendar = new Collection('calendar', {
     query: (ref) => ref
-        .where('clubID', '==', JSON.parse(localStorage.getItem('clubDocument'))['id']),
+        .where('clubID', '==', appState.debatingClubs ? appState.debatingClubs.docs[0] : null),
 });
 
 const filterCalendarDates = (start, stop) => {
