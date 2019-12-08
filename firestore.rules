@@ -13,6 +13,10 @@ service cloud.firestore {
         allow read: if request.auth.uid == userID;
         allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
     }
+    match /clubMemberships/{document} {
+        allow read: if request.auth.uid == resource.data.userID;
+        allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+    }
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,22 +1,44 @@
 import {action, decorate, observable} from "mobx";
-import {auth, firebase, Collection} from "../sync";
+import {auth, firebase} from "../sync";
 
-class User {
-    userObject = null;
+
+class AppState {
+    user = null;
+    userDocument = null;
+    debatingClubs = null;
 
     setUser(user) {
-        this.userObject = user
+        this.user = user
+    }
+
+    setUserDocument(document) {
+        this.userDocument = document
+    }
+
+    setDebatingClubs(clubs) {
+        this.debatingClubs = clubs
     }
 }
 
-decorate(User, {
-    userObject: observable,
-    setUser: action
+decorate(AppState, {
+    user: observable,
+    userDocument: observable,
+    debatingClubs: observable,
+    setUser: action,
+    setUserDocument: action,
+    setDebatingClubs: action
 });
 
-export const user = new User();
+export const appState = new AppState();
 
 auth.onAuthStateChanged(uObject => {
     user.setUser(uObject);
+    firebase.firestore().collection('users').doc(uObject.uid)
+        .then(result => {
+            appState.setUserDocument(result)
+        })
+    firebase.firestore().collection('clubMemberships').where('user', '==', uObject.uid)
+        .then(result => {
+            appState.setDebatingClubs(result)
+        })
 });
-

@@ -20,13 +20,15 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                 admin.firestore().collection('clubs').doc(clubID).set({
                     creator: user.uid,
                     created: new Date(),
-                    administrators: [user.uid],
-                    users: []
                 });
                 admin.firestore().collection('users').doc(user.uid).set({
                     name: user.displayName,
                     uid: user.uid,
                     email: user.email
+                });
+                admin.firestore().collection('clubMemberships').add({
+                    userID: user.uid,
+                    role: 'administrator'
                 });
                 return {
                     status: 200,
@@ -38,9 +40,10 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                     uid: user.uid,
                     email: user.email
                 });
-                let docData = doc.data();
-                docData.users.push(user.uid);
-                doc.update(docData);
+                admin.firestore().collection('clubMemberships').add({
+                    userID: user.uid,
+                    role: 'user'
+                });
                 return {
                     status: 200
                 }

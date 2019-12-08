@@ -30,6 +30,17 @@ const days = {
     7: 'SUN'
 };
 
+const calendar = new Collection('calendar', {
+    query: (ref) => ref
+        .where('clubID', '==', JSON.parse(localStorage.getItem('clubDocument'))['id']),
+});
+
+const filterCalendarDates = (start, stop) => {
+    return calendar.docs.filter(doc => {
+        return doc.data.startTime > start && doc.data.startTime < stop;
+    })
+};
+
 class DatePicker extends React.Component {
     constructor(props) {
         super(props);
@@ -40,7 +51,6 @@ class DatePicker extends React.Component {
             redirect: false
         }
     }
-
 
     render() {
 
@@ -159,9 +169,17 @@ const Calendar = observer(class Calendar extends React.Component {
     }
 
     findEvent(day) {
-        let filteredDocs = this._col.docs.filter(doc => {
-            return new Date(doc.data.startTime.seconds * 1000).getDate() === day;
-        });
+        //let filteredDocs = this._col.docs.filter(doc => {
+        //    return new Date(doc.data.startTime.seconds * 1000).getDate() === day;
+        //});
+
+        let filteredDocs = filterCalendarDates(
+            moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD')
+                .toDate(),
+            this.incrementDate(
+                moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD')
+                    .toDate())
+        );
 
         if (!filteredDocs.length > 0) {
             filteredDocs = false;
