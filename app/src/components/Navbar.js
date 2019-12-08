@@ -8,7 +8,6 @@ import {observer} from "mobx-react";
 const AuthComponent = observer(class AuthComponent extends React.Component {
     constructor(props) {
         super(props);
-        console.log(appState)
     }
 
     render() {
@@ -49,7 +48,8 @@ class Navbar extends React.Component {
                     <Link to='/'>Home</Link>
                 </div>
                 <div className="navbar-item">
-                    <Link to={'/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth()+1)}>Calendar</Link>
+                    <Link
+                        to={'/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1)}>Calendar</Link>
                 </div>
                 <AuthComponent/>
             </nav>

@@ -5,7 +5,8 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Register} from "./views/Register";
 import {Login} from "./views/Login";
 import {Navbar} from "./components/Navbar";
-import {Calendar, EditCalendar} from "./views/Calendar";
+import {Calendar} from "./views/Calendar";
+import {EditCalendar} from "./views/EditCalendar";
 
 
 function App() {

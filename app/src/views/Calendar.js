@@ -31,7 +31,6 @@ const days = {
     7: 'SUN'
 };
 
-console.log(appState.debatingClubs);
 
 const calendar = new Collection('calendar', {
     query: (ref) => ref
@@ -149,9 +148,9 @@ const Calendar = observer(class Calendar extends React.Component {
                     this.incrementDate(moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD').toDate()))
         });
 
-
+        console.log(appState.user);
         this._events = new Collection('attendance', {
-            query: (ref) => ref.where('userID', '==', JSON.parse(localStorage.getItem('user')).uid)
+            query: (ref) => ref.where('userID', '==', appState.user ? appState.user.uid : null)
         });
 
 
@@ -259,148 +258,5 @@ const Calendar = observer(class Calendar extends React.Component {
     }
 });
 
-const eventTypes = [
-    'training', 'tournament', 'friendly'
-];
 
-class ViewEvent extends React.Component {
-    constructor(props) {
-        super(props);
-        let date = new Date(this.props.doc.data.startTime.seconds * 1000);
-        this.state = {
-            edit: false,
-            startTime: new Date(this.props.doc.data.startTime.seconds * 1000),
-            type: this.props.doc.data.type,
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            day: date.getDate()
-        }
-    }
-
-
-    render() {
-        if (this.state.edit)
-            return <>
-                <div className="ViewEvent">
-                    <form onSubmit={event => {
-                        event.preventDefault();
-                        this.props.doc.update({
-                            startTime: moment(this.state.year + '-' + this.state.month + '-' + this.state.day).toDate(),
-                            type: this.state.type
-                        });
-                        this.setState({
-                            edit: false
-                        })
-                    }}>
-                        Year: <input value={this.state.year} onChange={event => {
-                        this.setState({
-                            year: event.target.value
-                        })
-                    }}/><br/>
-                        Month (as a number): <input value={this.state.month} onChange={event => {
-                        this.setState({
-                            month: event.target.value
-                        })
-                    }
-                    }/><br/>
-                        Day: <input value={this.state.day} onChange={event => {
-                        this.setState({day: event.target.value})
-                    }
-                    }/><br/>
-                        Event type: <select value={this.state.type} onChange={event => {
-                        this.setState({
-                            type: event.target.value
-                        })
-                    }}>
-                        {eventTypes.map(eventType => {
-                            return <option value={eventType}>{eventType}</option>
-                        })}
-                    </select>
-                        <br/>
-                        <input type="submit" value={"Save!"} className="SubmitButton"/>
-                        <button className="CancelButton" onClick={event => {
-                            this.setState({
-                                edit: false
-                            })
-                        }}>Cancel changes
-                        </button>
-                    </form>
-                </div>
-            </>;
-
-        return <div className="ViewEvent">
-            <h3 className="ViewEventTitle">{this.props.doc.data.type}</h3>
-            <p>{new Date(this.props.doc.data.startTime.seconds * 1000).toString()}</p>
-            <a href="#" onClick={event => {
-                event.preventDefault();
-                this.setState({
-                    edit: true
-                })
-            }
-            }>Edit
-            </a>
-        </div>
-    }
-}
-
-
-const AddEvent = observer(class AddEvent extends React.Component {
-    constructor(props) {
-        super(props);
-        this._col = new Collection('users');
-        let date = new Date();
-        this.state = {
-            type: "training",
-            year: date.getFullYear(),
-            month: date.getMonth() + 1,
-            day: date.getDate()
-        }
-    }
-
-    render() {
-        return <div className="ViewEvent">
-            <form>
-
-            </form>
-        </div>
-    }
-});
-
-
-const EditCalendar = observer(class EditCalendar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            params: this.props.match.match.params,
-            newDoc: {},
-        };
-
-        this._col = new Collection('calendar', {
-            query: (ref) => ref.where('startTime', '>', moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1).toDate())
-        });
-    }
-
-    render() {
-        if (!JSON.parse(localStorage.getItem('user')))
-            return <Redirect to='/login'/>;
-        if (!JSON.parse(localStorage.getItem('userDocument')).admin === true)
-            return <Redirect to='/'/>;
-
-        if (!this._col.isLoaded)
-            return <h3>Loading data</h3>;
-
-        return <>
-            <h3>Edit the calendar</h3>
-            <p>Please note that this requires administrator privileges.</p>
-            <div className="ViewCalendar">
-                {this._col.docs.map(doc => {
-                    return <ViewEvent doc={doc}/>
-                })}
-            </div>
-        </>
-
-    }
-});
-
-
-export {Calendar, EditCalendar}
+export {Calendar}
