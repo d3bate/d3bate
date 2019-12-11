@@ -1,11 +1,45 @@
 import {action, decorate, observable} from "mobx";
 import {auth, firebase} from "../sync";
 
+let findEvent = (event, list) => {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i]['id'] === event['id']) {
+            return i
+        }
+    }
+    return false;
+};
+
+class Calendar {
+    events = [];
+    loaded = false;
+
+    updateEvent(event, loaded) {
+        let foundEvent = findEvent(event, this.events);
+        if (foundEvent) {
+            this.events[foundEvent] = event
+        }
+        else {
+            this.events.push()
+        }
+    }
+}
+
+decorate(Calendar, {
+    events: observable,
+    loaded: observable,
+    updateEvents: action
+});
+
+export const calendar = new Calendar();
+
 
 class AppState {
     user = null;
     userDocument = null;
-    debatingClubs = null;
+    debatingClubs = {
+        docs: []
+    };
 
     setUser(user) {
         this.user = user
@@ -40,6 +74,11 @@ auth.onAuthStateChanged(uObject => {
     firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
         .get()
         .then(result => {
-            appState.setDebatingClubs(result)
+            appState.setDebatingClubs(result);
+            if (result.size > 0) {
+                result.docs.forEach(doc => {
+                    calendar.updateEvent({id: doc.id, ...doc.data()})
+                });
+            }
         })
 });

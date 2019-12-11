@@ -1,7 +1,7 @@
 import {observer} from "mobx-react";
 import React from "react";
 import {appState} from "../sync/models";
-import {Redirect} from "./Calendar";
+import {Redirect} from "react-router-dom";
 
 const eventTypes = [
     'training', 'tournament', 'friendly'

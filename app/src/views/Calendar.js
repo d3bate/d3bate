@@ -34,7 +34,7 @@ const days = {
 
 const calendar = new Collection('calendar', {
     query: (ref) => ref
-        .where('clubID', '==', appState.debatingClubs ? appState.debatingClubs.docs[0] : null),
+        .where('clubID', '==', appState.debatingClubs.docs[0].data().id),
 });
 
 const filterCalendarDates = (start, stop) => {
@@ -141,18 +141,9 @@ const Calendar = observer(class Calendar extends React.Component {
             return new Date(result.setDate(result.getDate() + 28));
         };
 
-        this._col = new Collection('calendar', {
-            query: (ref) => ref
-                .where('startTime', '>', moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD').toDate())
-                .where('startTime', '<',
-                    this.incrementDate(moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD').toDate()))
-        });
-
-        console.log(appState.user);
         this._events = new Collection('attendance', {
             query: (ref) => ref.where('userID', '==', appState.user ? appState.user.uid : null)
         });
-
 
         let weeks = [];
         let day = 1;
@@ -171,10 +162,6 @@ const Calendar = observer(class Calendar extends React.Component {
     }
 
     findEvent(day) {
-        //let filteredDocs = this._col.docs.filter(doc => {
-        //    return new Date(doc.data.startTime.seconds * 1000).getDate() === day;
-        //});
-
         let filteredDocs = filterCalendarDates(
             moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + 1, 'YYYY-MM-DD')
                 .toDate(),
@@ -195,7 +182,6 @@ const Calendar = observer(class Calendar extends React.Component {
         })
     }
 
-
     setRedirectUrl(url) {
         this.props.match.history.push(url);
     }
@@ -205,7 +191,7 @@ const Calendar = observer(class Calendar extends React.Component {
             return <Redirect to='/login'/>;
         if (this.state.redirectUrl)
             return <Redirect to={this.state.redirectUrl}/>;
-        if (!this._col.isLoaded || !this._events.isLoaded)
+        if (!calendar.isLoaded || !this._events.isLoaded)
             return <h1>Loading data</h1>;
 
         return <div className='container'>
