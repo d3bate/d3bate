@@ -12,34 +12,55 @@ let findEvent = (event, list) => {
 
 class Calendar {
     events = [];
-    loaded = false;
+    populated = false;
 
-    updateEvent(event, loaded) {
+    updateEvent(event) {
         let foundEvent = findEvent(event, this.events);
         if (foundEvent) {
             this.events[foundEvent] = event
         }
         else {
-            this.events.push()
+            this.events.push(event)
         }
     }
 }
 
+
 decorate(Calendar, {
     events: observable,
-    loaded: observable,
+    populated: observable,
     updateEvents: action
 });
 
 export const calendar = new Calendar();
 
 
+class DebatingClubs {
+    clubs = [];
+    populated = false;
+
+    updateClub(club) {
+        let foundClub = findEvent(club, this.clubs);
+        if (foundClub) {
+            this.clubs[foundClub] = club
+        }
+        else {
+            this.clubs.push(club)
+        }
+    }
+}
+
+decorate(DebatingClubs, {
+    clubs: observable,
+    populated: observable,
+    updateClub: action
+});
+
+export const debatingClubs = new DebatingClubs();
+
 class AppState {
     user = null;
     userDocument = null;
-    debatingClubs = {
-        docs: []
-    };
 
     setUser(user) {
         this.user = user
@@ -48,37 +69,43 @@ class AppState {
     setUserDocument(document) {
         this.userDocument = document
     }
-
-    setDebatingClubs(clubs) {
-        this.debatingClubs = clubs
-    }
 }
 
 decorate(AppState, {
     user: observable,
     userDocument: observable,
-    debatingClubs: observable,
     setUser: action,
     setUserDocument: action,
-    setDebatingClubs: action
 });
 
 export const appState = new AppState();
 
 auth.onAuthStateChanged(uObject => {
     appState.setUser(uObject);
-    firebase.firestore().collection('users').doc(uObject.uid).get()
-        .then(result => {
-            appState.setUserDocument(result)
-        });
-    firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
-        .get()
-        .then(result => {
-            appState.setDebatingClubs(result);
-            if (result.size > 0) {
-                result.docs.forEach(doc => {
-                    calendar.updateEvent({id: doc.id, ...doc.data()})
-                });
-            }
-        })
+    if (uObject) {
+        firebase.firestore().collection('users').doc(uObject.uid).get()
+            .then(result => {
+                appState.setUserDocument(result)
+            });
+        firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
+            .onSnapshot(result => {
+                if (result.size > 0) {
+                    result.docs.forEach(doc => {
+                        debatingClubs.updateClub({id: doc.id, ...doc.data()});
+                        firebase.firestore().collection('calendar').where('clubID', '==', doc.id)
+                            .onSnapshot((snapshot => {
+                                snapshot.forEach(
+                                    doc => {
+                                        calendar.updateEvent({id: doc.id, ...doc.data()})
+                                    }
+                                )
+                            }))
+                    });
+                }
+            });
+    }
+    else {
+        appState.setUserDocument(null);
+    }
+
 });

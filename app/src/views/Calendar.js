@@ -1,5 +1,6 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
+import {calendar} from "../sync/models";
 import {Collection} from "../sync";
 import {observer} from "mobx-react";
 import * as moment from "moment";
@@ -31,11 +32,6 @@ const days = {
     7: 'SUN'
 };
 
-
-const calendar = new Collection('calendar', {
-    query: (ref) => ref
-        .where('clubID', '==', appState.debatingClubs.docs[0].data().id),
-});
 
 const filterCalendarDates = (start, stop) => {
     return calendar.docs.filter(doc => {
