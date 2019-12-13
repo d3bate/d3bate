@@ -1,4 +1,7 @@
-import * as firebase from "firebase";
+import firebase from "firebase/app";
+import 'firebase/firestore';
+import 'firebase/auth';
+import 'firebase/analytics';
 import {Collection, Document, initFirestorter} from 'firestorter';
 
 let user = null;
