@@ -30,15 +30,6 @@ const days = {
 };
 
 
-let filterCalendarEvents = (start, stop, year, month) => {
-    return calendar.events.filter(o => {
-        return start > moment(
-            year + '-' + month, 'YYYY-MM') && stop < moment(
-            year + '-' + (month + 1), 'YYYY-MM')
-    })
-};
-
-
 class DatePicker extends React.Component {
     constructor(props) {
         super(props);
@@ -101,7 +92,7 @@ const Calendar = observer(class Calendar extends React.Component {
             <div>
                 <div className="row">
                     {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
-                        let date = moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day).toDate();
+                        let date = moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day, 'YYYY-MM-DD').toDate();
                         return <div className="col-1 date" key={dayIndex}>
                             <p>{days[date.getDay()]}</p>
                         </div>
@@ -112,11 +103,10 @@ const Calendar = observer(class Calendar extends React.Component {
                     return <div className="row" key={weekIndex}>
                         {week.map((day, dayIndex) => {
                             let event = calendar.events.find(o => {
-                                let startDate = new Date(o.startTime.seconds * 1000);
-                                let eventDate = moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day);
-                                return startDate.getDate() === day
-                                    && (startDate) >= eventDate.toDate()
-                                //&& (startDate) <= eventDate.clone().add(1, 'month')
+                                let date = new Date(o.startTime.seconds * 1000);
+                                return date.getFullYear().toString() === this.props.match.match.params.year
+                                    && (date.getMonth() + 1).toString() === this.props.match.match.params.month
+                                    && date.getDate() === day
                             });
                             return <div className="col-1 date" key={dayIndex}>
                                 <p>{day}</p>
