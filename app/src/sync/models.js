@@ -15,7 +15,6 @@ class Calendar {
         let foundEvent = findItem(event, this.events);
 
         if (foundEvent !== -1) {
-            console.log(foundEvent);
             this.events[foundEvent] = event
         }
         else {
