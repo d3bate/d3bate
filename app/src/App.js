@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Register} from "./views/Register";
@@ -30,7 +30,6 @@ function App() {
                     </Switch>
                 </div>
             </div>
-
         </Router>
     </>
 }

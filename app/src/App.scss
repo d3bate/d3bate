@@ -13,7 +13,7 @@
 
 body {
     font-family: "Helvetica Neue", sans-serif;
-
+    background: rgba(211, 211, 211, 0.33);
 }
 
 .boldText {
@@ -24,6 +24,13 @@ body {
     margin-left: 10px;
     padding: 10px;
     border: 2px solid black;
+}
+
+.card {
+    background: #fff;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 8px;
 }
 
 .calendarRowWeek {
@@ -119,78 +126,19 @@ body {
 
 .row {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 16px;
+    flex-direction: row;
+    justify-content: center;
 }
 
-.row:last-child {
-    margin-bottom: 0;
-}
+$columns: 10, 20, 25, 33, 50, 60, 66, 80, 100;
 
-.row .col {
-    flex-grow: 1;
-    flex-basis: 0;
-}
-
-.row .col-1 {
-    width: 8.333333333333332%;
-}
-
-.row .col-2 {
-    width: 16.666666666666664%;
-}
-
-.row .col-3 {
-    width: 25%;
-}
-
-.row .col-4 {
-    width: 33.33333333333333%;
-}
-
-.row .col-5 {
-    width: 41.66666666666667%;
-}
-
-.row .col-6 {
-    width: 50%;
-}
-
-.row .col-7 {
-    width: 58.333333333333336%;
-}
-
-.row .col-8 {
-    width: 66.66666666666666%;
-}
-
-.row .col-9 {
-    width: 75%;
-}
-
-.row .col-10 {
-    width: 83.33333333333334%;
-}
-
-.row .col-11 {
-    width: 91.66666666666666%;
-}
-
-.row .col-12 {
-    width: 100%;
-}
-
-@media screen and (max-width: 768px) {
-    .row .col,
-    .row [class^='col-'],
-    .row [class*=" col-"] {
-        flex-grow: 0;
-        flex-basis: 100%;
+@each $column in $columns {
+    .col-#{$column} {
+        flex: #{$column/100}*1%;
     }
+}
 
-    .navbar-item, .navbar-item > a {
-        display: block;
-    }
+.date {
+    width: 100px;
+    height: 100px;
 }

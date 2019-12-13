@@ -1,13 +1,10 @@
 import {action, decorate, observable} from "mobx";
 import {auth, firebase} from "../sync";
 
-let findEvent = (event, list) => {
-    for (let i = 0; i < list.length; i++) {
-        if (list[i]['id'] === event['id']) {
-            return i
-        }
-    }
-    return false;
+let findItem = (item, list) => {
+    return list.findIndex(o => {
+        return o.id === item.id
+    });
 };
 
 class Calendar {
@@ -15,8 +12,10 @@ class Calendar {
     populated = false;
 
     updateEvent(event) {
-        let foundEvent = findEvent(event, this.events);
-        if (foundEvent) {
+        let foundEvent = findItem(event, this.events);
+
+        if (foundEvent !== -1) {
+            console.log(foundEvent);
             this.events[foundEvent] = event
         }
         else {
@@ -40,8 +39,8 @@ class DebatingClubs {
     populated = false;
 
     updateClub(club) {
-        let foundClub = findEvent(club, this.clubs);
-        if (foundClub) {
+        let foundClub = findItem(club, this.clubs);
+        if (foundClub !== -1) {
             this.clubs[foundClub] = club
         }
         else {
@@ -57,6 +56,31 @@ decorate(DebatingClubs, {
 });
 
 export const debatingClubs = new DebatingClubs();
+
+
+class AttendanceEvents {
+    events = [];
+    populated = false;
+
+    updateEvent(event) {
+        let foundEvent = findItem(event, this.events);
+        if (foundEvent !== -1) {
+            this.events[foundEvent] = event
+        }
+        else {
+            this.events.push(event)
+        }
+    }
+}
+
+decorate(AttendanceEvents, {
+        events: observable,
+        populated: observable,
+        updateEvent: action
+    }
+);
+
+export const attendanceEvents = new AttendanceEvents();
 
 class AppState {
     user = null;
@@ -99,7 +123,13 @@ auth.onAuthStateChanged(uObject => {
                                         calendar.updateEvent({id: doc.id, ...doc.data()})
                                     }
                                 )
-                            }))
+                            }));
+                        firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
+                            .onSnapshot(snapshot => {
+                                snapshot.forEach(doc => {
+                                    attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
+                                })
+                            })
                     });
                 }
             });
