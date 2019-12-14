@@ -5,7 +5,8 @@ d3bate is a collaborative project aiming to write debating software anyone can u
 ## Scope
 This code of conduct applies to all people involved in the development (not use) of the project, whether they contribute code, help write documentation or provide feedback. 
 ## Definitions
-A 'member' is anyone who involves themselves with the project.
+* A 'member' is anyone who involves themselves with the project.
+* 'Unacceptable behaviour' is defined to be conduct which makes other members of the project feel uncomfortable based on their religion, gender, sexuality, race or political status or hostile 
 ## The code of conduct
 All discourse should be in civil manner and take into account that comments posted online may be interpreted differently to the way they were supposed to be received. 
 ## Breaches of the code of conduct
