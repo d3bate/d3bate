@@ -8,6 +8,7 @@ import {Navbar} from "./components/Navbar";
 import {Calendar} from "./views/Calendar";
 import {EditCalendar} from "./views/EditCalendar";
 import {Footer} from "./components/Footer";
+import {Dashboard} from "./views/Dashboard";
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
                 </div>
                 <div className='col-8'>
                     <Switch>
-                        <Route exact path='/'><h1>Hello!</h1></Route>
+                        <Route exact path='/'><Dashboard/></Route>
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
                         <Route path='/calendar/:year/:month' render={(match) =>
