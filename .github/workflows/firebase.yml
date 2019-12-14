@@ -9,7 +9,7 @@ jobs:
     - name: Checkout Repo
       uses: actions/checkout@master
     - name: Install Dependencies
-      run: npm install --prefix app
+      run: npm install --prefix app && npm install --prefix functions
     - name: Build
       run: npm run build --prefix app
     - name: Deploy to firebase
