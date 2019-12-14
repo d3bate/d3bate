@@ -14,8 +14,7 @@ Sentry.init({
             Sentry.showReportDialog({
                 eventId: event.event_id,
                 title: "Uh oh...",
-                subtitle: "Unfortunately it looks like we've encountered a bug...",
-                subtitle2: "We'd appreciate it if you'd fill in the form below which will send your report to the team which writes this (freely available) software. If you can code, please consider investing the time in making a pull request to our source repository.",
+                subtitle: "This application has crashed. Please consider filling in a crash report or creating an issue on our Github page (https://github.com/d3bate/d3bate) - this helps us to improve and develop this FOSS (free and open source) software.",
                 labelComments: "What were you doing when the crash happened?",
 
             });

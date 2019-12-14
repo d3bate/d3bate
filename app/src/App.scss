@@ -1,143 +1,168 @@
 .authForm {
-    text-align: left;
-    padding: 70px 0;
+  text-align: left;
+  padding: 70px 0;
 }
 
 .authInput {
-    margin: 10px;
-    padding: 10px;
-    width: 50%;
-    border: 2px solid black;
-    background: lightgrey;
+  margin: 10px;
+  padding: 10px;
+  width: 50%;
+  border: 2px solid black;
+  background: lightgrey;
 }
 
 body {
-    font-family: "Helvetica Neue", sans-serif;
-    background: rgba(211, 211, 211, 0.33);
+  font-family: "Helvetica Neue", sans-serif;
+  background: rgba(211, 211, 211, 0.33);
 }
 
 .boldText {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .authSubmit {
-    margin-left: 10px;
-    padding: 10px;
-    border: 2px solid black;
+  margin-left: 10px;
+  padding: 10px;
+  border: 2px solid black;
 }
 
 .card {
-    background: #fff;
-    padding: 5px;
-    margin: 5px;
-    border-radius: 8px;
+  background: #fff;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 8px;
 }
 
 .calendarRowWeek {
-    border: 1px solid blue;
+  border: 1px solid blue;
 }
 
 .calendarRowWeekTop {
-    border: 1px solid red;
-    z-index: -1;
+  border: 1px solid red;
+  z-index: -1;
 }
 
 .calendarColumnDay {
-    text-align: center;
-    width: calc(70% / 7);
-    float: left;
+  text-align: center;
+  width: calc(70% / 7);
+  float: left;
 }
 
 .calendarLineBreak {
-    border: none;
-    width: 70%;
+  border: none;
+  width: 70%;
 }
 
 .CancelButton {
-    border: 2px solid black;
-    background: darkorange;
+  border: 2px solid black;
+  background: darkorange;
 }
 
 .DatePickerInput {
-    border: 2px solid black;
-    background: lightgrey;
+  border: 2px solid black;
+  background: lightgrey;
 }
 
 .DatePickerSubmit {
-    margin-left: 10px;
-    border: 2px solid black;
+  margin-left: 10px;
+  border: 2px solid black;
 }
 
 .navbar {
-    background: #4e4fed;
-    font-weight: bold;
-    padding: 5% 4%;
+  background: #ed3152;
+  font-weight: bold;
+  padding: 5% 4%;
 }
 
 .content-column {
-    width: calc(100 - 30%);
-    padding-left: 26%;
-    padding-right: 4%;
-    background: rgba(198, 198, 198, 0.25);
+  width: calc(100 - 30%);
+  padding-left: 26%;
+  padding-right: 4%;
+  background: rgba(198, 198, 198, 0.25);
 }
 
 .navbar-item, .navbar-item > a {
-    color: yellow;
-    font-size: 150%;
-    text-decoration: none;
-    display: inline;
-    padding-right: 20px;
+  color: #ffffff;
+  font-size: 150%;
+  text-decoration: none;
+  display: inline;
+  padding-right: 20px;
 }
 
 .SubmitButton {
-    background: olivedrab;
-    border: 2px solid black;
-    margin: 5px;
+  background: olivedrab;
+  border: 2px solid black;
+  margin: 5px;
 }
 
 .ViewEvent {
-    background: mediumvioletred;
-    color: white;
-    padding: 5px;
-    border-radius: 10px;
+  background: mediumvioletred;
+  color: white;
+  padding: 5px;
+  border-radius: 10px;
 }
 
 @media screen and (max-width: 786px) {
-    .navbar-column {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
+  .navbar-column {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
 
-    .content-column {
-        padding-left: 10px;
-        padding-right: 10px;
-        width: 100%;
-    }
+  .content-column {
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+  }
 }
 
 /* GRID STYLINGS */
 
 .container {
-    margin-left: 5%;
-    margin-right: 5%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+@mixin row {
+  display: flex;
+  flex-direction: row;
 }
 
 .row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  @include row;
+  justify-content: center;
+}
+
+.row-left-justified {
+  @include row;
+  justify-content: left;
+}
+
+footer {
+  background: #000;
+  color: white;
+  padding: 1% 1%;
+  bottom: 0;
+  ul {
+    li {
+      list-style-type: none;
+      a {
+        color: white;
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 $columns: 10, 20, 25, 33, 50, 60, 66, 80, 100;
 
 @each $column in $columns {
-    .col-#{$column} {
-        flex: #{$column/100}*1%;
-    }
+  .col-#{$column} {
+    flex: #{$column/100}*1%;
+  }
 }
 
 .date {
-    width: 100px;
-    height: 100px;
+  width: 100px;
+  height: 100px;
 }

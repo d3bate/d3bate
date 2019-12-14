@@ -7,6 +7,7 @@ import {Login} from "./views/Login";
 import {Navbar} from "./components/Navbar";
 import {Calendar} from "./views/Calendar";
 import {EditCalendar} from "./views/EditCalendar";
+import {Footer} from "./components/Footer";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                     </Switch>
                 </div>
             </div>
+            <Footer/>
         </Router>
     </>
 }
