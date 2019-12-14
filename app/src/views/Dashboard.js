@@ -16,7 +16,7 @@ class Dashboard extends React.Component {
             <div className="center row">
 
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
-                    <h1>Upload your information</h1>
+                    <h1>Upload your information (training, tournaments, etc.)</h1>
                     <h3>Stored on the Google Cloud, automatically encrypted</h3>
 
                 </div>
