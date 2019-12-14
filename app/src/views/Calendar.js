@@ -1,9 +1,11 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import {calendar} from "../sync/models";
+import {attendanceEvents, calendar} from "../sync/models";
 import {observer} from "mobx-react";
 import * as moment from "moment";
 import {DatePicker} from "../components/DatePicker";
+import {Checkbox} from "../components/Checkbox";
+import {firebase} from "../sync";
 
 const months = {
     1: 'January',
@@ -53,6 +55,9 @@ const Calendar = observer(class Calendar extends React.Component {
 
 
     render() {
+        if (!JSON.parse(localStorage.getItem('user')))
+            return <Redirect to='/login'/>;
+
         return <>
             <h1>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h1>
             <DatePicker year={this.props.match.match.params.year}
@@ -76,9 +81,37 @@ const Calendar = observer(class Calendar extends React.Component {
                                     && (date.getMonth() + 1).toString() === this.props.match.match.params.month
                                     && date.getDate() === day
                             });
+                            let attendance = event ? attendanceEvents.events.find(o => {
+                                return o.eventID === event['id']
+                            }) : null;
+                            let attending;
+                            if (attendance) {
+                                attending = attendance.attending;
+                            }
+                            else {
+                                attending = false;
+                            }
+
                             return <div className="col-1 date" key={dayIndex}>
                                 <p>{day}</p>
                                 <p>{event ? event['type'] : null}</p>
+                                {event ? <Checkbox checked={attending}
+                                    // Add attendance documents to the Firestore
+                                                   updateHandler={(e) => {
+                                                       if (attendance) {
+                                                           firebase.firestore().collection('attendance').doc(attendance.id).update({
+                                                               attending: e.target.checked
+                                                           })
+                                                       }
+                                                       else {
+                                                           firebase.firestore().collection('attendance').add({
+                                                               eventID: event.id,
+                                                               attending: e.target.checked,
+                                                               userID: firebase.auth().currentUser.uid
+                                                           })
+                                                       }
+                                                   }
+                                                   }/> : null}
                             </div>
                         })}
                     </div>
