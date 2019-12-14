@@ -133,8 +133,10 @@ body {
 
 .row {
   @include row;
-  justify-content: center;
+  justify-content: space-between;
 }
+
+
 
 .row-left-justified {
   @include row;
