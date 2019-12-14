@@ -1,0 +1,13 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "Hi! Thanks for taking the time to make a contribution to this project. While you're waiting for your issue to be followed up, why not have a read of our code of conduct and contribution guidelines."
+        pr-message: "Thanks for putting in the effort in making a contribution to the project. When discussing this pull request please act in accordance with our code of conduct (be friendly and nice!) :)"
