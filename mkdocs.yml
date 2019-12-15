@@ -2,3 +2,4 @@ site_name: d3bate documentation
 theme: windmill-dark
 nav:
 - Home: index.md
+- Getting stared: getting-started.md
