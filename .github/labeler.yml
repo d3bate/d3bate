@@ -3,3 +3,8 @@ client:
 
 cloud-functions:
 - functions/**/*
+
+graphic-design:
+- assets/**/*
+- app/src/App.scss
+- app/src/*.css
