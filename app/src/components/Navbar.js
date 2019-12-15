@@ -14,7 +14,7 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
         if (appState.user) {
             return <>
                 <div className='navbar-item'>
-                    <Link to='/'>Profile (dead link)</Link>
+                    <Link to='/profile'>Profile</Link>
                 </div>
                 <div className='navbar-item'>
                     <a href='#' onClick={(event) => {

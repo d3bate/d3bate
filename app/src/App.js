@@ -9,6 +9,7 @@ import {Calendar} from "./views/Calendar";
 import {EditCalendar} from "./views/EditCalendar";
 import {Footer} from "./components/Footer";
 import {Dashboard} from "./views/Dashboard";
+import {Profile} from "./views/Profile";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                         <Route exact path='/'><Dashboard/></Route>
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
+                        <Route exact path='/profile' component={Profile}/>
                         <Route path='/calendar/:year/:month' render={(match) =>
                             <Calendar match={match}/>
                         }/>
