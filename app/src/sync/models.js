@@ -133,7 +133,7 @@ decorate(AppState, {
 
 export const appState = new AppState();
 
-observe(AppState, "user", change => {
+observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
         let userSnapshot = firebase.firestore().collection('users').doc(uObject.uid).get()
