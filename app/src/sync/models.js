@@ -1,5 +1,7 @@
 import {action, decorate, observable, observe} from "mobx";
 import {auth, firebase} from "../sync";
+import {primitive, serializable} from "serializr";
+import {persist} from 'mobx-persist';
 
 let clubMembershipsSnapshot;
 
@@ -30,7 +32,7 @@ class Messages {
 }
 
 decorate(Messages, {
-    messages: observable,
+    messages: [persist("object"), observable],
     addMessage: action,
     deleteMessage: action
 });
@@ -55,7 +57,7 @@ class Calendar {
 
 
 decorate(Calendar, {
-    events: observable,
+    events: [persist("object"), observable],
     populated: observable,
     updateEvents: action
 });
@@ -79,7 +81,7 @@ class DebatingClubs {
 }
 
 decorate(DebatingClubs, {
-    clubs: observable,
+    clubs: [persist("object"), observable],
     populated: observable,
     updateClub: action
 });
@@ -103,7 +105,7 @@ class AttendanceEvents {
 }
 
 decorate(AttendanceEvents, {
-        events: observable,
+    events: [persist("object"), observable],
         populated: observable,
         updateEvent: action
     }
@@ -125,8 +127,8 @@ class AppState {
 }
 
 decorate(AppState, {
-    user: observable,
-    userDocument: observable,
+    user: [persist("object"), observable],
+    userDocument: [persist("object"), observable],
     setUser: action,
     setUserDocument: action,
 });
