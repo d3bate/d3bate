@@ -31,10 +31,10 @@ nav:
 - Home: index.md
 - Getting started: getting-started.md
 - Debating guide:
-  - Introduction: debating-howto/index.md
-  - Making arguments: debating-howto/argumentation/index.md
+  - Introduction: howto/index.md
+  - Making arguments: howto/argumentation/index.md
   - Background:
-    - Introduction: debating-howto/background/index.md
+    - Introduction: howto/background/index.md
   - Formats:
-    - British Parliamentary: 'debating-howto/formats/bp.md'
+    - British Parliamentary: howto/formats/bp.md
 
