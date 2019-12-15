@@ -1,5 +1,6 @@
 site_name: d3bate documentation
-theme: windmill-dark
+theme:
+  name: 'material'
 nav:
 - Home: index.md
 - Getting stared: getting-started.md
