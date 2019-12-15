@@ -8,3 +8,9 @@ graphic-design:
 - assets/**/*
 - app/src/App.scss
 - app/src/*.css
+
+debating-guide:
+- docs/howto/**
+
+d3bate-docs:
+- docs/**
