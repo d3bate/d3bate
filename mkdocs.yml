@@ -1,6 +1,9 @@
 site_name: d3bate documentation
 theme:
   name: 'material'
+  palette:
+    primary: 'deep purple'
+    accent: 'indigo'
 extra_javascript:
 - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
 markdown_extensions:
@@ -24,3 +27,4 @@ markdown_extensions:
 nav:
 - Home: index.md
 - Getting stared: getting-started.md
+
