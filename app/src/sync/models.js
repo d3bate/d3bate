@@ -1,5 +1,7 @@
-import {action, decorate, observable} from "mobx";
+import {action, decorate, observable, observe} from "mobx";
 import {auth, firebase} from "../sync";
+
+let clubMembershipsSnapshot;
 
 let findItem = (item, list) => {
     return list.findIndex(o => {
@@ -131,14 +133,14 @@ decorate(AppState, {
 
 export const appState = new AppState();
 
-auth.onAuthStateChanged(uObject => {
-    appState.setUser(uObject);
+observe(AppState, "user", change => {
+    let uObject = change.newValue;
     if (uObject) {
-        firebase.firestore().collection('users').doc(uObject.uid).get()
+        let userSnapshot = firebase.firestore().collection('users').doc(uObject.uid).get()
             .then(result => {
                 appState.setUserDocument(result)
             });
-        firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
+        let clubMembershipsSnapshot = firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
             .onSnapshot(result => {
                 if (result.size > 0) {
                     result.docs.forEach(doc => {
@@ -164,5 +166,8 @@ auth.onAuthStateChanged(uObject => {
     else {
         appState.setUserDocument(null);
     }
+});
 
+auth.onAuthStateChanged(uObject => {
+    appState.setUser(uObject);
 });
