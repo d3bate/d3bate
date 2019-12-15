@@ -4,6 +4,9 @@ theme:
   palette:
     primary: 'deep purple'
     accent: 'indigo'
+google_analytics:
+- 'UA-154654069-1'
+- 'auto'
 extra_javascript:
 - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
 markdown_extensions:
@@ -26,5 +29,12 @@ markdown_extensions:
 - pymdownx.tilde
 nav:
 - Home: index.md
-- Getting stared: getting-started.md
+- Getting started: getting-started.md
+- Debating guide:
+  - Introduction: debating-howto/index.md
+  - Making arguments: debating-howto/argumentation/index.md
+  - Background:
+    - Introduction: debating-howto/background/index.md
+  - Formats:
+    - British Parliamentary: 'debating-howto/formats/bp.md'
 
