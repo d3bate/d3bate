@@ -5,6 +5,17 @@ import App from './App';
 import * as Sentry from '@sentry/browser';
 import * as serviceWorker from './serviceWorker';
 
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+        .register("./firebase-messaging-sw.js")
+        .then(function (registration) {
+            console.log("Registration successful, scope is:", registration.scope);
+        })
+        .catch(function (err) {
+            console.log("Service worker registration failed, error:", err);
+        });
+}
+
 ReactDOM.render(<App/>, document.getElementById('root'));
 Sentry.init({
     dsn: "https://393bee494b7242b6b21273b8787227c3@sentry.io/1844736",
