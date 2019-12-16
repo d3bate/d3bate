@@ -22,6 +22,7 @@ initFirestorter({firebase: firebase});
 
 firebase.analytics();
 
+
 const messaging = firebase.messaging();
 
 messaging.usePublicVapidKey('BBMM5xOsOkTTxPETRZn2agN9nfqG9um0OjYKtT4eE8nobB_DAxjsnxKk_gRhMzCMorWx5qrKWrOEValy4ndCD7U');
