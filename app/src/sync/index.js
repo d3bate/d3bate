@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import 'firebase/firestore';
 import 'firebase/auth';
 import 'firebase/analytics';
+import 'firebase/messaging';
 import {Collection, Document, initFirestorter} from 'firestorter';
 
 let user = null;
