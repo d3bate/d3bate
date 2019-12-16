@@ -9,7 +9,7 @@ jobs:
     - name: Install
       uses: ianwalter/puppeteer@v2.0.0
       with:
-        args: npm
+        args: npm install --prefix app
     - name: Test
       uses: ianwalter/puppeteer@v2.0.0
       with:
