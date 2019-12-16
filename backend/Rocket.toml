@@ -1,0 +1,2 @@
+[global.databases]
+sqlite_db = {url="app.db"}
