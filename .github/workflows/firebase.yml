@@ -1,6 +1,10 @@
 name: Firebase deploy
 
-on: [push]
+on:
+  push:
+    paths:
+    - "app/**/*"
+    - "functions/**/*"
 
 jobs:
   build-and-deploy:
