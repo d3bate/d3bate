@@ -19,8 +19,8 @@ table! {
         id -> Nullable<Integer>,
         name -> Text,
         email -> Text,
-        email_verified -> Text,
-        password -> Nullable<Text>,
+        email_verified -> Integer,
+        password_hash -> Text,
     }
 }
 
