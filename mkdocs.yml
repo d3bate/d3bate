@@ -4,6 +4,10 @@ theme:
   palette:
     primary: 'deep purple'
     accent: 'indigo'
+  logo:
+    icon: 'comment'
+repo_name: 'd3bate/d3bate'
+repo_url: 'https://github.com/d3bate/d3bate'
 google_analytics:
 - 'UA-154654069-1'
 - 'auto'
