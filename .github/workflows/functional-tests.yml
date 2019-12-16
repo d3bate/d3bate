@@ -1,0 +1,16 @@
+name: Test
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Install
+      uses: ianwalter/puppeteer@v2.0.0
+      with:
+        args: npm
+    - name: Test
+      uses: ianwalter/puppeteer@v2.0.0
+      with:
+        args: npm run test --prefix app
