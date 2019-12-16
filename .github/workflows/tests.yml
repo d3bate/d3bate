@@ -13,4 +13,4 @@ jobs:
     - name: Test
       uses: ianwalter/puppeteer@v2.0.0
       with:
-        args: npm run test --prefix app
+        args: CI=true npm test --prefix app
