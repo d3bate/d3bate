@@ -22,20 +22,25 @@ initFirestorter({firebase: firebase});
 
 firebase.analytics();
 
+try {
+    const messaging = firebase.messaging();
 
-const messaging = firebase.messaging();
+    messaging.usePublicVapidKey('BBMM5xOsOkTTxPETRZn2agN9nfqG9um0OjYKtT4eE8nobB_DAxjsnxKk_gRhMzCMorWx5qrKWrOEValy4ndCD7U');
 
-messaging.usePublicVapidKey('BBMM5xOsOkTTxPETRZn2agN9nfqG9um0OjYKtT4eE8nobB_DAxjsnxKk_gRhMzCMorWx5qrKWrOEValy4ndCD7U');
+    Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+            console.log('Notification permission granted.');
+            // TODO(developer): Retrieve an Instance ID token for use with FCM.
+            // ...
+        } else {
+            console.log('Unable to get permission to notify.');
+        }
+    });
+}
 
-Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-        console.log('Notification permission granted.');
-        // TODO(developer): Retrieve an Instance ID token for use with FCM.
-        // ...
-    } else {
-        console.log('Unable to get permission to notify.');
-    }
-});
+catch (e) {
+    alert("Your browser does not support push notifications. Unfortunately this functionality will not be available to you.")
+}
 
 let auth = firebase.auth();
 
