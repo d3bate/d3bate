@@ -52,3 +52,6 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
 
 
 });
+
+
+exports.sendEventReminders = functions.firestore.document('')
