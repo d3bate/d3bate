@@ -1,4 +1,5 @@
 site_name: d3bate documentation
+
 theme:
   name: 'material'
   palette:
@@ -6,13 +7,17 @@ theme:
     accent: 'indigo'
   logo:
     icon: 'comment'
+
 repo_name: 'd3bate/d3bate'
 repo_url: 'https://github.com/d3bate/d3bate'
+
 google_analytics:
 - 'UA-154654069-1'
 - 'auto'
+
 extra_javascript:
 - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+
 markdown_extensions:
 - admonition
 - pymdownx.arithmatex
@@ -31,6 +36,7 @@ markdown_extensions:
 - pymdownx.tasklist:
     custom_checkbox: true
 - pymdownx.tilde
+
 nav:
 - Home: index.md
 - Getting started: getting-started.md
@@ -42,3 +48,6 @@ nav:
   - Formats:
     - British Parliamentary: howto/formats/bp.md
 
+plugins:
+- search
+- pdf-export
