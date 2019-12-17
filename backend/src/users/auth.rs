@@ -36,3 +36,19 @@ pub fn issue_jwt(user: &User) -> String {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_function_runs() {
+        let value = issue_jwt(&User {
+            id: 1,
+            name: String::from("Person1"),
+            email_verified: 1,
+            email: String::from("person1@example.com"),
+            password_hash: String::from("none"),
+        });
+    }
+}
