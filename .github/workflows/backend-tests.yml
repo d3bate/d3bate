@@ -1,4 +1,4 @@
-name: Rust Example
+name: Test backend
 
 on:
   push:
