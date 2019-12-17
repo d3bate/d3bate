@@ -1,6 +1,6 @@
 #![allow(proc_macro_derive_resolution_fallback)]
 
-use super::schema::users;
+use diesel::prelude::Queryable;
 
 pub mod query_functions;
 pub mod auth;

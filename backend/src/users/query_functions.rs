@@ -3,6 +3,8 @@
 use diesel;
 use diesel::prelude::*;
 
+use crate::schema::users;
+
 use super::User;
 
 pub fn all(conn: &SqliteConnection) -> QueryResult<Vec<User>> {
@@ -13,13 +15,13 @@ pub fn get(id: i32, conn: &SqliteConnection) -> QueryResult<User> {
     users::table.find(id).get_result::<User>(conn)
 }
 
-pub fn insert(user: User, conn: &SqliteConnection) -> QueryResult<Person> {
+pub fn insert(user: User, conn: &SqliteConnection) -> QueryResult<User> {
     diesel::insert_into(users::table)
         .values(&InsertableUser::from_user(user))
         .get_result(conn)
 }
 
-pub fn update(id: i32, user: User, connection: &SqliteConnection) -> QueryResult<User> {
+pub fn update(id: i32, user: User, conn: &SqliteConnection) -> QueryResult<User> {
     diesel::update(users::table.find(id))
         .set(&user)
         .get_result(conn)

@@ -10,7 +10,8 @@ extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_json;
 
-
+mod users;
+mod schema;
 #[database("sqlite_db")]
 struct SQLiteDbConn(diesel::SqliteConnection);
 
