@@ -1,16 +1,14 @@
-#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(proc_macro_hygiene, decl_macro, proc_macro_derive)]
 
 #[macro_use]
 extern crate diesel;
-extern crate frank_jwt;
-#[macro_use]
+extern crate dotenv;
+extern crate r2d2;
+extern crate r2d2_diesel;
 extern crate rocket;
 extern crate rocket_contrib;
 #[macro_use]
 extern crate serde_derive;
-#[macro_use]
-extern crate serde_json;
-
 
 mod users;
 mod schema;
