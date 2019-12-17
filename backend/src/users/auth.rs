@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate serde_json;
 
 use std::env;
 use std::time::{Duration, SystemTime};
@@ -28,8 +26,8 @@ pub fn issue_jwt(user: &User) -> String {
     let signing_key = env::var("JWT_SIGNING_TOKEN").unwrap();
     let jwt = encode(&header, &signing_key, &payload, Algorithm::RS256);
     match jwt {
-        Ok(String) => {
-            return jwt;
+        Ok(jwt_string) => {
+            return jwt_string;
         }
         Err(E) => {
             panic!(format!("Some error {} occurred.", E))

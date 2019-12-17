@@ -3,8 +3,7 @@
 use diesel;
 use diesel::prelude::*;
 
-use schema::users;
-use users::User;
+use super::User;
 
 pub fn all(conn: &SqliteConnection) -> QueryResult<Vec<User>> {
     users::table.load::<User>(&*conn)

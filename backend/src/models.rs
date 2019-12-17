@@ -1,8 +1,5 @@
 use diesel::{self, prelude::*};
 
-use self::schema::users;
-use self::schema::users::dsl::users as all_users;
-
 #[derive(Queryable)]
 #[table_name = "users"]
 pub struct User {
