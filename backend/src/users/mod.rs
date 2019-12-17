@@ -2,8 +2,8 @@
 
 use super::schema::users;
 
-pub mod handler;
 pub mod query_functions;
+pub mod auth;
 
 #[derive(Queryable, Serializable)]
 #[table_name = "users"]
