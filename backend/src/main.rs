@@ -5,13 +5,16 @@ extern crate diesel;
 extern crate frank_jwt;
 #[macro_use]
 extern crate rocket;
-#[macro_use]
 extern crate rocket_contrib;
+#[macro_use]
+extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 
+
 mod users;
 mod schema;
+
 #[database("sqlite_db")]
 struct SQLiteDbConn(diesel::SqliteConnection);
 

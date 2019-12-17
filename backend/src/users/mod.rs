@@ -1,11 +1,11 @@
 #![allow(proc_macro_derive_resolution_fallback)]
 
-use diesel::prelude::Queryable;
+use super::schema::users;
 
 pub mod query_functions;
 pub mod auth;
 
-#[derive(Queryable, Serializable)]
+#[derive(Queryable, AsChangeset, Serialize, Deserialize)]
 #[table_name = "users"]
 pub struct User {
     pub id: i32,

@@ -24,7 +24,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_function_runs() {
+    fn test_issue_jwt_function_runs() {
         let value = issue_jwt(&User {
             id: 1,
             name: String::from("Person1"),
