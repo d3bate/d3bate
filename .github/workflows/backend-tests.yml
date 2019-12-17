@@ -11,5 +11,5 @@ jobs:
       uses: actions/checkout@master
     - name: Run tests
       uses: actions-rs/cargo@v1
-        with:
-          command: test
+      with:
+        command: test
