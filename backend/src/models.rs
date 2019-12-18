@@ -1,8 +1,11 @@
-use diesel::{self, prelude::*};
+use std::option::Option;
 
-#[derive(Queryable)]
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
+
+#[derive(Queryable, Deserialize, Serialize)]
 pub struct User {
-    pub id: i32,
+    pub id: Option<i32>,
     pub name: String,
     pub email: String,
     pub email_verified: i32,

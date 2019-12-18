@@ -1,8 +1,8 @@
 #![allow(proc_macro_derive_resolution_fallback)]
 
-use diesel::prelude::SqliteConnection;
+use diesel::sqlite::SqliteConnection;
 
-use crate::diesel::RunQueryDsl;
+use crate::diesel::{QueryDsl, RunQueryDsl};
 
 use super::models::User;
 use super::schema::users;
@@ -30,8 +30,7 @@ pub fn create_user<'a>(conn: SqliteConnection, name: &'a str, email: &'a str, pa
 }
 
 pub fn get_user(user_id: &i32, conn: SqliteConnection) -> User {
-    let user = users.filter(users::id.like(user_id));
-    return user;
+    return users::table.find(user_id).first::<User>(&conn).expect("Error finding user.");
 }
 
 #[cfg(test)]

@@ -3,6 +3,7 @@
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate serde;
 
 use std::env;
 use std::io::{Read, stdin};
@@ -31,6 +32,4 @@ pub fn establish_connection() -> SqliteConnection {
 fn main() {
     use schema::users::dsl::*;
     let connection = establish_connection();
-
-    println!("{}", auth::get_user(&1, connection).id)
 }
