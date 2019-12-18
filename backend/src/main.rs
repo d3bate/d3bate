@@ -1,8 +1,10 @@
 #![feature(proc_macro)]
-
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate jsonwebtoken as jwt;
+#[macro_use]
+extern crate jsonwebtoken;
 extern crate serde;
 
 use std::env;
