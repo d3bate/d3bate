@@ -5,6 +5,9 @@ on:
     paths:
     - "app/**/*"
     - "functions/**/*"
+    - "firebase.json"
+    - "firestore.rules"
+    - "storage.rules"
 
 jobs:
   build-and-deploy:
