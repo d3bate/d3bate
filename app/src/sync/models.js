@@ -113,6 +113,26 @@ decorate(AttendanceEvents, {
 
 export const attendanceEvents = new AttendanceEvents();
 
+class RegisterDocuments {
+    docs = [];
+
+    updateDoc(doc) {
+        let foundDoc = findItem(doc, this.docs);
+        if (foundDoc !== -1) {
+            this.docs[foundDoc] = doc
+        }
+        else {
+            this.docs.push(doc)
+        }
+    }
+}
+
+decorate(RegisterDocuments, {
+    docs: observable,
+    updateDoc: action
+});
+
+
 class AppState {
     user = null;
     userDocument = null;
@@ -135,6 +155,7 @@ decorate(AppState, {
 
 export const appState = new AppState();
 
+
 observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
@@ -142,27 +163,25 @@ observe(appState, "user", change => {
             .then(result => {
                 appState.setUserDocument(result)
             });
-        let clubMembershipsSnapshot = firebase.firestore().collection('clubMemberships').where('userID', '==', uObject.uid)
-            .onSnapshot(result => {
-                if (result.size > 0) {
-                    result.docs.forEach(doc => {
-                        debatingClubs.updateClub({id: doc.id, ...doc.data()});
-                        firebase.firestore().collection('calendar').where('clubID', '==', doc.id)
-                            .onSnapshot((snapshot => {
-                                snapshot.forEach(
-                                    doc => {
-                                        calendar.updateEvent({id: doc.id, ...doc.data()})
-                                    }
-                                )
-                            }));
-                        firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
-                            .onSnapshot(snapshot => {
-                                snapshot.forEach(doc => {
-                                    attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
-                                })
-                            })
-                    });
-                }
+        let clubMembershipsSnapshot = firebase.firestore().collection('clubMemberships').doc(uObject.uid)
+            .onSnapshot(doc => {
+                debatingClubs.updateClub({id: doc.id, ...doc.data()});
+                firebase.firestore().collection('calendar').where('clubID', '==', doc.id)
+                    .onSnapshot((snapshot => {
+                        snapshot.forEach(
+                            doc => {
+                                calendar.updateEvent({id: doc.id, ...doc.data()})
+                            }
+                        )
+                    }));
+                firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
+                    .onSnapshot(snapshot => {
+                        snapshot.forEach(doc => {
+                            attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
+                        })
+                    })
+
+
             });
     }
     else {
