@@ -10,6 +10,7 @@ import {EditCalendar} from "./views/EditCalendar";
 import {Footer} from "./components/Footer";
 import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
+import {TakeRegister} from "./views/TakeRegister";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                         <Route path='/edit/calendar/:year/:month' render={(match) =>
                             <EditCalendar match={match}/>
                         }/>
+                        <Route path='/register/:id' render={(match) => <TakeRegister match={match}/>}/>
                     </Switch>
                 </div>
             </div>
