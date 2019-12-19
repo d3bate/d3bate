@@ -9,6 +9,11 @@ export const TakeRegister = observer(class TakeRegister extends React.Component 
 
     render() {
         return <>
+            <div className="row">
+                <div className="col-25" style={{textAlign: 'center'}}>
+                    <h5>AREA UNDER CONSTRUCTION.</h5>
+                </div>
+            </div>
         </>
     }
 });

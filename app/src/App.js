@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.scss';
+import './sabre/css/build.css';
 
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {Register} from "./views/Register";
