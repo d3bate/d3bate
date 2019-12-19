@@ -1,6 +1,6 @@
 import {observer} from "mobx-react";
 import React from "react";
-import {calendar, debatingClubs} from "../sync/models";
+import {calendar, debatingClub} from "../sync/models";
 import {Redirect} from "react-router-dom";
 import {firebase} from "../sync";
 import * as moment from "moment";
@@ -95,7 +95,7 @@ class AddEvent extends React.Component {
     submitForm(event) {
         event.preventDefault();
         firebase.firestore().collection('calendar').add({
-            clubID: debatingClubs.clubs[0].id,
+            clubID: debatingClub.club.clubID,
             startTime: moment(this.state.year + '-' + this.state.month + '-' + this.state.day, 'YYYY-MM-DD').toDate(),
             type: this.state.type
         })

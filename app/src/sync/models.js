@@ -3,7 +3,6 @@ import {auth, firebase} from "../sync";
 import {primitive, serializable} from "serializr";
 import {persist} from 'mobx-persist';
 
-let clubMembershipsSnapshot;
 
 let findItem = (item, list) => {
     return list.findIndex(o => {
@@ -65,28 +64,20 @@ decorate(Calendar, {
 export const calendar = new Calendar();
 
 
-class DebatingClubs {
-    clubs = [];
-    populated = false;
+class DebatingClub {
+    club = null;
 
-    updateClub(club) {
-        let foundClub = findItem(club, this.clubs);
-        if (foundClub !== -1) {
-            this.clubs[foundClub] = club
-        }
-        else {
-            this.clubs.push(club)
-        }
+    setClub(club) {
+        this.club = club;
     }
 }
 
-decorate(DebatingClubs, {
-    clubs: [persist("object"), observable],
-    populated: observable,
-    updateClub: action
+decorate(DebatingClub, {
+    club: [persist("object"), observable],
+    setClub: action
 });
 
-export const debatingClubs = new DebatingClubs();
+export const debatingClub = new DebatingClub();
 
 
 class AttendanceEvents {
@@ -159,29 +150,28 @@ export const appState = new AppState();
 observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
-        let userSnapshot = firebase.firestore().collection('users').doc(uObject.uid).get()
-            .then(result => {
-                appState.setUserDocument(result)
+        appState.setUser(uObject);
+        firebase.firestore().collection('users').doc(uObject.uid).get()
+            .then(doc => {
+                appState.setUserDocument(doc)
             });
-        let clubMembershipsSnapshot = firebase.firestore().collection('clubMemberships').doc(uObject.uid)
-            .onSnapshot(doc => {
-                debatingClubs.updateClub({id: doc.id, ...doc.data()});
-                firebase.firestore().collection('calendar').where('clubID', '==', doc.id)
-                    .onSnapshot((snapshot => {
-                        snapshot.forEach(
-                            doc => {
-                                calendar.updateEvent({id: doc.id, ...doc.data()})
-                            }
-                        )
-                    }));
-                firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
+        firebase.firestore().collection('clubMemberships').doc(uObject.uid).get()
+            .then(doc => {
+                debatingClub.setClub({id: doc.id, ...doc.data()});
+                firebase.firestore().collection('calendar').where('clubID', '==', doc.data().clubID)
                     .onSnapshot(snapshot => {
                         snapshot.forEach(doc => {
-                            attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
+                            calendar.updateEvent({id: doc.id, ...doc.data()})
                         })
-                    })
+                    });
 
+            });
 
+        firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
+            .onSnapshot(snapshot => {
+                snapshot.forEach(doc => {
+                    attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
+                })
             });
     }
     else {
