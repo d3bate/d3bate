@@ -39,8 +39,7 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                     uid: user.uid,
                     email: user.email
                 });
-                admin.firestore().collection('clubMemberships').add({
-                    userID: user.uid,
+                admin.firestore().collection('clubMemberships').doc(user.uid).set({
                     role: 'user',
                     clubID: doc.id
                 });

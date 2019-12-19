@@ -13,9 +13,13 @@ service cloud.firestore {
         allow read: if request.auth.uid == userID;
         allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
     }
-    match /clubMemberships/{document} {
-        allow read: if request.auth.uid == resource.data.userID;
+    match /clubMemberships/{userID} {
+        allow read: if request.auth.uid == userID;
         allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+    }
+    match /register/{document} {
+        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID;
+        allow create, write, delete; if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role = 'admin';
     }
     match /{document=**} {
       allow read, write: if false;
