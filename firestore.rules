@@ -18,7 +18,7 @@ service cloud.firestore {
         allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
     }
     match /register/{document} {
-        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID;
+        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
         allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
     }
     match /{document=**} {

@@ -119,9 +119,11 @@ class RegisterDocuments {
 }
 
 decorate(RegisterDocuments, {
-    docs: observable,
+    docs: [persist("object"), observable],
     updateDoc: action
 });
+
+export const registerDocuments = new RegisterDocuments();
 
 
 class AppState {
@@ -147,6 +149,7 @@ decorate(AppState, {
 export const appState = new AppState();
 
 
+// We don't listen to firebase.auth().onAuthstateChanged so that we don't create too many snapshot listeners
 observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
@@ -164,7 +167,14 @@ observe(appState, "user", change => {
                             calendar.updateEvent({id: doc.id, ...doc.data()})
                         })
                     });
-
+                if (doc.data().role === 'admin') {
+                    firebase.firestore().collection('register').where('clubID', '==', doc.data().clubID)
+                        .onSnapshot(snapshot => {
+                            snapshot.forEach(doc => {
+                                registerDocuments.updateDoc({id: doc.id, ...doc.data()});
+                            })
+                        });
+                }
             });
 
         firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
