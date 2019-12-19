@@ -1,4 +1,5 @@
 #![feature(proc_macro)]
+extern crate actix_web;
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
@@ -9,6 +10,7 @@ extern crate serde;
 
 use std::env;
 use std::io::{Read, stdin};
+use std::time::Duration
 
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
@@ -29,6 +31,8 @@ pub fn establish_connection() -> SqliteConnection {
     SqliteConnection::establish(&database_url)
         .expect(&format!("Error connection to {}", database_url))
 }
+
+const CLIENT_TIMEOUT: Duration = Duration::from_secs(60);
 
 
 fn main() {

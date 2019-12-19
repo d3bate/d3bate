@@ -12,6 +12,8 @@ use crate::diesel::{QueryDsl, RunQueryDsl};
 use super::models::User;
 use super::schema::users;
 
+pub mod routes;
+
 #[derive(Serialize, Deserialize)]
 struct Claims {
     user_id: i32,
