@@ -1,6 +1,7 @@
 #![allow(proc_macro_derive_resolution_fallback)]
 
 use std::env;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use diesel::sqlite::SqliteConnection;
 use jwt::{decode, encode, Header};
@@ -40,21 +41,31 @@ pub fn create_user<'a>(conn: SqliteConnection, name: &'a str, email: &'a str, pa
 }
 
 pub fn get_user(user_id: &i32, conn: &SqliteConnection) -> User {
-    return users::table.find(user_id).first::<User>(&conn).expect("Error finding user.");
+    return users::table.find(user_id).first::<User>(conn).expect("Error finding user.");
 }
 
-pub fn issue_jwt(user_id: &i32, conn: &SqliteConnection) {
+pub fn issue_jwt(user_id: &i32, conn: &SqliteConnection) -> String {
     let user = get_user(user_id, conn);
-    match user.id {
+    let expiry_time = SystemTime::now()
+        .checked_add(Duration::new(900, 0))
+        .expect("Error adding time.")
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards.");
+    return match user.id {
         Some(uid) => {
             let token = encode(&Header::default(), &Claims {
                 user_id: uid,
+                exp: expiry_time.as_secs() as usize,
             }, "".as_ref());
+            match token {
+                Ok(t) => { return t; }
+                Err(e) => { panic!("Error generating token.") }
+            }
         }
         None => {
             panic!("Couldn't find that user")
         }
-    }
+    };
 }
 
 #[cfg(test)]
