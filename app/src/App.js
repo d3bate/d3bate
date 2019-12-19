@@ -17,11 +17,11 @@ import {TakeRegister} from "./views/TakeRegister";
 function App() {
     return <>
         <Router>
-            <div className='columns'>
-                <div className='col-4'>
+            <div className='row'>
+                <div className='col-25'>
                     <Navbar/>
                 </div>
-                <div className='col-8'>
+                <div className='col-75'>
                     <Switch>
                         <Route exact path='/'><Dashboard/></Route>
                         <Route exact path='/login' component={Login}/>

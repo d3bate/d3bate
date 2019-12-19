@@ -10,15 +10,15 @@ class Dashboard extends React.Component {
                      alt={"Debater and podium"}/>
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
                     <h1>D3BATE</h1>
-                    <h3>A digital debating toolkit.</h3>
+                    <h6>A digital debating toolkit.</h6>
                 </div>
             </div>
             <hr style={{width: "75%"}}/>
             <div className="center row">
 
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
-                    <h1>Upload your information (training, tournaments, etc.)</h1>
-                    <h3>Stored on the Google Cloud, automatically encrypted</h3>
+                    <h5>Upload your information (training, tournaments, etc.)</h5>
+                    <h6>Stored on the Google Cloud, automatically encrypted</h6>
 
                 </div>
                 <img className="col-25" width="25%"
@@ -29,8 +29,8 @@ class Dashboard extends React.Component {
             <hr style={{width: "75%"}}/>
             <div className="center row">
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
-                    <h1>Automatically distribute it to users.</h1>
-                    <h3>Use push notifications and emails to alert users*</h3>
+                    <h5>Automatically distribute it to users.</h5>
+                    <h6>Use push notifications and emails to alert users*</h6>
                     <p>* These features are currently in development</p>
 
                 </div>
