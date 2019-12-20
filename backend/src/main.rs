@@ -1,4 +1,5 @@
 #![feature(proc_macro)]
+extern crate bcrypt;
 extern crate actix_web;
 #[macro_use]
 extern crate diesel;
@@ -10,17 +11,22 @@ extern crate serde;
 
 use std::env;
 use std::io::{Read, stdin};
-use std::time::Duration
+use std::time::Duration;
 
+use actix_web::HttpServer;
 use diesel::prelude::*;
+use diesel::r2d2::{self, ConnectionManager};
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
 
 use models::User;
 use schema::users;
 
+type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
+
 mod schema;
 mod models;
+
 mod auth;
 
 
@@ -34,8 +40,11 @@ pub fn establish_connection() -> SqliteConnection {
 
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(60);
 
-
 fn main() {
-    use schema::users::dsl::*;
-    let connection = establish_connection();
+    dotenv::dotenv().ok();
+    let connspec = std::env::var("DATABASE_URL").expect("You must set the `DATABASE_URL` environment variable.");
+    let manager = ConnectionManager::<SqliteConnection>::new(connspec);
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create database pool");
 }

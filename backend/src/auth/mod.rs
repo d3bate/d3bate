@@ -3,7 +3,10 @@
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use diesel::sqlite::SqliteConnection;
+
+use actix_web::{web, Error};
+use bcrypt::{DEFAULT_COST, hash, verify};
+use diesel::sqlite::{SqliteConnection, Sqlite};
 use jwt::{decode, encode, Header};
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +14,8 @@ use crate::diesel::{QueryDsl, RunQueryDsl};
 
 use super::models::User;
 use super::schema::users;
+
+use super::Pool;
 
 pub mod routes;
 
@@ -42,12 +47,13 @@ pub fn create_user<'a>(conn: SqliteConnection, name: &'a str, email: &'a str, pa
         .execute(&conn).expect("Could not insert into table.")
 }
 
-pub fn get_user(user_id: &i32, conn: &SqliteConnection) -> User {
+pub fn get_user(user_id: &i32, pool: web::Data<Pool>) -> User {
+    let conn: &SqliteConnection = &pool.get().unwrap();
     return users::table.find(user_id).first::<User>(conn).expect("Error finding user.");
 }
 
-pub fn issue_jwt(user_id: &i32, conn: &SqliteConnection) -> String {
-    let user = get_user(user_id, conn);
+pub fn issue_jwt(user_id: &i32, password: String, pool: web::Data<Pool>) -> Result<String, Error> {
+    let user = get_user(user_id, pool);
     let expiry_time = SystemTime::now()
         .checked_add(Duration::new(900, 0))
         .expect("Error adding time.")
@@ -55,18 +61,23 @@ pub fn issue_jwt(user_id: &i32, conn: &SqliteConnection) -> String {
         .expect("Time went backwards.");
     return match user.id {
         Some(uid) => {
+            let hashed = match hash(password, DEFAULT_COST) {
+                Ok(t) => t,
+                Err(E) => String::from("")
+            };
+            if hashed != password {
+                return Error("Incorrect password.");
+            }
             let token = encode(&Header::default(), &Claims {
                 user_id: uid,
                 exp: expiry_time.as_secs() as usize,
             }, "".as_ref());
-            match token {
-                Ok(t) => { return t; }
-                Err(e) => { panic!("Error generating token.") }
-            }
+            return match token {
+                Ok(t) => Ok(t),
+                Err(e) => Err(e)
+            };
         }
-        None => {
-            panic!("Couldn't find that user")
-        }
+        None => Err(std::error::Error)
     };
 }
 
