@@ -4,7 +4,7 @@ use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 
-use actix_web::{web, Error};
+use actix_web::web;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use diesel::sqlite::{SqliteConnection, Sqlite};
 use jwt::{decode, encode, Header};
@@ -34,7 +34,8 @@ pub struct NewUser<'a> {
     pub password_hash: &'a str,
 }
 
-pub fn create_user<'a>(conn: SqliteConnection, name: &'a str, email: &'a str, password_hash: &'a str) -> usize {
+pub fn create_user<'a>(pool: web::Data<Pool>, name: &'a str, email: &'a str, password_hash: &'a str) -> usize {
+    let conn: &SqliteConnection = &pool.get().unwrap();
     let email_verified: i32 = 0;
     let new_user = NewUser {
         name,
@@ -44,46 +45,28 @@ pub fn create_user<'a>(conn: SqliteConnection, name: &'a str, email: &'a str, pa
     };
 
     diesel::insert_into(users::table).values(&new_user)
-        .execute(&conn).expect("Could not insert into table.")
+        .execute(conn).expect("Could not insert into table.")
 }
 
-pub fn get_user(user_id: &i32, pool: web::Data<Pool>) -> User {
+pub fn get_user(pool: web::Data<Pool>, user_id: &i32) -> Result<User, diesel::result::Error> {
     let conn: &SqliteConnection = &pool.get().unwrap();
-    return users::table.find(user_id).first::<User>(conn).expect("Error finding user.");
+    let user = users::table.find(user_id).first::<User>(conn)?;
+    Ok(user.pop().unwrap())
 }
 
-pub fn issue_jwt(user_id: &i32, password: String, pool: web::Data<Pool>) -> Result<String, Error> {
-    let user = get_user(user_id, pool);
-    let expiry_time = SystemTime::now()
-        .checked_add(Duration::new(900, 0))
-        .expect("Error adding time.")
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards.");
-    return match user.id {
-        Some(uid) => {
-            let hashed = match hash(password, DEFAULT_COST) {
-                Ok(t) => t,
-                Err(E) => String::from("")
-            };
-            if hashed != password {
-                return Error("Incorrect password.");
-            }
-            let token = encode(&Header::default(), &Claims {
-                user_id: uid,
-                exp: expiry_time.as_secs() as usize,
-            }, "".as_ref());
-            return match token {
-                Ok(t) => Ok(t),
-                Err(e) => Err(e)
-            };
-        }
-        None => Err(std::error::Error)
-    };
+pub fn get_user_by_email(pool: web::Data<Pool>, email: String) -> Result<User, diesel::result::Error> {
+    use crate::schema::users::dsl::*;
+    let conn: &SqliteConnection = &pool.get().unwrap();
+    let result = users.filter(email.eq(email))
+        .limit(1)
+        .load::<User>(conn)
+        .expect("Error loading user");
+    Ok(result.pop().unwrap())
 }
 
-#[cfg(test)]
-mod tests {
-    fn test_true_is_true() {
-        assert!(true);
-    }
+pub fn check_password(password: String, password_hash: String) -> bool {
+    let hashed = hash(password, DEFAULT_COST)?;
+    hashed == password_hash
 }
+
+pub fn issue_jwt(pool: web::Data<Pool>, user_id: &i32) {}
