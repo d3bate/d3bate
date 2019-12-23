@@ -1,13 +1,15 @@
 # Code of conduct
-This is a living document and continually changing. Please help us by contributing towards it! :)
-## Introduction
-d3bate is a collaborative project aiming to write debating software anyone can use. We provide a code of conduct to attempt to establish a more friendly and open community. We want everyone to feel safe, comfortable and welcome when they contribute to this project.
-## Scope
-This code of conduct applies to all people involved in the development (not use) of the project, whether they contribute code, help write documentation or provide feedback. 
-## Definitions
-* A 'member' is anyone who involves themselves with the project.
-* 'Unacceptable behaviour' is defined to be conduct which makes other members of the project feel uncomfortable based on their religion, gender, sexuality, race or political status or hostile 
-## The code of conduct
-All discourse should be in civil manner and take into account that comments posted online may be interpreted differently to the way they were supposed to be received. 
-## Breaches of the code of conduct
-Because of the size of the project, we do not have formal procedures for handling breaches of the code of conduct in place. In general, suspected breaches of the code of conduct should be emailed to me@teymour.tk or posted in the issues section of the project's Github page.
+d3bate is a project which aims to make debating available to more people. In order to achieve this we set out guidelines for how all project members should behave and aim to precisely define terms to avoid ambiguity.
+
+We ask all members of the project to be welcoming, friendly and civil towards one another. Discourse which happens in the project forums (such as Github issues, pull requests or commits) should always take into account the fact that online communication can be more easily misinterpreted than offline communication. 
+
+More specifically, members should refrain from:
+* using language which would make other members of the project uncomfortable. If in doubt as to whether or not such language would have the effect of making someone else uncomfortable the best option is simply not to use it. 
+
+If the code of conduct is broken, we as a project commit ourselves to endeavour to ensure that measures are taken to ensure that further breaches will not happen. This includes:
+* taking action to make good the harms that have happened
+* taking action to ensure that similar harms cannot happen in the future
+
+Breaches of the code of conduct should always be reported, even if the person reporting them is unsure whether suspected events are in violation of the code of conduct. These can be reported in different ways:
+* to the core team of the project (email `me`@`teymour`.`tk`) in which case the core team commit to ensure confidentiality
+* as a Github issue (publicly)

@@ -18,6 +18,7 @@ use super::schema::users;
 use super::Pool;
 
 pub mod routes;
+pub mod error;
 
 #[derive(Serialize, Deserialize)]
 struct Claims {
