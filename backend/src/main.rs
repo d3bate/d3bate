@@ -8,6 +8,7 @@ extern crate jsonwebtoken as jwt;
 #[macro_use]
 extern crate jsonwebtoken;
 extern crate serde;
+extern crate failure;
 
 use std::env;
 use std::io::{Read, stdin};

@@ -5,11 +5,12 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 
 use actix_web::web;
-use actix_web::Error;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use diesel::sqlite::{SqliteConnection, Sqlite};
 use jwt::{decode, encode, Header};
+use jwt;
 use serde::{Deserialize, Serialize};
+use failure::Fail;
 
 use crate::diesel::{QueryDsl, RunQueryDsl};
 
@@ -23,7 +24,27 @@ pub mod routes;
 #[derive(Serialize, Deserialize)]
 struct Claims {
     user_id: i32,
-    exp: usize,
+    expiry: usize,
+}
+
+#[derive(Debug, Fail)]
+pub enum AuthError {
+    #[fail(display = "{}", message)]
+    TokenGenerationError {
+        message: String,
+        #[cause]
+        cause: jwt::errors::Error,
+    }
+}
+
+impl Claims {
+    pub fn new(expiry_seconds: u64, user_id: i32) -> Claims {
+        let expiry = SystemTime::now().checked_add(Duration::new(*expiry_seconds, 0))?;
+        Claims {
+            user_id,
+            expiry: expiry.duration_since(UNIX_EPOCH)?.as_secs() as usize,
+        }
+    }
 }
 
 #[derive(Insertable)]
@@ -71,7 +92,19 @@ pub fn check_password(password: String, password_hash: String) -> bool {
     hashed == password_hash
 }
 
-pub fn issue_jwt(pool: web::Data<Pool>, user_email: String) -> Result<String, Error> {
+pub fn issue_jwt(pool: web::Data<Pool>, user_email: String) -> Result<String, AuthError> {
     let conn: &SqliteConnection = &pool.get().unwrap();
     let user = get_user_by_email(pool, user_email)?;
+    let secret = std::env::var("JWT_SECRET")?;
+    return match encode(&Header::default(), Claims::new(900, get_user_by_email(pool, user_email)?.id?), secret.as_ref()) {
+        Ok(token) => {
+            return Ok(token);
+        }
+        Err(e) => {
+            return Err(AuthError::TokenGenerationError {
+                message: String::from(e),
+                cause: jwt::errors::ErrorKind,
+            });
+        }
+    };
 }
