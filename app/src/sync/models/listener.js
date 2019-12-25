@@ -1,32 +1,12 @@
-import {action, decorate, observable, observe} from "mobx";
-import {auth, firebase} from "../sync";
-import {persist} from 'mobx-persist';
+import {observe} from "mobx";
+import {firebase} from "../index";
+import {appState} from "../models";
+import {debatingClub} from "./club";
+import {registerDocuments} from "./register";
+import {calendar} from "./calendar";
+import {attendanceEvents} from "./attendance";
 
 
-class AppState {
-    user = null;
-    userDocument = null;
-
-    setUser(user) {
-        this.user = user
-    }
-
-    setUserDocument(document) {
-        this.userDocument = document
-    }
-}
-
-decorate(AppState, {
-    user: [persist("object"), observable],
-    userDocument: [persist("object"), observable],
-    setUser: action,
-    setUserDocument: action,
-});
-
-export const appState = new AppState();
-
-
-// We don't listen to firebase.auth().onAuthstateChanged so that we don't create too many snapshot listeners
 observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
@@ -63,8 +43,4 @@ observe(appState, "user", change => {
     } else {
         appState.setUserDocument(null);
     }
-});
-
-auth.onAuthStateChanged(uObject => {
-    appState.setUser(uObject);
 });

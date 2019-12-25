@@ -1,5 +1,6 @@
 import {action, decorate, observable} from "mobx";
 import {persist} from "mobx-persist";
+import {findItem} from "./finditem";
 
 class AttendanceEvents {
     events = [];
