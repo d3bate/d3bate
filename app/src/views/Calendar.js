@@ -1,11 +1,12 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
-import {attendanceEvents, calendar} from "../sync/models";
 import {observer} from "mobx-react";
 import * as moment from "moment";
 import {DatePicker} from "../components/DatePicker";
 import {Checkbox} from "../components/Checkbox";
 import {firebase} from "../sync";
+import {attendanceEvents} from "../sync/models/attendance";
+import {calendar} from "../sync/models/calendar";
 
 const months = {
     1: 'January',
@@ -87,8 +88,7 @@ const Calendar = observer(class Calendar extends React.Component {
                             let attending;
                             if (attendance) {
                                 attending = attendance.attending;
-                            }
-                            else {
+                            } else {
                                 attending = false;
                             }
 
@@ -102,8 +102,7 @@ const Calendar = observer(class Calendar extends React.Component {
                                                            firebase.firestore().collection('attendance').doc(attendance.id).update({
                                                                attending: e.target.checked
                                                            })
-                                                       }
-                                                       else {
+                                                       } else {
                                                            firebase.firestore().collection('attendance').add({
                                                                eventID: event.id,
                                                                attending: e.target.checked,

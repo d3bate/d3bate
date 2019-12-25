@@ -1,6 +1,7 @@
 import {observer} from "mobx-react";
 import React from "react";
-import {calendar, debatingClub} from "../sync/models";
+import {calendar} from "../sync/models/calendar";
+import {debatingClub} from "../sync/models/club";
 import {Redirect} from "react-router-dom";
 import {firebase} from "../sync";
 import * as moment from "moment";

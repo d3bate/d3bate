@@ -5,6 +5,7 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 
 use actix_web::web;
+use actix_web::Error;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use diesel::sqlite::{SqliteConnection, Sqlite};
 use jwt::{decode, encode, Header};
@@ -18,7 +19,6 @@ use super::schema::users;
 use super::Pool;
 
 pub mod routes;
-pub mod error;
 
 #[derive(Serialize, Deserialize)]
 struct Claims {
@@ -52,6 +52,7 @@ pub fn create_user<'a>(pool: web::Data<Pool>, name: &'a str, email: &'a str, pas
 pub fn get_user(pool: web::Data<Pool>, user_id: &i32) -> Result<User, diesel::result::Error> {
     let conn: &SqliteConnection = &pool.get().unwrap();
     let user = users::table.find(user_id).first::<User>(conn)?;
+
     Ok(user.pop().unwrap())
 }
 
@@ -70,4 +71,7 @@ pub fn check_password(password: String, password_hash: String) -> bool {
     hashed == password_hash
 }
 
-pub fn issue_jwt(pool: web::Data<Pool>, user_id: &i32) {}
+pub fn issue_jwt(pool: web::Data<Pool>, user_email: String) -> Result<String, Error> {
+    let conn: &SqliteConnection = &pool.get().unwrap();
+    let user = get_user_by_email(pool, user_email)?;
+}
