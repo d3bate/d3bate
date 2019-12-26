@@ -34,7 +34,11 @@ pub enum AuthError {
         message: String,
         #[cause]
         cause: jwt::errors::Error,
-    }
+    },
+    #[fail(display = "Password incorrect")]
+    IncorrectPasswordError {
+        message: String
+    },
 }
 
 impl Claims {
@@ -87,15 +91,20 @@ pub fn get_user_by_email(pool: web::Data<Pool>, email: String) -> Result<User, d
     Ok(result.pop().unwrap())
 }
 
-pub fn check_password(password: String, password_hash: String) -> bool {
+pub fn check_password(password: &String, password_hash: &String) -> bool {
     let hashed = hash(password, DEFAULT_COST)?;
     hashed == password_hash
 }
 
-pub fn issue_jwt(pool: web::Data<Pool>, user_email: String) -> Result<String, AuthError> {
+pub fn issue_jwt(pool: web::Data<Pool>, user_email: String, password: &String) -> Result<String, AuthError> {
     let conn: &SqliteConnection = &pool.get().unwrap();
     let user = get_user_by_email(pool, user_email)?;
     let secret = std::env::var("JWT_SECRET")?;
+    if !check_password(password, &user.password_hash) {
+        return Err(AuthError::IncorrectPasswordError {
+            message: String::from("The user password was incorrect.")
+        });
+    }
     return match encode(&Header::default(), Claims::new(900, get_user_by_email(pool, user_email)?.id?), secret.as_ref()) {
         Ok(token) => {
             return Ok(token);

@@ -29,4 +29,4 @@ fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> String {
 }
 
 #[post("auth/login")]
-fn login(user: web::Json<Login>, pool: web::Data<Pool>) -> String {}
+fn login(user: web::Json<Login>, pool: web::Data<Pool>) -> Result<String, HttpResponse> {}
