@@ -4,7 +4,7 @@ import App from './App';
 import * as Sentry from '@sentry/browser';
 import * as serviceWorker from './serviceWorker';
 import './sync/models/listener';
-import {render} from 'react-snapshot';
+import {hydrate, render} from 'react-dom';
 import {firebase} from './sync';
 
 /*
@@ -41,8 +41,14 @@ if ("serviceWorker" in navigator) {
 }
 */
 
+const rootElement = document.getElementById('root')
+if (rootElement.hasChildNodes()) {
+    hydrate(<App/>, rootElement);
+} else {
+    render(<App/>, rootElement)
+}
 
-render(<App/>, document.getElementById('root'));
+
 Sentry.init({
     dsn: "https://393bee494b7242b6b21273b8787227c3@sentry.io/1844736",
     beforeSend(event, hint) {
