@@ -4,7 +4,6 @@ import {appState} from "../sync/models";
 import {Card} from "evergreen-ui";
 import {Identicon} from "react-identicons";
 
-
 export const Profile = observer(class Profile extends React.Component {
     render() {
         if (!appState.user)
