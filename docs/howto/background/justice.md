@@ -40,3 +40,48 @@ There are a few arguments against harsher sentencing resulting in a reduced numb
     * people join gangs out of fear for protection and this pushes them to commit crimes
     * people are pushed towards crime by their relatives
     * people commit crime as part of anti-governmental organisations
+
+
+## Retribution
+The aims of retribution are
+1. to provide revenge for the victims
+2. to bring closure to the victims in two ways
+    1. to satisfy their anger
+    2. to make them feel satisfied
+
+
+## Culpability
+To determine whether someone is culpable of a crime two things should be considered
+
+* is it the fault of the person who did the crime? (in law this is referred to as the 'actus reus')
+* did the person intend to commit the crime? (in law this is referred to as the 'mens reus')
+
+People might commit crimes for reasons which would decrease their culpability.
+
+* They might commit a crime out of economic necessity.
+* They might commit a crime because they have been blackmailed into doing it
+* They might be too young to understand the fully understand their crime – younger children often don't have as developed as sense of morality
+
+### Free will
+It is very difficult to define what free will is but this section briefly touches on some useful material.
+```
+"There's no free will," says the philosopher;
+"To hang is most unjust"
+"There is not free will," assent the officers;
+"We hang because we must"
+```
+`Poem by Ambrose Bierce`
+
+There are several arguments that we lack free will:
+* everything is just atoms hitting each other – within this structure humans cannot exert free will because our brains are made up of these atoms
+* we live within a deterministic system in which the course of the universe is set and cannot be changed
+* the possible existence of God
+* external forces
+    * social norms
+    * economic conditions
+    * parents/education
+    
+One argument is that we have free will but only at specific moments in time. 
+
+## Further reading
+* Chapter 19 of Scott Aaronson's `Quantum Computing Since Democritus` is an interesting read (beware it does have a little maths and computing contents) about the use of free will as a legal defense. 
