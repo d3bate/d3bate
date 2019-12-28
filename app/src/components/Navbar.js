@@ -4,6 +4,7 @@ import {auth} from "../sync";
 import {appState} from "../sync/models";
 import {observer} from "mobx-react";
 import {Pane} from "evergreen-ui";
+import {debatingClub} from "../sync/models/club";
 
 
 const AuthComponent = observer(class AuthComponent extends React.Component {
@@ -14,6 +15,9 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
     render() {
         if (appState.user) {
             return <>
+                {debatingClub.club ? debatingClub.club.role === 'admin' ? <div className="navbar-item">
+                    <Link to="/club">Club</Link>
+                </div> : null : null}
                 <div className='navbar-item'>
                     <Link to='/profile'>Profile</Link>
                 </div>
@@ -24,6 +28,7 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
                             .then();
                     }}>Logout</a>
                 </div>
+
             </>
 
         } else {
