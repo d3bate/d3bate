@@ -7,6 +7,12 @@ import {calendar} from "./calendar";
 import {attendanceEvents} from "./attendance";
 
 
+let registerDocumentsListener;
+let calendarListener;
+let attendanceEventsListener;
+let clubMembershipListener;
+
+
 observe(appState, "user", change => {
     let uObject = change.newValue;
     if (uObject) {
@@ -15,17 +21,17 @@ observe(appState, "user", change => {
             .then(doc => {
                 appState.setUserDocument(doc)
             });
-        firebase.firestore().collection('clubMemberships').doc(uObject.uid).get()
+        clubMembershipListener = firebase.firestore().collection('clubMemberships').doc(uObject.uid).get()
             .then(doc => {
                 debatingClub.setClub({id: doc.id, ...doc.data()});
-                firebase.firestore().collection('calendar').where('clubID', '==', doc.data().clubID)
+                calendarListener = firebase.firestore().collection('calendar').where('clubID', '==', doc.data().clubID)
                     .onSnapshot(snapshot => {
                         snapshot.forEach(doc => {
                             calendar.updateEvent({id: doc.id, ...doc.data()})
                         })
                     });
                 if (doc.data().role === 'admin') {
-                    firebase.firestore().collection('register').where('clubID', '==', doc.data().clubID)
+                    registerDocumentsListener = firebase.firestore().collection('register').where('clubID', '==', doc.data().clubID)
                         .onSnapshot(snapshot => {
                             snapshot.forEach(doc => {
                                 registerDocuments.updateDoc({id: doc.id, ...doc.data()});
@@ -34,7 +40,7 @@ observe(appState, "user", change => {
                 }
             });
 
-        firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
+        attendanceEventsListener = firebase.firestore().collection('attendance').where('userID', '==', uObject.uid)
             .onSnapshot(snapshot => {
                 snapshot.forEach(doc => {
                     attendanceEvents.updateEvent({id: doc.id, ...doc.data()})
