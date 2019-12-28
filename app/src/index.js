@@ -1,10 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as Sentry from '@sentry/browser';
 import * as serviceWorker from './serviceWorker';
 import './sync/models/listener';
+import {render} from 'react-snapshot';
 import {firebase} from './sync';
 
 /*
@@ -42,7 +42,7 @@ if ("serviceWorker" in navigator) {
 */
 
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+render(<App/>, document.getElementById('root'));
 Sentry.init({
     dsn: "https://393bee494b7242b6b21273b8787227c3@sentry.io/1844736",
     beforeSend(event, hint) {
