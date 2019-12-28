@@ -5,17 +5,40 @@ import App from './App';
 import * as Sentry from '@sentry/browser';
 import * as serviceWorker from './serviceWorker';
 import './sync/models/listener';
+import {firebase} from './sync';
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-        .register("./firebase-messaging-sw.js")
+        .register("/firebase-messaging-sw.js")
         .then(function (registration) {
+            firebase.messaging().useServiceWorker(registration);
             console.log("Registration successful, scope is:", registration.scope);
+            try {
+                const messaging = firebase.messaging();
+
+                messaging.usePublicVapidKey('BBMM5xOsOkTTxPETRZn2agN9nfqG9um0OjYKtT4eE8nobB_DAxjsnxKk_gRhMzCMorWx5qrKWrOEValy4ndCD7U');
+
+                Notification.requestPermission().then((permission) => {
+                    if (permission === 'granted') {
+                        console.log('Notification permission granted.');
+                        const token = messaging.getToken();
+                        // ...
+                    } else {
+                        console.log('Unable to get permission to notify.');
+                    }
+                });
+
+                messaging.onMessage(payload => {
+                    console.log('message received. ', payload)
+                })
+            } catch (e) {
+            }
         })
         .catch(function (err) {
             console.log("Service worker registration failed, error:", err);
         });
 }
+
 
 ReactDOM.render(<App/>, document.getElementById('root'));
 Sentry.init({

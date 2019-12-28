@@ -6,7 +6,6 @@
     "@sentry/browser": "^5.9.1",
     "evergreen-ui": "^4.21.5",
     "firebase": "^7.5.0",
-    "firestorter": "^2.0.1",
     "mobx": "^5.15.0",
     "mobx-persist": "^0.4.1",
     "mobx-react": "^6.1.4",
