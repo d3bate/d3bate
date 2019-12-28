@@ -21,6 +21,9 @@ service cloud.firestore {
         allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
         allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
     }
+    match /users/{userID} {
+        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/database/$(database)/documents/clubMemberships/$(userID)).data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin'
+    }
     match /{document=**} {
       allow read, write: if false;
     }

@@ -32,8 +32,7 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                 return {
                     status: 200,
                 }
-            }
-            else {
+            } else {
                 admin.firestore().collection('users').doc(user.uid).set({
                     name: user.displayName,
                     uid: user.uid,
@@ -48,9 +47,7 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
                 }
             }
         })
-
-
 });
 
 
-exports.sendEventReminders = functions.firestore.document('')
+exports.sendEventReminders = functions.firestore.document('');
