@@ -52,3 +52,6 @@ nav:
 plugins:
   - search
   - pdf-export
+  - minify:
+      minify_html: true
+  - git-revision-date-localized
