@@ -13,6 +13,7 @@ import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
 import {Card} from "evergreen-ui";
+import {AdminClubView} from "./views/club/AdminClubView";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
                             <EditCalendar match={match}/>
                         }/>
                         <Route path='/register/:id' render={(match) => <TakeRegister match={match}/>}/>
+                        <Route exact path='/club' render={(match) => <AdminClubView/>}/>
                     </Switch>
                 </div>
             </div>
