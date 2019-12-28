@@ -12,42 +12,43 @@ repo_name: 'd3bate/d3bate'
 repo_url: 'https://github.com/d3bate/d3bate'
 
 google_analytics:
-- 'UA-154654069-1'
-- 'auto'
+  - 'UA-154654069-1'
+  - 'auto'
 
 extra_javascript:
-- 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'
 
 markdown_extensions:
-- admonition
-- pymdownx.arithmatex
-- pymdownx.betterem:
-    smart_enable: all
-- pymdownx.caret
-- pymdownx.critic
-- pymdownx.details
-- pymdownx.emoji:
-    emoji_generator: !!python/name:pymdownx.emoji.to_svg
-- pymdownx.inlinehilite
-- pymdownx.magiclink
-- pymdownx.mark
-- pymdownx.smartsymbols
-- pymdownx.superfences
-- pymdownx.tasklist:
-    custom_checkbox: true
-- pymdownx.tilde
+  - admonition
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
 
 nav:
-- Home: index.md
-- Getting started: getting-started.md
-- Debating guide:
-  - Introduction: howto/index.md
-  - Making arguments: howto/argumentation/index.md
-  - Background:
-    - Introduction: howto/background/index.md
-  - Formats:
-    - British Parliamentary: howto/formats/bp.md
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Debating guide:
+      - Introduction: howto/index.md
+      - Making arguments: howto/argumentation/index.md
+      - Background:
+          - Introduction: howto/background/index.md
+          - Justice: howto/background/justice.md
+      - Formats:
+          - British Parliamentary: howto/formats/bp.md
 
 plugins:
-- search
-- pdf-export
+  - search
+  - pdf-export
