@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import {auth} from "../sync";
 import {appState} from "../sync/models";
 import {observer} from "mobx-react";
+import {Pane} from "evergreen-ui";
 
 
 const AuthComponent = observer(class AuthComponent extends React.Component {
@@ -25,8 +26,7 @@ const AuthComponent = observer(class AuthComponent extends React.Component {
                 </div>
             </>
 
-        }
-        else {
+        } else {
             return <>
                 <div className='navbar-item'>
                     <Link to='/login'>Login</Link>
@@ -43,7 +43,7 @@ class Navbar extends React.Component {
     render() {
         let currentDate = new Date();
         return <>
-            <nav className="navbar">
+            <Pane background="#234361" margin='10px' padding='10px'>
                 <div className="navbar-item">
                     <Link to='/'>Home</Link>
                 </div>
@@ -52,7 +52,7 @@ class Navbar extends React.Component {
                         to={'/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1)}>Calendar</Link>
                 </div>
                 <AuthComponent/>
-            </nav>
+            </Pane>
         </>
 
     }

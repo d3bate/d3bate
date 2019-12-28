@@ -19,7 +19,6 @@ class Dashboard extends React.Component {
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
                     <h5>Upload your information (training, tournaments, etc.)</h5>
                     <h6>Stored on the Google Cloud, automatically encrypted</h6>
-
                 </div>
                 <img className="col-25" width="25%"
                      style={{verticalAlign: 'middle'}}

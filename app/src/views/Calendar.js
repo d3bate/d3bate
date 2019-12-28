@@ -60,7 +60,7 @@ const Calendar = observer(class Calendar extends React.Component {
             return <Redirect to='/login'/>;
 
         return <>
-            <h1>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h1>
+            <h5>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h5>
             <DatePicker year={this.props.match.match.params.year}
                         month={this.props.match.match.params.month}/>
             <div>

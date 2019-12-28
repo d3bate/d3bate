@@ -75,7 +75,7 @@ body {
   background: #ed3152;
   font-weight: bold;
   padding: 5% 4%;
-  height: available;
+  height: 100%;
 }
 
 .content-column {
@@ -156,9 +156,12 @@ footer {
   color: white;
   padding: 1% 1%;
   bottom: 0;
+  height: 200px;
+
   ul {
     li {
       list-style-type: none;
+
       a {
         color: white;
         text-decoration: underline;

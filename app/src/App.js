@@ -12,14 +12,17 @@ import {Footer} from "./components/Footer";
 import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
+import {Card} from "evergreen-ui";
 
 
 function App() {
     return <>
         <Router>
-            <div className='row'>
+            <div className='row-wrap'>
                 <div className='col-25'>
-                    <Navbar/>
+                    <Card>
+                        <Navbar/>
+                    </Card>
                 </div>
                 <div className='col-75'>
                     <Switch>

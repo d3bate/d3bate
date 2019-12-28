@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const AreaUnderConstruction = () => {
     return <>
         <div className="row-center-justified">

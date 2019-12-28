@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as Sentry from '@sentry/browser';
 import * as serviceWorker from './serviceWorker';
+import './sync/models/listener';
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
