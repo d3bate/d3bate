@@ -7,6 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import './sync/models/listener';
 import {firebase} from './sync';
 
+/*
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
         .register("/firebase-messaging-sw.js")
@@ -38,6 +39,7 @@ if ("serviceWorker" in navigator) {
             console.log("Service worker registration failed, error:", err);
         });
 }
+*/
 
 
 ReactDOM.render(<App/>, document.getElementById('root'));
@@ -58,9 +60,11 @@ Sentry.init({
     }
 });
 
+/*
 navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
+*/
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();
