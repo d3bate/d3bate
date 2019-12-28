@@ -1,15 +1,20 @@
 # The justice system
 An important question that should be asked in debates about the justice system is what the goal of the justice system should be. There are several possible answers to this question.
+
 * To promote good?
 * Retribution for wrongdoing?
 * To deter people from committing crimes?
+
 ## Rehabilitation
+
 Rehabilitation aims to prevent crime by removing the incentives people have to do so. Rehabilitation most often happens through education. Education provides several benefits:
+
 * prisoners gain skills which makes it easier for them to find work
 * prisoners are humanised
 
 !!! note
     Prisons come with several drawbacks:
+    
         * high levels of violence
         * abuse by officials in authority –> this leads to a lack of respect for authority officials
         * gangs can often form in prisons (particularly when there is a need for protection)
@@ -17,11 +22,13 @@ Rehabilitation aims to prevent crime by removing the incentives people have to d
         
 !!! note
     If prison becomes less unpleasant why won't people just re-offend because the punishment is not severe?
+    
         * prison comes with a loss of freedom
         * a judge would sentence a re-offender differently to a first-time offender. 
     
 ## Deterrence
 One common aim of a justice system is to dissuade people from committing crimes. One way of doing this is to give people harsher sentences in the hope that:
+
 * it will dissuade potential criminals from committing a crime
 * it will dissuade people from re-offending
 * it will send a moral message that a crime is wrong and denounce it
