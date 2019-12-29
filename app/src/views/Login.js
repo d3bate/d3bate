@@ -1,6 +1,7 @@
 import React from 'react';
 import {Redirect} from "react-router-dom";
 import {auth} from "../sync";
+import {TextInput, minorScale, Card, Button} from "evergreen-ui";
 
 class Login extends React.Component {
     constructor(props) {
@@ -30,20 +31,22 @@ class Login extends React.Component {
             return <Redirect to='/'/>
         }
         return <>
-            <div className='authForm'>
-                <h1>Login</h1>
+            <Card marginTop={'10px'} background="#E4E7EB" elevation={2} padding={minorScale(3)} margin={minorScale(3)}>
+                <h5>Login</h5>
                 <form onSubmit={this.loginUser}>
-                    <input className="authInput" type='text' value={this.state.email} onChange={(event) => {
+                    <TextInput type='text' value={this.state.email} onChange={(event) => {
                         this.setState({email: event.target.value})
-                    }} placeholder="Email: "/>
+                    }} placeholder="Email: " margin={minorScale(3)}/>
                     <br/>
-                    <input className="authInput" type='password' value={this.state.password} onChange={(event) => {
+                    <TextInput type='password' value={this.state.password} onChange={(event) => {
                         this.setState({password: event.target.value})
-                    }} placeholder="Password: "/>
+                    }} placeholder="Password: " margin={minorScale(3)}/>
                     <br/>
-                    <input type="submit" className="authSubmit"/>
+                    <Button height={minorScale(10)} margin={minorScale(3)} iconAfter="arrow-right">
+                        Login
+                    </Button>
                 </form>
-            </div>
+            </Card>
         </>
     }
 }
