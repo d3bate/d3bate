@@ -46,6 +46,7 @@ nav:
       - Background:
           - Introduction: howto/background/index.md
           - Justice: howto/background/justice.md
+          - Religion: howto/background/religion.md
       - Formats:
           - British Parliamentary: howto/formats/bp.md
 
