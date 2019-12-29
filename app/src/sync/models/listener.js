@@ -11,6 +11,7 @@ let registerDocumentsListener;
 let calendarListener;
 let attendanceEventsListener;
 let clubMembershipListener;
+let clubUsersListener;
 
 
 observe(appState, "user", change => {
@@ -30,6 +31,7 @@ observe(appState, "user", change => {
                             calendar.updateEvent({id: doc.id, ...doc.data()})
                         })
                     });
+
                 if (doc.data().role === 'admin') {
                     registerDocumentsListener = firebase.firestore().collection('register').where('clubID', '==', doc.data().clubID)
                         .onSnapshot(snapshot => {

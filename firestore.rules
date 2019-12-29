@@ -10,12 +10,11 @@ service cloud.firestore {
       allow update: if request.auth.uid == resource.data.userID;
     }
     match /clubMemberships/{userID} {
-        allow read: if request.auth.uid == userID;
-        allow write, delete: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+        allow read: if request.auth.uid == userID || get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
     }
     match /register/{document} {
-        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
-        allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
+        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
+        allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
     }
     match /users/{userID} {
         allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/database/$(database)/documents/clubMemberships/$(userID)).data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin' || request.auth.uid == userID;

@@ -1,13 +1,15 @@
 import React from 'react';
 import {observer} from "mobx-react";
 import {debatingClub} from "../../sync/models/club";
-import {Pane, Card, Button, minorScale} from "evergreen-ui";
+import {Pane, Card, Button, minorScale, Pill} from "evergreen-ui";
 import {appState} from "../../sync/models";
 import {Link} from "react-router-dom";
+import {clubUsers} from "../../sync/models/clubUsers";
 
 
 const AdminClubView = observer(class AdminClubView extends React.Component {
     render() {
+        console.log(clubUsers);
         let currentDate = new Date();
         if (!debatingClub.club)
             return <p>Loading</p>;
@@ -30,6 +32,12 @@ const AdminClubView = observer(class AdminClubView extends React.Component {
                         calendar</Link>
                 </Button>
                 <Button marginRight={minorScale(3)}>Take a register</Button>
+            </Card>
+            <Card elevation={2} padding={'10px'} margin={'10px'} background="#D9822B">
+                <h6>Club users</h6>
+                {clubUsers.users && clubUsers.users.length ? clubUsers.users.map((user, userIndex) => {
+                    return <Pill key={userIndex}>{user.email} X</Pill>
+                }) : <p>Could not load the users for this club.</p>}
             </Card>
         </>
     }
