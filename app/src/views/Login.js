@@ -36,11 +36,11 @@ class Login extends React.Component {
                 <form onSubmit={this.loginUser}>
                     <TextInput type='text' value={this.state.email} onChange={(event) => {
                         this.setState({email: event.target.value})
-                    }} placeholder="Email: " margin={minorScale(3)}/>
+                    }} placeholder="Email: " margin={minorScale(3)} height={minorScale(10)}/>
                     <br/>
                     <TextInput type='password' value={this.state.password} onChange={(event) => {
                         this.setState({password: event.target.value})
-                    }} placeholder="Password: " margin={minorScale(3)}/>
+                    }} placeholder="Password: " margin={minorScale(3)} height={minorScale(10)}/>
                     <br/>
                     <Button height={minorScale(10)} margin={minorScale(3)} iconAfter="arrow-right">
                         Login

@@ -1,6 +1,8 @@
 import React from 'react';
 import {auth} from '../sync';
 import {Redirect} from "react-router-dom";
+import {TextInput, minorScale, Card, Button} from "evergreen-ui";
+
 
 class Register extends React.Component {
     constructor(props) {
@@ -48,25 +50,28 @@ class Register extends React.Component {
             return <Redirect to='/'/>;
 
         return <>
-            <div className='authForm'>
-                <h1 className="header-1">
+            <Card marginTop={'10px'} background="#E4E7EB" elevation={2} padding={minorScale(3)} margin={minorScale(3)}>
+                <h5>
                     Register
-                </h1>
+                </h5>
                 <form onSubmit={this.registerUser}>
-                    <input className="authInput" type='text' value={this.state.name} onChange={(event) => {
+                    <TextInput type='text' value={this.state.name} onChange={(event) => {
                         this.setState({name: event.target.value})
-                    }} placeholder="Name: "/>
+                    }} placeholder="Name: " margin={minorScale(3)} height={minorScale(10)}/>
                     <br/>
-                    <input className="authInput" type='text' value={this.state.email} onChange={(event) => {
+                    <TextInput type='text' value={this.state.email} onChange={(event) => {
                         this.setState({email: event.target.value})
-                    }} placeholder="Email: "/>
+                    }} placeholder="Email: " margin={minorScale(3)} height={minorScale(10)}/>
                     <br/>
-                    <input className="authInput" type='password' value={this.state.password} onChange={(event) => {
+                    <TextInput type='password' value={this.state.password} onChange={(event) => {
                         this.setState({password: event.target.value})
-                    }} placeholder="Password: "/>
-                    <input type="submit" className="authSubmit"/>
+                    }} placeholder="Password: " margin={minorScale(3)} height={minorScale(10)}/>
+                    <br/>
+                    <Button height={minorScale(10)} margin={minorScale(3)} iconAfter="arrow-right">
+                        Register
+                    </Button>
                 </form>
-            </div>
+            </Card>
         </>
     }
 }
