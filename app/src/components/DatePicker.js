@@ -14,7 +14,7 @@ class DatePicker extends React.Component {
         return <div className="DatePicker">
             <form className="DatePickerForm" onSubmit={(event) => {
                 event.preventDefault();
-                window.location.href = '/calendar/' + this.state.year + '/' + this.state.month
+                this.props.match.history.push('/calendar/' + this.state.year + '/' + this.state.month);
             }}>
                 YEAR: <input type="" className="DatePickerInput" value={this.state.year} onChange={(event) => {
                 this.setState({

@@ -38,7 +38,8 @@ const Calendar = observer(class Calendar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            redirectUrl: this.props.match.path
+            redirect: false,
+            redirectLocation: null
         };
         let weeks = [];
         let day = 1;
@@ -62,7 +63,8 @@ const Calendar = observer(class Calendar extends React.Component {
         return <>
             <h5>{months[this.props.match.match.params.month]} of {this.props.match.match.params.year}</h5>
             <DatePicker year={this.props.match.match.params.year}
-                        month={this.props.match.match.params.month}/>
+                        month={this.props.match.match.params.month}
+                        match={this.props.match}/>
             <div>
                 <div className="row">
                     {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
