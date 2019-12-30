@@ -7,6 +7,8 @@ import {Checkbox} from "../components/Checkbox";
 import {firebase} from "../sync";
 import {attendanceEvents} from "../sync/models/attendance";
 import {calendar} from "../sync/models/calendar";
+import {debatingClub} from "../sync/models/club";
+import {Button, Card, majorScale} from "evergreen-ui";
 
 const months = {
     1: 'January',
@@ -94,25 +96,34 @@ const Calendar = observer(class Calendar extends React.Component {
                                 attending = false;
                             }
 
-                            return <div className="col-1 date" key={dayIndex}>
-                                <p>{day}</p>
-                                <p>{event ? event['type'] : null}</p>
-                                {event ? <Checkbox checked={attending}
-                                    // Add attendance documents to the Firestore
-                                                   updateHandler={(e) => {
-                                                       if (attendance) {
-                                                           firebase.firestore().collection('attendance').doc(attendance.id).update({
-                                                               attending: e.target.checked
-                                                           })
-                                                       } else {
-                                                           firebase.firestore().collection('attendance').add({
-                                                               eventID: event.id,
-                                                               attending: e.target.checked,
-                                                               userID: firebase.auth().currentUser.uid
-                                                           })
-                                                       }
-                                                   }
-                                                   }/> : null}
+                            return <div className="col-1 date" key={dayIndex} style={{marginBottom: '10%'}}>
+                                <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}>
+                                    <p>{day}</p>
+                                    <p>{event ? event['type'] : null}</p>
+                                    {event ? <>
+                                        <div><span style={{fontSize: '10px', float: 'left'}}>Attending: </span><Checkbox
+                                            checked={attending}
+                                            // Add attendance documents to the Firestore
+                                            updateHandler={(e) => {
+                                                if (attendance) {
+                                                    firebase.firestore().collection('attendance').doc(attendance.id).update({
+                                                        attending: e.target.checked
+                                                    })
+                                                } else {
+                                                    firebase.firestore().collection('attendance').add({
+                                                        eventID: event.id,
+                                                        attending: e.target.checked,
+                                                        userID: firebase.auth().currentUser.uid
+                                                    })
+                                                }
+                                            }
+                                            }/></div>
+                                        {debatingClub.club ? debatingClub.club.role === 'admin' ?
+                                            <Button height={majorScale(3)} onClick={e => {
+                                                e.preventDefault();
+                                                this.props.match.history.push('/register/' + event.id)
+                                            }}>Register</Button> : null : null}</> : null}
+                                </Card>
                             </div>
                         })}
                     </div>

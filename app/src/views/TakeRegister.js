@@ -1,17 +1,79 @@
 import React from 'react';
-import {observer} from 'mobx-react';
+import {observer} from "mobx-react";
+import {Card, Pane, majorScale, Checkbox, Button} from "evergreen-ui";
+import {calendar} from "../sync/models/calendar";
+import {clubUsers} from "../sync/models/clubUsers";
 import {registerDocuments} from "../sync/models/register";
-import {AreaUnderConstruction} from "../components/AreaUnderConstruction";
 
 
-export const TakeRegister = observer(class TakeRegister extends React.Component {
+const TakeRegister = observer(class TakeRegister extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            attendingUsers: []
+        };
+        let docs = registerDocuments.docs.find(o => {
+            return o.eventID === this.props.match.params.id
+        });
+        if (docs)
+            this.state.attendingUsers = docs;
+
+        this.addAttendingUser = this.addAttendingUser.bind(this);
+        this.removeAttendingUser = this.removeAttendingUser.bind(this);
+    }
+
+    addAttendingUser(uid) {
+        this.setState(state => {
+            const attendingUsers = state.attendingUsers.concat(uid);
+            return {
+                attendingUsers
+            }
+        })
+    }
+
+    removeAttendingUser(uid) {
+        this.setState(state => {
+            const attendingUsers = state.attendingUsers.filter(o => {
+                return o !== uid
+            });
+            return {
+                attendingUsers
+            }
+        })
     }
 
     render() {
-        return <>
-            <AreaUnderConstruction/>
-        </>
+        let registerEvent = calendar.events.filter(o => {
+            return o.id === this.props.match.match.params.id
+        });
+        if (registerEvent.length > 0) {
+            registerEvent = registerEvent[0]
+        } else {
+            registerEvent = null;
+        }
+        return registerEvent ? <>
+            <Card margin={majorScale(2)} padding={majorScale(2)}>
+                <form>
+                    <h5>Register for {registerEvent.type}</h5>
+                    <p>This event is happening on: {new Date(registerEvent.startTime.seconds * 1000).toDateString()}</p>
+                    {clubUsers.users.map((user, userIndex) => {
+                            return <>
+                                <Pane key={userIndex}>
+                                    <p>{user.email}</p>
+                                    <Checkbox onChange={event => {
+                                        event.target.checked ? this.addAttendingUser(user.id) : this.removeAttendingUser(user.id)
+                                    }}/>
+                                </Pane>
+                            </>
+                        }
+                    )}
+                    <Button iconAfter="tick" intent="success">Save register</Button>
+                    <Button iconAfter="ban-circle" intent="danger">Discard changes</Button>
+                </form>
+            </Card>
+        </> : <p>Error. This page is either still loading or we could not find that event in your debating club's
+            calendar.</p>
     }
 });
+
+export {TakeRegister}

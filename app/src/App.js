@@ -12,8 +12,6 @@ import {Footer} from "./components/Footer";
 import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
-import {Card} from "evergreen-ui";
-import {AdminClubView} from "./views/club/AdminClubView";
 import {ClubView} from "./views/club/ClubView";
 
 function App() {
@@ -21,9 +19,7 @@ function App() {
         <Router>
             <div className='row-wrap'>
                 <div className='col-25'>
-                    <Card>
-                        <Navbar/>
-                    </Card>
+                    <Navbar/>
                 </div>
                 <div className='col-75'>
                     <Switch>
@@ -37,8 +33,9 @@ function App() {
                         <Route path='/edit/calendar/:year/:month' render={(match) =>
                             <EditCalendar match={match}/>
                         }/>
-                        <Route path='/register/:id' render={(match) => <TakeRegister match={match}/>}/>
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
+                        <Route path='/register/:id' render={(match) =>
+                            <TakeRegister match={match}/>}/>
                     </Switch>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Checkbox as EvergreenCheckbox} from "evergreen-ui";
 
 class Checkbox extends React.Component {
     constructor(props) {
@@ -9,7 +10,7 @@ class Checkbox extends React.Component {
     }
 
     render() {
-        return <input type="checkbox" checked={this.props.checked} onChange={(event) => {
+        return <EvergreenCheckbox checked={this.props.checked} onChange={(event) => {
             this.props.updateHandler(event);
             this.setState({
                 checkbox: event.target.value
