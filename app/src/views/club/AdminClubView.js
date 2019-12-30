@@ -20,16 +20,16 @@ const AdminClubView = observer(class AdminClubView extends React.Component {
             </Pane>
             <Card elevation={2} padding={'10px'} margin={'10px'} background="#E4E7EB">
                 <h6>Quick actions</h6>
-                <Button marginRight={minorScale(3)}><Link style={{textDecoration: 'none'}}
-                                                          to={'/edit/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1)}>Edit
-                    the
-                    calendar</Link></Button>
                 <Button marginRight={minorScale(3)}>
                     <Link style={{textDecoration: 'none'}}
                           to={'/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1)}>View
                         the
                         calendar</Link>
                 </Button>
+                <Button marginRight={minorScale(3)}><Link style={{textDecoration: 'none'}}
+                                                          to={'/edit/calendar/' + currentDate.getFullYear() + '/' + (currentDate.getMonth() + 1)}>Edit
+                    the
+                    calendar</Link></Button>
             </Card>
             <Card elevation={2} padding={'10px'} margin={'10px'} background="#47B881">
                 <h6>Club users</h6>
