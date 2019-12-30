@@ -50,4 +50,15 @@ exports.setUpNewUsers = functions.auth.user().onCreate((user) => {
 });
 
 
-exports.sendEventReminders = functions.firestore.document('');
+/*exports.sendEmailReminders = functions.pubsub.schedule('every 1 hour').onRun(context => {
+    let currentTime = new Date();
+    admin.firestore().collection('calendar')
+        .where('startTime', '>', currentTime)
+        .where('startTime', '<', currentTime.setDate(currentTime.getHours() + 1))
+        .get(docs => {
+            docs.forEach(doc => {
+
+            })
+        })
+});
+*/
