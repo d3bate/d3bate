@@ -1,8 +1,9 @@
 import React from 'react';
 import {observer} from "mobx-react";
 import {debatingClub} from "../../sync/models/club";
-import {Pane, Card, Button, minorScale} from "evergreen-ui";
+import {Pane, Card, Button, minorScale, Pill} from "evergreen-ui";
 import {appState} from "../../sync/models";
+import {clubUsers} from "../../sync/models/clubUsers";
 
 
 const MemberClubView = observer(class AdminClubView extends React.Component {
@@ -17,8 +18,13 @@ const MemberClubView = observer(class AdminClubView extends React.Component {
             </Pane>
             <Card elevation={1} padding={'10px'} margin={'10px'}>
                 <h6>Quick actions</h6>
-                <p>Be warned – none of these work.</p>
                 <Button marginRight={minorScale(3)}>View the calendar</Button>
+            </Card>
+            <Card elevation={2} padding={'10px'} margin={'10px'} background="#47B881">
+                <h6>Club users</h6>
+                {clubUsers.users && clubUsers.users.length ? clubUsers.users.map((user, userIndex) => {
+                    return <Pill marginRight={8} key={userIndex} color="neutral">{user.email}</Pill>
+                }) : <p>Could not load the users for this club.</p>}
             </Card>
         </>
     }
