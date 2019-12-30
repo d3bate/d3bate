@@ -14,7 +14,7 @@ service cloud.firestore {
     }
     match /register/{document} {
         allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
-        allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
+        allow create, write, delete: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
     }
     match /users/{userID} {
         allow read: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/databases/$(database)/documents/clubMemberships/$(userID)).data.clubID;
