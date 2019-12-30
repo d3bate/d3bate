@@ -5,6 +5,7 @@ import {debatingClub} from "./club";
 import {registerDocuments} from "./register";
 import {calendar} from "./calendar";
 import {attendanceEvents} from "./attendance";
+import {clubUsers} from "./clubUsers";
 
 
 let registerDocumentsListener;
@@ -20,8 +21,9 @@ observe(appState, "user", change => {
         appState.setUser(uObject);
         firebase.firestore().collection('users').doc(uObject.uid).get()
             .then(doc => {
-                appState.setUserDocument(doc)
+                appState.setUserDocument(doc);
             });
+
         clubMembershipListener = firebase.firestore().collection('clubMemberships').doc(uObject.uid).get()
             .then(doc => {
                 debatingClub.setClub({id: doc.id, ...doc.data()});
@@ -29,6 +31,17 @@ observe(appState, "user", change => {
                     .onSnapshot(snapshot => {
                         snapshot.forEach(doc => {
                             calendar.updateEvent({id: doc.id, ...doc.data()})
+                        })
+                    });
+
+                let clubUsersListener = firebase.firestore().collection('clubMemberships').where('clubID', '==', doc.data().clubID)
+                    .onSnapshot(snapshot => {
+                        snapshot.forEach(membershipDoc => {
+                            firebase.firestore().collection('users').doc(membershipDoc.id)
+                                .get()
+                                .then(userDoc => {
+                                    clubUsers.updateUser({id: userDoc.id, ...userDoc.data()})
+                                })
                         })
                     });
 
