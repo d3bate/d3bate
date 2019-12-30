@@ -81,19 +81,11 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
                     let docs = registerDocuments.docs.find(o => {
                         return o.eventID === this.props.match.params.id
                     });
-                    if (!docs) {
-                        firebase.firestore().collection('register').add({
-                            clubID: registerEvent.clubID,
-                            eventID: this.props.match.match.params.id,
-                            attendingUsers: this.state.attendingUsers
-                        })
-                    } else {
-                        firebase.firestore().collection('register').doc(registerDocuments.find(o => {
-                            return o.eventID === this.props.match.match.params.id;
-                        }).id).update({
-                            attendingUsers: this.state.attendingUsers
-                        })
-                    }
+                    firebase.firestore().collection('register').doc(this.props.match.match.params.id).set({
+                        clubID: registerEvent.clubID,
+                        eventID: this.props.match.match.params.id,
+                        attendingUsers: this.state.attendingUsers
+                    })
                 }}>
                     <h5>Register for {registerEvent.type}</h5>
                     <p>This event is happening on: {new Date(registerEvent.startTime.seconds * 1000).toDateString()}</p>
