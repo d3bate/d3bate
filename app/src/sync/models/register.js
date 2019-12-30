@@ -4,6 +4,7 @@ import {findItem} from "./finditem";
 
 class RegisterDocuments {
     docs = [];
+    loaded = false;
 
     updateDoc(doc) {
         let foundDoc = findItem(doc, this.docs);
@@ -13,11 +14,25 @@ class RegisterDocuments {
             this.docs.push(doc)
         }
     }
+
+    getDoc(id) {
+        return new Promise(resolve => {
+            if (this.loaded) {
+                resolve(this.docs.find(o => {
+                    return o.id === id
+                }));
+            }
+
+        })
+
+    }
 }
 
 decorate(RegisterDocuments, {
     docs: [persist("object"), observable],
-    updateDoc: action
+    loaded: [persist("object"), observable],
+    updateDoc: action,
+    getDoc: action
 });
 
 export const registerDocuments = new RegisterDocuments();

@@ -10,40 +10,33 @@ import {firebase} from '../sync';
 const TakeRegister = observer(class TakeRegister extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             attendingUsers: [],
-            checkboxes: {}
+            checkboxes: {},
+            loaded: false
         };
-        console.log(registerDocuments);
+
         let doc = registerDocuments.docs.find(o => {
-            console.log(o.eventID === this.props.match.params.id);
+            return o.id === this.props.match.match.params.id;
         });
-        if (doc)
+
+        if (doc) {
             this.state.attendingUsers = doc.attendingUsers;
+            let checkboxes = {};
+            clubUsers.users.map(user => {
+                if (doc.attendingUsers.find(o => {
+                    return o === user.id
+                })) {
+                    this.state.checkboxes[user.id] = true
+                }
+            });
+            this.state.loaded = true;
+        }
+
 
         this.addAttendingUser = this.addAttendingUser.bind(this);
         this.removeAttendingUser = this.removeAttendingUser.bind(this);
-        this.computeCheckboxes()
-
-    }
-
-    computeCheckboxes() {
-        clubUsers.users.map(user => {
-            this.setState(state => {
-                const attendingUsers = state.attendingUsers;
-                let checkboxes = state.checkboxes;
-                clubUsers.users.map(user => {
-                    checkboxes[user.id] = attendingUsers.find(o => {
-                        return o === user.id
-                    })
-                });
-                return {
-                    attendingUsers,
-                    checkboxes
-                }
-            })
-
-        })
     }
 
     addAttendingUser(uid) {
@@ -67,6 +60,8 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
     }
 
     render() {
+        if (!this.state.loaded)
+            return <p>Loading...</p>;
         let registerEvent = calendar.events.filter(o => {
             return o.id === this.props.match.match.params.id
         });
@@ -79,9 +74,6 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
             <Card margin={majorScale(2)} padding={majorScale(2)}>
                 <form onSubmit={event => {
                     event.preventDefault();
-                    let docs = registerDocuments.docs.find(o => {
-                        return o.eventID === this.props.match.params.id
-                    });
                     firebase.firestore().collection('register').doc(this.props.match.match.params.id).set({
                         clubID: registerEvent.clubID,
                         eventID: this.props.match.match.params.id,
@@ -91,24 +83,22 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
                     <h5>Register for {registerEvent.type}</h5>
                     <p>This event is happening on: {new Date(registerEvent.startTime.seconds * 1000).toDateString()}</p>
                     {clubUsers.users.map((user, userIndex) => {
-                            return <>
-                                <Pane key={userIndex}>
-                                    <p>{user.email}</p>
-                                    <Checkbox checked={this.state.checkboxes[user.id]} onChange={event => {
-                                        let checked = event.target.checked;
-                                        checked ? this.addAttendingUser(user.id) : this.removeAttendingUser(user.id);
-                                        this.setState(state => {
-                                            const attendingUsers = state.attendingUsers;
-                                            let checkboxes = state.checkboxes;
-                                            checkboxes[user.id] = checked;
-                                            return {
-                                                attendingUsers,
-                                                checkboxes
-                                            }
-                                        })
-                                    }}/>
-                                </Pane>
-                            </>
+                        return <Pane key={userIndex}>
+                            <p>{user.email}</p>
+                            <Checkbox checked={this.state.checkboxes[user.id]} onChange={event => {
+                                let checked = event.target.checked;
+                                checked ? this.addAttendingUser(user.id) : this.removeAttendingUser(user.id);
+                                this.setState(state => {
+                                    const attendingUsers = state.attendingUsers;
+                                    let checkboxes = state.checkboxes;
+                                    checkboxes[user.id] = checked;
+                                    return {
+                                        attendingUsers,
+                                        checkboxes
+                                    }
+                                })
+                            }}/>
+                        </Pane>;
                         }
                     )}
                     <Button iconAfter="tick" intent="success">Save register</Button>

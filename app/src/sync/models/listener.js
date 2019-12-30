@@ -50,7 +50,8 @@ observe(appState, "user", change => {
                         .onSnapshot(snapshot => {
                             snapshot.forEach(doc => {
                                 registerDocuments.updateDoc({id: doc.id, ...doc.data()});
-                            })
+                            });
+                            registerDocuments.loaded = true;
                         });
                 }
             });
