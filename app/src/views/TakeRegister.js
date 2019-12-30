@@ -4,13 +4,15 @@ import {Card, Pane, majorScale, Checkbox, Button} from "evergreen-ui";
 import {calendar} from "../sync/models/calendar";
 import {clubUsers} from "../sync/models/clubUsers";
 import {registerDocuments} from "../sync/models/register";
+import {firebase} from '../sync';
 
 
 const TakeRegister = observer(class TakeRegister extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            attendingUsers: []
+            attendingUsers: [],
+            checkboxes: {}
         };
         let docs = registerDocuments.docs.find(o => {
             return o.eventID === this.props.match.params.id
@@ -20,6 +22,27 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
 
         this.addAttendingUser = this.addAttendingUser.bind(this);
         this.removeAttendingUser = this.removeAttendingUser.bind(this);
+        this.computeCheckboxes()
+
+    }
+
+    computeCheckboxes() {
+        clubUsers.users.map(user => {
+            this.setState(state => {
+                const attendingUsers = state.attendingUsers;
+                let checkboxes = state.checkboxes;
+                clubUsers.users.map(user => {
+                    checkboxes[user.id] = attendingUsers.find(o => {
+                        return o === user.id
+                    })
+                });
+                return {
+                    attendingUsers,
+                    checkboxes
+                }
+            })
+
+        })
     }
 
     addAttendingUser(uid) {
@@ -53,15 +76,43 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
         }
         return registerEvent ? <>
             <Card margin={majorScale(2)} padding={majorScale(2)}>
-                <form>
+                <form onSubmit={event => {
+                    event.preventDefault();
+                    let docs = registerDocuments.docs.find(o => {
+                        return o.eventID === this.props.match.params.id
+                    });
+                    if (!docs) {
+                        firebase.firestore().collection('register').add({
+                            clubID: registerEvent.clubID,
+                            eventID: this.props.match.match.params.id,
+                            attendingUsers: this.state.attendingUsers
+                        })
+                    } else {
+                        firebase.firestore().collection('register').doc(registerDocuments.find(o => {
+                            return o.eventID === this.props.match.match.params.id;
+                        }).id).update({
+                            attendingUsers: this.state.attendingUsers
+                        })
+                    }
+                }}>
                     <h5>Register for {registerEvent.type}</h5>
                     <p>This event is happening on: {new Date(registerEvent.startTime.seconds * 1000).toDateString()}</p>
                     {clubUsers.users.map((user, userIndex) => {
                             return <>
                                 <Pane key={userIndex}>
                                     <p>{user.email}</p>
-                                    <Checkbox onChange={event => {
-                                        event.target.checked ? this.addAttendingUser(user.id) : this.removeAttendingUser(user.id)
+                                    <Checkbox checked={this.state.checkboxes[user.id]} onChange={event => {
+                                        let checked = event.target.checked;
+                                        checked ? this.addAttendingUser(user.id) : this.removeAttendingUser(user.id);
+                                        this.setState(state => {
+                                            const attendingUsers = state.attendingUsers;
+                                            let checkboxes = state.checkboxes;
+                                            checkboxes[user.id] = checked;
+                                            return {
+                                                attendingUsers,
+                                                checkboxes
+                                            }
+                                        })
                                     }}/>
                                 </Pane>
                             </>
