@@ -33,10 +33,10 @@ const AdminClubView = observer(class AdminClubView extends React.Component {
                 </Button>
                 <Button marginRight={minorScale(3)}>Take a register</Button>
             </Card>
-            <Card elevation={2} padding={'10px'} margin={'10px'} background="#D9822B">
+            <Card elevation={2} padding={'10px'} margin={'10px'} background="#47B881">
                 <h6>Club users</h6>
                 {clubUsers.users && clubUsers.users.length ? clubUsers.users.map((user, userIndex) => {
-                    return <Pill key={userIndex}>{user.email} X</Pill>
+                    return <Pill marginRight={8} key={userIndex} color="neutral">{user.email}</Pill>
                 }) : <p>Could not load the users for this club.</p>}
             </Card>
         </>
