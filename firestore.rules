@@ -13,7 +13,7 @@ service cloud.firestore {
         allow read: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == resource.data.clubID;
     }
     match /register/{document} {
-        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
+        allow read: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == resource.data.clubID && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
         allow create, write, delete: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
     }
     match /users/{userID} {

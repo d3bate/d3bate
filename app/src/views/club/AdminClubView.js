@@ -9,7 +9,6 @@ import {clubUsers} from "../../sync/models/clubUsers";
 
 const AdminClubView = observer(class AdminClubView extends React.Component {
     render() {
-        console.log(clubUsers);
         let currentDate = new Date();
         if (!debatingClub.club)
             return <p>Loading</p>;

@@ -14,11 +14,12 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
             attendingUsers: [],
             checkboxes: {}
         };
-        let docs = registerDocuments.docs.find(o => {
-            return o.eventID === this.props.match.params.id
+        console.log(registerDocuments);
+        let doc = registerDocuments.docs.find(o => {
+            console.log(o.eventID === this.props.match.params.id);
         });
-        if (docs)
-            this.state.attendingUsers = docs;
+        if (doc)
+            this.state.attendingUsers = doc.attendingUsers;
 
         this.addAttendingUser = this.addAttendingUser.bind(this);
         this.removeAttendingUser = this.removeAttendingUser.bind(this);
