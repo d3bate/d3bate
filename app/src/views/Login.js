@@ -2,6 +2,7 @@ import React from 'react';
 import {Redirect} from "react-router-dom";
 import {auth} from "../sync";
 import {TextInput, minorScale, Card, Button} from "evergreen-ui";
+import {PasswordReset} from "../components/PasswordReset";
 
 class Login extends React.Component {
     constructor(props) {
@@ -46,7 +47,9 @@ class Login extends React.Component {
                         Login
                     </Button>
                 </form>
+
             </Card>
+            <PasswordReset/>
         </>
     }
 }
