@@ -5,19 +5,19 @@ service cloud.firestore {
         allow create, write, delete: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin' && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID;
     }
     match /attendance/{document} {
-      allow read: if request.auth.uid == resource.data.userID || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+      allow read: if request.auth.uid == resource.data.userID;
       allow create: if request.auth.uid == request.resource.data.userID;
       allow update: if request.auth.uid == resource.data.userID;
     }
-    match /clubMemberships/{userID} {
-        allow read: if request.auth.uid == userID || get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
+    match /clubMemberships/{userId} {
+        allow read: if request.auth.uid == userId;
     }
     match /register/{document} {
-        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
-        allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
+        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
+        allow create, write, delete: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).clubID == request.resource.data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).role == 'admin';
     }
     match /users/{userID} {
-        allow read: if get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/database/$(database)/documents/clubMemberships/$(userID)).data.clubID && get(/database/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin' || request.auth.uid == userID;
+        allow read: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/databases/$(database)/documents/clubMemberships/$(userID)).data.clubID;
     }
     match /{document=**} {
       allow read, write: if false;
