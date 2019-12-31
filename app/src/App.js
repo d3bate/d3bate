@@ -13,6 +13,7 @@ import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
 import {ClubView} from "./views/club/ClubView";
+import {MessageBoard} from "./components/MessageBoard";
 
 function App() {
     return <>
@@ -22,6 +23,7 @@ function App() {
                     <Navbar/>
                 </div>
                 <div className='col-75'>
+                    <MessageBoard/>
                     <Switch>
                         <Route exact path='/'><Dashboard/></Route>
                         <Route exact path='/login' component={Login}/>

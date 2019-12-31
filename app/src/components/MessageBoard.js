@@ -1,19 +1,23 @@
 import React from 'react';
-import {messages} from "../sync/models";
+import {messages} from "../sync/messages";
+import {observer} from "mobx-react";
+import {Card} from "evergreen-ui";
 
-class MessageBoard extends React.Component {
+const MessageBoard = observer(class MessageBoard extends React.Component {
     render() {
         return <>
             {messages.messages.map(message => {
-                return <div className="card">
+                return <Card>
                     <p>{message.title}</p>
                     <p>{message.body}</p>
                     <button onClick={() => {
-                        messages.deleteMessage(id)
+                        messages.deleteMessage(message.id)
                     }}>Dismiss message
                     </button>
-                </div>
+                </Card>
             })}
         </>
     }
-}
+});
+
+export {MessageBoard}

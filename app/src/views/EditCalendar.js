@@ -6,6 +6,7 @@ import {Redirect} from "react-router-dom";
 import {firebase} from "../sync";
 import * as moment from "moment";
 import {Button, Card, minorScale, TextInput, Select} from "evergreen-ui";
+import {messages} from "../sync/messages";
 
 const eventTypes = [
     'training', 'tournament', 'friendly'
@@ -33,7 +34,19 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
             return <>
                 <Card marginTop={'10px'} background="#E4E7EB" elevation={2} padding={minorScale(3)}
                       margin={minorScale(3)}>
-                    <form>
+                    <form onSubmit={event => {
+                        event.preventDefault();
+                        firebase.firestore().collection('calendar').doc(this.props.eventID).update({
+                            startTime: moment(this.state.year + '-' + (this.state.month - 1) + '-' + this.state.day, 'YYYY-MM-DD').toDate(),
+                            type: this.state.type
+                        }).catch(error => {
+                            messages.addMessage({
+                                title: "Error updating event.",
+                                body: "We were unable to update this event. Please try again!",
+                                category: "success"
+                            })
+                        })
+                    }}>
                         <Select value={this.state.type} onChange={(event) => {
                             this.setState({type: event.target.value})
                         }}>
@@ -169,7 +182,7 @@ const EditCalendar = observer(class EditCalendar extends React.Component {
             {this.filterCalendar().map((event, index) => {
                 let date = new Date(event.startTime.seconds * 1000);
                 return <ViewEvent type={event.type} year={date.getFullYear()} month={date.getMonth() + 1}
-                                  day={date.getDate()} key={index}/>
+                                  day={date.getDate()} eventID={event.id} key={index}/>
             })}
 
             <AddEvent/>
