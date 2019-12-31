@@ -13,8 +13,9 @@ Religions generally claim a monopoly on truth – i.e. that they are the correct
 
 ## Pascal's wager
 $$
-Pr(God exists) = small
+Pr(God\;exists) = small
 $$
+
 - BUT the punishment for not believing in God (hell) is really painful so it makes sense to pray as praying does not take much effort
 - BUT this may not work as believing only to escape hell invalidates the belief
 
@@ -35,4 +36,4 @@ Based on this a ban on some elements of religion can be justified.
 | Religion provides people with a sense of purpose                               |                                                                   |
 
 ## Proselytising
-Religious organisations generally try to recruit more people to their religion. Often they do this by providing aid to those in need, but only to those of the same religion as them which encourages people to convert to their religion.
+Religious organisations generally try to recruit more people to their religion. Often they do this by providing aid to those in need, but only to those of the same religion as them which encourages people to convert to their religion so as to receive aid. 
