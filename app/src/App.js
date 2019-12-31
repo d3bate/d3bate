@@ -14,6 +14,7 @@ import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
 import {ClubView} from "./views/club/ClubView";
 import {MessageBoard} from "./components/MessageBoard";
+import {CalendarEvent} from "./views/CalendarEvent";
 
 function App() {
     return <>
@@ -38,6 +39,7 @@ function App() {
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
                         <Route path='/register/:id' render={(match) =>
                             <TakeRegister match={match}/>}/>
+                        <Route path='/event/:id' render={(match) => <CalendarEvent match={match}/>}/>
                     </Switch>
                 </div>
             </div>

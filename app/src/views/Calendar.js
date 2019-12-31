@@ -9,6 +9,7 @@ import {attendanceEvents} from "../sync/models/attendance";
 import {calendar} from "../sync/models/calendar";
 import {debatingClub} from "../sync/models/club";
 import {Button, Card, majorScale} from "evergreen-ui";
+import {Link} from "react-router-dom";
 
 const months = {
     1: 'January',
@@ -99,7 +100,7 @@ const Calendar = observer(class Calendar extends React.Component {
                             return <div className="col-1 date" key={dayIndex}>
                                 <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}
                                       height={'155px'} width={'100px'}>
-                                    <p>{day}</p>
+                                    <p>{day} {event ? <Link to={'/event/' + event.id}>(view)</Link> : null}</p>
                                     <p>{event ? event['type'] : null}</p>
                                     {event ? <>
                                         <div><span style={{fontSize: '10px', float: 'left'}}>Attending: </span><Checkbox
