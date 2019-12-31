@@ -11,7 +11,10 @@ We welcome contributions to any area of the project. Contributions don't have to
 * Suggest features/improvements
 * Report bugs
 * Help ensure that our data use is ethical (and also GDPR-compliant)
+* Help implement a data analytics engine
 ### Code
+(Don't worry, it's really easy to learn to code. If you'd like to learn the [Mozilla developer network](https://developer.mozilla.org/en-US/docs/Learn/JavaScript) is a great starting point. )
+* Help us implement a Bayesian model to predict whether users will attend debating events. 
 * Help us write our backend (in Rust)
 * Help on the frontend of the project
     * Styling/layout
