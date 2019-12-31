@@ -1,4 +1,5 @@
 import React from "react";
+import {TextInput, Button, minorScale, Card} from "evergreen-ui";
 
 class DatePicker extends React.Component {
     constructor(props) {
@@ -11,25 +12,29 @@ class DatePicker extends React.Component {
 
     render() {
 
-        return <div className="DatePicker">
+        return <Card background="#E4E7EB" padding={minorScale(4)} marginRight={minorScale(2)}>
             <form className="DatePickerForm" onSubmit={(event) => {
                 event.preventDefault();
                 this.props.match.history.push('/calendar/' + this.state.year + '/' + this.state.month);
             }}>
-                YEAR: <input type="" className="DatePickerInput" value={this.state.year} onChange={(event) => {
-                this.setState({
-                    year: event.target.value
-                })
-            }
-            }/>
-                &nbsp; MONTH: <input type="" className="DatePickerInput" value={this.state.month}
-                                     onChange={(event) => {
-                                         this.setState({month: event.target.value})
-                                     }
-                                     }/>
-                <input type="submit" value="GO => " className="DatePickerSubmit"/>
+                YEAR: &nbsp; <TextInput margin={minorScale(2)} type="" className="DatePickerInput"
+                                        value={this.state.year}
+                                        onChange={(event) => {
+                                            this.setState({
+                                                year: event.target.value
+                                            })
+                                        }
+                                        }/>
+                <br/>
+                MONTH: <TextInput type="" className="DatePickerInput" value={this.state.month}
+                                  onChange={(event) => {
+                                      this.setState({month: event.target.value})
+                                  }
+                                  }/>
+                <br/>
+                <Button type="submit" className="DatePickerSubmit" iconAfter="arrow-right" intent="info">Go</Button>
             </form>
-        </div>
+        </Card>
     }
 }
 
