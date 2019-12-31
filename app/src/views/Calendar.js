@@ -67,18 +67,18 @@ const Calendar = observer(class Calendar extends React.Component {
             <DatePicker year={this.props.match.match.params.year}
                         month={this.props.match.match.params.month}
                         match={this.props.match}/>
-            <div>
-                <div className="row">
+            <div style={{marginRight: majorScale(2)}}>
+                <div className="row-wrap" style={{justifyContent: 'space-between'}}>
                     {[1, 2, 3, 4, 5, 6, 7].map((day, dayIndex) => {
                         let date = moment(this.props.match.match.params.year + '-' + this.props.match.match.params.month + '-' + day, 'YYYY-MM-DD').toDate();
-                        return <div className="col-1 date" key={dayIndex}>
-                            <p>{days[date.getDay()]}</p>
+                        return <div className="col-1 date" key={dayIndex} style={{textAlign: 'center'}}>
+                            <p><b>{days[date.getDay()]}</b></p>
                         </div>
                     })}
                 </div>
 
                 {this.state.weeks.map((week, weekIndex) => {
-                    return <div className="row" key={weekIndex}>
+                    return <div className="row-wrap" style={{justifyContent: 'space-between'}} key={weekIndex}>
                         {week.map((day, dayIndex) => {
                             let event = calendar.events.find(o => {
                                 let date = new Date(o.startTime.seconds * 1000);
@@ -96,8 +96,9 @@ const Calendar = observer(class Calendar extends React.Component {
                                 attending = false;
                             }
 
-                            return <div className="col-1 date" key={dayIndex} style={{marginBottom: '10%'}}>
-                                <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}>
+                            return <div className="col-1 date" key={dayIndex}>
+                                <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}
+                                      height={'155px'} width={'100px'}>
                                     <p>{day}</p>
                                     <p>{event ? event['type'] : null}</p>
                                     {event ? <>

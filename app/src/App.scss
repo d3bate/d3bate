@@ -46,7 +46,6 @@ body {
 }
 
 .calendarColumnDay {
-  text-align: center;
   width: calc(70% / 7);
   float: left;
 }
@@ -138,7 +137,7 @@ body {
 
 .row {
   @include row;
-  justify-content: center;
+  justify-items: auto;
 }
 
 .row-space-between {
@@ -184,9 +183,4 @@ $columns: 10, 20, 25, 33, 50, 60, 66, 75, 80, 100;
       flex: 1;
     }
   }
-}
-
-.date {
-  width: 100px;
-  height: 100px;
 }
