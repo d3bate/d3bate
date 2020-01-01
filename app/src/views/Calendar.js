@@ -115,7 +115,8 @@ const Calendar = observer(class Calendar extends React.Component {
                                                     firebase.firestore().collection('attendance').add({
                                                         eventID: event.id,
                                                         attending: e.target.checked,
-                                                        userID: firebase.auth().currentUser.uid
+                                                        userID: firebase.auth().currentUser.uid,
+                                                        clubID: debatingClub.club.clubID
                                                     })
                                                 }
                                             }
