@@ -32,7 +32,8 @@ class DatePicker extends React.Component {
                                   }
                                   }/>
                 <br/>
-                <Button type="submit" className="DatePickerSubmit" iconAfter="arrow-right" intent="info">Go</Button>
+                <Button type="submit" className="DatePickerSubmit" iconAfter="arrow-right"
+                        appearance="primary">Go</Button>
             </form>
         </Card>
     }
