@@ -26,13 +26,8 @@ let auth = firebase.auth();
 auth.onAuthStateChanged((user) => {
     if (user) {
         localStorage.setItem('user', JSON.stringify(user));
-        firebase.firestore().collection('users').doc(user.uid).onSnapshot(snapshot => {
-            localStorage.setItem('userDocument', JSON.stringify({id: snapshot.id, data: snapshot.data()}))
-        });
     } else {
         localStorage.setItem('user', JSON.stringify(null));
-        localStorage.setItem('userDocument', JSON.stringify(null));
-        localStorage.setItem('clubDocument', JSON.stringify(document))
     }
 });
 
