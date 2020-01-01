@@ -35,5 +35,29 @@ Based on this a ban on some elements of religion can be justified.
 | Religion can provide a sense of national unity                                 |                                                                   |
 | Religion provides people with a sense of purpose                               |                                                                   |
 
+### Why is religion more likely to teach moral principles than other people or methods?
+
+* Religion offers better rewards and worse punishments than other methods.
+* Religion has mass followership which attracts more people
+* Religion offers a broader sense of purpose which doesn't exist otherwise – storytelling offers a powerful narrative for why people should do good.
+
+### Why is religion less likely to teach moral principles than other people or methods?
+
+* Treatment of women
+* Treatment of slaves
+* Religion can be used to enforce the pre-existing power structure onto people. 
+
+### Religion in business
+Religion brings people into groups where they can trust each other. Religion sometimes acts as a binding force between parties when they make a business transaction. 
+
+### Religion as a central authority
+When the government is weak religion can often act as a central authority, for instance after the Haiti earthquake, everyone paid money into the Church who then distributed the wealth as the Government was unable to fulfil its duties. 
+
+### Liberation theology
+A series of South American Churches said that dictatorship was unbiblical. Religion provides incentives where the immediate consequences are perceived not to matter as much as the longer term ones. The logic applied here is such `I oppose the dictator => I die => I go to heaven`. 
+
+Of course, sometimes the inverse can happen. The Catholic Church signed a series of treaties with dictators such as Hitler, Mussolini and Franco.
+
 ## Proselytising
 Religious organisations generally try to recruit more people to their religion. Often they do this by providing aid to those in need, but only to those of the same religion as them which encourages people to convert to their religion so as to receive aid. 
+
