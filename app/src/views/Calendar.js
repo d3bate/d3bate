@@ -3,13 +3,10 @@ import {Redirect} from "react-router-dom";
 import {observer} from "mobx-react";
 import * as moment from "moment";
 import {DatePicker} from "../components/DatePicker";
-import {Checkbox} from "../components/Checkbox";
-import {firebase} from "../sync";
 import {attendanceEvents} from "../sync/models/attendance";
 import {calendar} from "../sync/models/calendar";
-import {debatingClub} from "../sync/models/club";
-import {Button, Card, majorScale} from "evergreen-ui";
-import {Link} from "react-router-dom";
+import {majorScale} from "evergreen-ui";
+import {ViewEvent} from "../components/ViewEvent";
 
 const months = {
     1: 'January',
@@ -98,35 +95,8 @@ const Calendar = observer(class Calendar extends React.Component {
                             }
 
                             return <div className="col-1 date" key={dayIndex}>
-                                <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}
-                                      height={'155px'} width={'100px'}>
-                                    <p>{day} {event ? <Link to={'/event/' + event.id}>(view)</Link> : null}</p>
-                                    <p>{event ? event['type'] : null}</p>
-                                    {event ? <>
-                                        <div><span style={{fontSize: '10px', float: 'left'}}>Attending: </span><Checkbox
-                                            checked={attending}
-                                            // Add attendance documents to the Firestore
-                                            updateHandler={(e) => {
-                                                if (attendance) {
-                                                    firebase.firestore().collection('attendance').doc(attendance.id).update({
-                                                        attending: e.target.checked
-                                                    })
-                                                } else {
-                                                    firebase.firestore().collection('attendance').add({
-                                                        eventID: event.id,
-                                                        attending: e.target.checked,
-                                                        userID: firebase.auth().currentUser.uid,
-                                                        clubID: debatingClub.club.clubID
-                                                    })
-                                                }
-                                            }
-                                            }/></div>
-                                        {debatingClub.club ? debatingClub.club.role === 'admin' ?
-                                            <Button height={majorScale(3)} onClick={e => {
-                                                e.preventDefault();
-                                                this.props.match.history.push('/register/' + event.id)
-                                            }}>Register</Button> : null : null}</> : null}
-                                </Card>
+                                <ViewEvent attending={attending} attendance={attendance} event={event}
+                                           match={this.props.match} day={day}/>
                             </div>
                         })}
                     </div>
