@@ -15,7 +15,7 @@ We welcome contributions to any area of the project. Contributions don't have to
 ### Code
 (Don't worry, it's really easy to learn to code. If you'd like to learn the [Mozilla developer network](https://developer.mozilla.org/en-US/docs/Learn/JavaScript) is a great starting point. )
 * Help us implement a Bayesian model to predict whether users will attend debating events. 
-* Help us write our backend (in Rust)
+* Help us write our backend (in Rust) – we plan to use `WebSockets` to connect it to our frontend. 
 * Help on the frontend of the project
     * Styling/layout
     * State management (we're definitely creating too many firebase snapshot listeners)
