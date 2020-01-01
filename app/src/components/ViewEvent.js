@@ -1,18 +1,33 @@
 import React from 'react';
-import {Button, Card, majorScale} from "evergreen-ui";
-import {Link} from "react-router-dom";
+import {Button, Card, SideSheet, majorScale, minorScale, Pane} from "evergreen-ui";
 import {Checkbox} from "./Checkbox";
 import {firebase} from "../sync";
 import {debatingClub} from "../sync/models/club";
 import {observer} from "mobx-react";
+import {CalendarEvent} from "./CalendarEvent";
 
 const ViewEvent = observer(class ViewEvent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            overlay: false
+        }
+    }
+
     render() {
-        return <Card background="blueTint" margin={4} padding={majorScale(1)} elevation={1}
-                     height={'155px'} width={'100px'}>
-            <p>{this.props.day} {this.props.event ? <Link to={'/event/' + this.props.event.id}>(view)</Link> : null}</p>
+        return <Card background="blueTint" margin={4} padding={minorScale(2)} elevation={1}
+                     height={'170px'} width={'100px'}>
+            <p>{this.props.day} {this.props.event ?
+                <Button onClick={() => this.setState({overlay: true})} height={majorScale(3)}>view</Button> : null}</p>
             <p>{this.props.event ? this.props.event['type'] : null}</p>
             {this.props.event ? <>
+                <SideSheet position="top" isShown={this.state.overlay} onCloseComplete={() => {
+                    this.setState({overlay: false})
+                }}>
+                    <Pane padding={majorScale(3)}>
+                        <CalendarEvent id={this.props.event.id} match={this.props.match}/>
+                    </Pane>
+                </SideSheet>
                 <div><span style={{fontSize: '10px', float: 'left'}}>Attending: </span><Checkbox
                     checked={this.props.attending}
                     // Add attendance documents to the Firestore
