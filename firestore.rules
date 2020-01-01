@@ -5,7 +5,7 @@ service cloud.firestore {
         allow create, write, delete: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin' && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == request.resource.data.clubID;
     }
     match /attendance/{document} {
-      allow read: if request.auth.uid == resource.data.userID;
+      allow read: if request.auth.uid == resource.data.userID || get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/databases/$(database)/documents/clubMemberships/$(resource.data.userID)).data.clubID && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
       allow create: if request.auth.uid == request.resource.data.userID;
       allow update: if request.auth.uid == resource.data.userID;
     }
