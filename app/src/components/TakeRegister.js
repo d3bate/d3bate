@@ -21,12 +21,11 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
             }}>
                 {clubUsers.users.map((user, userIndex) => {
                     let foundUser = !!(this.state.register ? this.state.register.attendingUsers.find(o => o === user.id) : null);
-                    return foundUser ?
-                        <Card key={userIndex}>
+                    if (foundUser) {
+                        return <Card key={userIndex}>
                             <p>{user.email}</p>
-                            <Checkbox checked={foundUser}
+                            <Checkbox checked={true}
                                       onChange={e => {
-                                          e.preventDefault();
                                           if (this.state.register) {
                                               firebase.firestore().collection('register').doc(this.props.id).update({
                                                   attendingUsers: firebase.firestore.FieldValue.arrayRemove(user.id)
@@ -39,8 +38,7 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
                                                           attendingUsers: [...localRegister.attendingUsers.filter(o => o !== user.id)]
                                                       }
                                                   }
-                                              });
-                                              console.log(this.state.register)
+                                              })
                                           } else {
                                               firebase.firestore().collection('register').doc(this.props.id).set({
                                                   clubID: debatingClub.club.clubID,
@@ -50,8 +48,8 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
                                           }
                                       }}/>
                         </Card>
-                        :
-                        <Card key={userIndex}>
+                    } else {
+                        return <Card key={userIndex}>
                             <p>{user.email}</p>
                             <Checkbox checked={false}
                                       onChange={e => {
@@ -77,6 +75,7 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
                                           }
                                       }}/>
                         </Card>
+                    }
                 })}
             </form>
         </>
