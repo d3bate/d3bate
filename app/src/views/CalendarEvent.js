@@ -10,7 +10,7 @@ const CalendarEvent = observer(class CalendarEvent extends React.Component {
         });
         return event ? <>
             <Pane>
-                <h5>{event.type} on {new Date(event.startTime.seconds * 1000).getDate()}</h5>
+                <h5>{event.type} on {new Date(event.startTime.seconds * 1000).toDateString()}</h5>
                 <Card elevation={1} padding={minorScale(2)} background="#E4E7EB" margin={minorScale(2)}>
                     <p>We are working on a feature to let you see all your club members who have confirmed that they
                         will
