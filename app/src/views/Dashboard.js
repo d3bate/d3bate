@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from "evergreen-ui";
 
 class Dashboard extends React.Component {
     render() {
@@ -11,9 +12,17 @@ class Dashboard extends React.Component {
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
                     <h5>D3BATE</h5>
                     <h6>A digital debating toolkit.</h6>
+                    <Button as="a" href="https://d3bate.github.io" iconAfter="arrow-right" appearance="primary"
+                            marginTop="10px">Documentation</Button>
                 </div>
             </div>
-            /*
+        </>
+    }
+}
+
+export {Dashboard}
+
+/*
             <hr style={{width: "75%"}}/>
             <div className="center row">
 
@@ -39,9 +48,4 @@ class Dashboard extends React.Component {
                      src="https://rawcdn.githack.com/d3bate/d3bate/d238eda80086757c35dd711eec4567a452bc16bb/assets/illustrations/cloud-downloader.png"
                      alt="Download from cloud"/>
             </div>
-            */
-        </>
-    }
-}
-
-export {Dashboard}
+ */
