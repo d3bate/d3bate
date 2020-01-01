@@ -3,6 +3,7 @@ import {Redirect} from "react-router-dom";
 import {auth} from "../sync";
 import {TextInput, minorScale, Card, Button} from "evergreen-ui";
 import {PasswordReset} from "../components/PasswordReset";
+import {messages} from "../sync/messages";
 
 class Login extends React.Component {
     constructor(props) {
@@ -22,8 +23,7 @@ class Login extends React.Component {
                 this.setState({redirect: true})
             })
             .catch(error => {
-                alert(error);
-                alert(this.state.email);
+                messages.addMessage({title: "Error"})
             });
     }
 

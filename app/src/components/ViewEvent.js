@@ -5,12 +5,14 @@ import {firebase} from "../sync";
 import {debatingClub} from "../sync/models/club";
 import {observer} from "mobx-react";
 import {CalendarEvent} from "./CalendarEvent";
+import {TakeRegister} from "./TakeRegister";
 
 const ViewEvent = observer(class ViewEvent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            overlay: false
+            detailView: false,
+            register: false
         }
     }
 
@@ -18,16 +20,26 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
         return <Card background="blueTint" margin={4} padding={minorScale(2)} elevation={1}
                      height={'170px'} width={'100px'}>
             <p>{this.props.day} {this.props.event ?
-                <Button onClick={() => this.setState({overlay: true})} height={majorScale(3)}>view</Button> : null}</p>
+                <Button onClick={() => this.setState({detailView: true})}
+                        height={majorScale(3)}>view</Button> : null}</p>
             <p>{this.props.event ? this.props.event['type'] : null}</p>
             {this.props.event ? <>
-                <SideSheet position="top" isShown={this.state.overlay} onCloseComplete={() => {
-                    this.setState({overlay: false})
+                <SideSheet position="top" isShown={this.state.detailView} onCloseComplete={() => {
+                    this.setState({detailView: false})
                 }}>
                     <Pane padding={majorScale(3)}>
                         <CalendarEvent id={this.props.event.id} match={this.props.match}/>
                     </Pane>
                 </SideSheet>
+
+                <SideSheet position="top" isShown={this.state.register} onCloseComplete={() => {
+                    this.setState({register: false})
+                }}>
+                    <Pane padding={majorScale(3)}>
+                        <TakeRegister id={this.props.event.id}/>
+                    </Pane>
+                </SideSheet>
+
                 <div><span style={{fontSize: '10px', float: 'left'}}>Attending: </span><Checkbox
                     checked={this.props.attending}
                     // Add attendance documents to the Firestore
@@ -47,9 +59,8 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                     }
                     }/></div>
                 {debatingClub.club ? debatingClub.club.role === 'admin' ?
-                    <Button height={majorScale(3)} onClick={e => {
-                        e.preventDefault();
-                        this.props.match.history.push('/register/' + this.props.event.id)
+                    <Button height={majorScale(3)} onClick={() => {
+                        this.setState({register: true})
                     }}>Register</Button> : null : null}</> : null}
         </Card>
     }

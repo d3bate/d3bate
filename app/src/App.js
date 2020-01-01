@@ -11,7 +11,6 @@ import {EditCalendar} from "./views/EditCalendar";
 import {Footer} from "./components/Footer";
 import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
-import {TakeRegister} from "./views/TakeRegister";
 import {ClubView} from "./views/club/ClubView";
 import {MessageBoard} from "./components/MessageBoard";
 
@@ -36,8 +35,6 @@ function App() {
                             <EditCalendar match={match}/>
                         }/>
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
-                        <Route path='/register/:id' render={(match) =>
-                            <TakeRegister match={match}/>}/>
                     </Switch>
                 </div>
             </div>
