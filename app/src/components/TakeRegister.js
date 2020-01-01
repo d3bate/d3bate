@@ -16,9 +16,13 @@ const TakeRegister = observer(class TakeRegister extends React.Component {
 
     render() {
         return <>
+            <h5>Take a register</h5>
+            <p>Changes made are automatically saved.</p>
+            <hr/>
             <form onSubmit={e => {
                 e.preventDefault();
             }}>
+                <p><b>Club members: </b></p>
                 {clubUsers.users.map((user, userIndex) => {
                     let foundUser = !!(this.state.register ? this.state.register.attendingUsers.find(o => o === user.id) : null);
                     if (foundUser) {

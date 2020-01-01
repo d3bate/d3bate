@@ -28,7 +28,9 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                     this.setState({detailView: false})
                 }}>
                     <Pane padding={majorScale(3)}>
-                        <CalendarEvent id={this.props.event.id} match={this.props.match}/>
+                        <CalendarEvent id={this.props.event.id} match={this.props.match} showRegister={() => {
+                            this.setState({register: true, detailView: false})
+                        }}/>
                     </Pane>
                 </SideSheet>
 

@@ -19,8 +19,7 @@ const CalendarEvent = observer(class CalendarEvent extends React.Component {
                             appearance="primary">More info</Button>
                 </Card>
                 <Button height={majorScale(3)} onClick={e => {
-                    e.preventDefault();
-                    this.props.match.history.push('/register/' + event.id)
+                    this.props.showRegister()
                 }} iconAfter="arrow-right" intent="success">Take a register</Button>
             </Pane>
         </> : <p>Loading...</p>
