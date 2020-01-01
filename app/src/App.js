@@ -14,7 +14,6 @@ import {Profile} from "./views/Profile";
 import {TakeRegister} from "./views/TakeRegister";
 import {ClubView} from "./views/club/ClubView";
 import {MessageBoard} from "./components/MessageBoard";
-import {CalendarEvent} from "./views/CalendarEvent";
 
 function App() {
     return <>
