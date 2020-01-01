@@ -19,6 +19,10 @@ service cloud.firestore {
     match /users/{userID} {
         allow read: if get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID == get(/databases/$(database)/documents/clubMemberships/$(userID)).data.clubID;
     }
+    match /judge/{judgeID} {
+        allow read: if resource.data.clubID == get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID;
+        allow write: if resource.data.clubID == get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.clubID && get(/databases/$(database)/documents/clubMemberships/$(request.auth.uid)).data.role == 'admin';
+    }
     match /{document=**} {
       allow read, write: if false;
     }
