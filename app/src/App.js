@@ -39,7 +39,6 @@ function App() {
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
                         <Route path='/register/:id' render={(match) =>
                             <TakeRegister match={match}/>}/>
-                        <Route path='/event/:id' render={(match) => <CalendarEvent match={match}/>}/>
                     </Switch>
                 </div>
             </div>
