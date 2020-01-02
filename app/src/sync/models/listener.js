@@ -6,6 +6,7 @@ import {registerDocuments} from "./register";
 import {calendar} from "./calendar";
 import {attendanceEvents} from "./attendance";
 import {clubUsers} from "./clubUsers";
+import {debateNotes} from "./debateNotes";
 
 
 let registerDocumentsListener;
@@ -13,6 +14,7 @@ let calendarListener;
 let attendanceEventsListener;
 let clubMembershipListener;
 let clubUsersListener;
+let debateNotesListener;
 
 
 observe(appState, "user", change => {
@@ -46,6 +48,11 @@ observe(appState, "user", change => {
                     });
 
                 if (doc.data().role === 'admin') {
+                    debateNotesListener = firebase.firestore().collection('judge').where('clubID', '==', doc.data().id).onSnapshot(snapshot => {
+                        snapshot.forEach(note => {
+                            debateNotes.updateDebate({id: note.id, ...note.data()})
+                        })
+                    });
                     registerDocumentsListener = firebase.firestore().collection('register').where('clubID', '==', doc.data().clubID)
                         .onSnapshot(snapshot => {
                             snapshot.forEach(doc => {
