@@ -3,7 +3,7 @@ import React from 'react';
 class Footer extends React.Component {
     render() {
         return <footer>
-            <p className="title">(c) d3bate {new Date().getFullYear()}</p>
+            <p className="title">Copyleft <span className="copyleft">&copy;</span> d3bate {new Date().getFullYear()}</p>
             <div className='row-left-justified'>
                 <div className='col-33'>
                     <ul>

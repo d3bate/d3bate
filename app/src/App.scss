@@ -140,6 +140,11 @@ body {
   justify-items: auto;
 }
 
+.copyleft {
+  display: inline-block;
+  transform: rotate(180deg);
+}
+
 .row-space-between {
   @include row;
 
