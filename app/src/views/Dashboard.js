@@ -1,19 +1,22 @@
 import React from 'react';
-import {Button} from "evergreen-ui";
+import {Button, Pane, majorScale} from "evergreen-ui";
 
 class Dashboard extends React.Component {
     render() {
         return <>
-            <div className="center row">
+            <div className="row-wrap">
                 <img className="col-25" width="25%"
                      style={{verticalAlign: 'middle'}}
                      src="https://rawcdn.githack.com/d3bate/d3bate/d238eda80086757c35dd711eec4567a452bc16bb/assets/illustrations/debater-and-podium.jpg"
                      alt={"Debater and podium"}/>
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
-                    <h5>D3BATE</h5>
-                    <h6>A digital debating toolkit.</h6>
-                    <Button as="a" href="https://d3bate.github.io" iconAfter="arrow-right" appearance="primary"
-                            marginTop="10px">Documentation</Button>
+                    <Pane margin={majorScale(2)}>
+                        <h5>D3BATE</h5>
+                        <h6>A digital debating toolkit.</h6>
+                        <Button is="a" href="https://d3bate.github.io/d3bate" iconAfter="arrow-right"
+                                appearance="primary"
+                                marginTop="10px">Documentation</Button>
+                    </Pane>
                 </div>
             </div>
         </>
