@@ -3,6 +3,8 @@ import {observer} from "mobx-react";
 import {Combobox, Button, TextInput} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import ReactMarkdown from 'react-markdown';
+import {debateNotes} from "../sync/models/debateNotes";
+import {debatingClub} from "../sync/models/club";
 
 const SpeakerConfig = props => {
     const [edit, setEdit] = useState(false);
@@ -55,9 +57,59 @@ const Team = props => {
 };
 
 const DebateJudger = observer(props => {
+    let doc = debateNotes.debates.find(o => o.id === props.id);
+    let state, setState;
+    if (doc) {
+        let [state, setState] = useState(doc);
+    } else {
+        let [state, setState] = {
+            clubID: debatingClub.club.id,
+            eventID: this.props.eventID,
+            og: {
+                speaker1: '',
+                speaker2: '',
+                speaker1text: '',
+                speaker2text: ''
+            },
+            oo: {
+                speaker1: '',
+                speaker2: '',
+                speaker1text: '',
+                speaker2text: ''
+            },
+            cg: {
+                speaker1: '',
+                speaker2: '',
+                speaker1text: '',
+                speaker2text: ''
+            },
+            co: {
+                speaker1: '',
+                speaker2: '',
+                speaker1text: '',
+                speaker2text: ''
+            }
+        }
+    }
     return <>
         <h5>Judge a debate</h5>
+        <div className="row-wrap">
+            <div className="col-50">
+                <Team setSpeaker1={e => {
+                    setState(state => {
+                        return {}
+                    })
+                }} speaker1={state.og.speaker1} setSpeaker2={e => {
+                }} speaker2={state.og.speaker2}/>
+                <Team/>
+            </div>
+            <div className="col-50">
+                <Team/>
+                <Team/>
+            </div>
+        </div>
     </>;
+
 });
 
 export {DebateJudger}
