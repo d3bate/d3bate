@@ -12,7 +12,7 @@ class Dashboard extends React.Component {
                 <div className="col-75" style={{textAlign: 'left', paddingTop: "12%"}}>
                     <Pane margin={majorScale(2)}>
                         <h5>D3BATE</h5>
-                        <h6>A digital debating toolkit.</h6>
+                        <h6>An (open source) digital debating toolkit.</h6>
                         <Button is="a" href="https://d3bate.github.io/d3bate" iconAfter="arrow-right"
                                 appearance="primary"
                                 marginTop="10px">Documentation</Button>

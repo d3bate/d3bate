@@ -97,7 +97,12 @@ const DebateJudger = observer(props => {
             <div className="col-50">
                 <Team setSpeaker1={e => {
                     setState(state => {
-                        return {}
+                        return {
+                            og: {
+                                speaker1: e.target.value,
+                                ...state.og
+                            }
+                        }
                     })
                 }} speaker1={state.og.speaker1} setSpeaker2={e => {
                 }} speaker2={state.og.speaker2}/>
