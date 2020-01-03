@@ -60,8 +60,7 @@ pub struct NewUser<'a> {
     pub password_hash: &'a str,
 }
 
-pub fn create_user<'a>(pool: web::Data<Pool>, name: &'a str, email: &'a str, password_hash: &'a str) -> usize {
-    let conn: &SqliteConnection = &pool.get().unwrap();
+pub fn create_user<'a>(conn: &SqliteConnection, name: &'a str, email: &'a str, password_hash: &'a str) -> usize {
     let email_verified: i32 = 0;
     let new_user = NewUser {
         name,
