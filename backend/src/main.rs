@@ -18,7 +18,7 @@ use std::env;
 use std::io::{Read, stdin};
 use std::time::Duration;
 
-use actix_web::HttpServer;
+use actix_web::{HttpServer, App};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
@@ -44,11 +44,17 @@ pub fn establish_connection() -> SqliteConnection {
 
 const CLIENT_TIMEOUT: Duration = Duration::from_secs(60);
 
-fn main() {
+fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     let connspec = std::env::var("DATABASE_URL").expect("You must set the `DATABASE_URL` environment variable.");
     let manager = ConnectionManager::<SqliteConnection>::new(connspec);
     let pool = r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create database pool");
+    HttpServer::new(|| {
+        App::new()
+            .service(auth::routes::register)
+            .service(auth::routes::login)
+    })
+        .bind("127.0.0.1:8080")?.run()
 }

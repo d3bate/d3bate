@@ -32,7 +32,7 @@ struct AuthResult {
 
 
 #[post("/auth/register")]
-fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder {
+pub fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder {
     let db_user = get_user_by_email(&pool, String::from(&user.email));
     return match db_user {
         Ok(T) => {
@@ -41,7 +41,7 @@ fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder 
                 message: String::from("That user already exists!"),
             });
         }
-        Err(E) => {
+        Err(e) => {
             return match hash(user.password.to_string(), 5) {
                 Ok(hash) => {
                     let user = create_user(&*pool.get().unwrap(), &user.name, &user.email, &hash);
@@ -50,7 +50,7 @@ fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder 
                         message: String::from(format!("Successfully created that user with the id: {}", user)),
                     });
                 }
-                Err(E) => {
+                Err(e) => {
                     return web::Json(AuthResult {
                         success: false,
                         message: String::from("There was a server error when trying to create this account."),
@@ -61,8 +61,8 @@ fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder 
     };
 }
 
-#[post("auth/login")]
-fn login(user: web::Json<Login>, pool: web::Data<Pool>) -> impl Responder {
+#[post("/auth/login")]
+pub fn login(user: web::Json<Login>, pool: web::Data<Pool>) -> impl Responder {
     web::Json(AuthResult {
         success: false,
         message: String::from("This route is not yet implemented."),
