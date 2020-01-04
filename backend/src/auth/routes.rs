@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 
 use super::{get_user, User, create_user, get_user_by_email};
 use bcrypt::hash;
+use crate::auth::issue_jwt;
+use actix_web::error::ReadlinesError::LimitOverflow;
 
 #[derive(Serialize)]
 struct JWT {
@@ -12,7 +14,7 @@ struct JWT {
 
 #[derive(Deserialize)]
 struct Login {
-    username: String,
+    email: String,
     password: String,
 }
 
@@ -25,8 +27,15 @@ struct Register {
 }
 
 #[derive(Serialize)]
-struct AuthResult {
+struct RegisterResult {
     success: bool,
+    message: String,
+}
+
+#[derive(Serialize)]
+struct LoginResult {
+    success: bool,
+    token: String,
     message: String,
 }
 
@@ -35,8 +44,8 @@ struct AuthResult {
 pub fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder {
     let db_user = get_user_by_email(&pool, String::from(&user.email));
     return match db_user {
-        Ok(T) => {
-            return web::Json(AuthResult {
+        Ok(t) => {
+            return web::Json(RegisterResult {
                 success: false,
                 message: String::from("That user already exists!"),
             });
@@ -45,13 +54,13 @@ pub fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Respon
             return match hash(user.password.to_string(), 5) {
                 Ok(hash) => {
                     let user = create_user(&*pool.get().unwrap(), &user.name, &user.email, &hash);
-                    return web::Json(AuthResult {
+                    return web::Json(RegisterResult {
                         success: true,
                         message: String::from(format!("Successfully created that user with the id: {}", user)),
                     });
                 }
                 Err(e) => {
-                    return web::Json(AuthResult {
+                    return web::Json(RegisterResult {
                         success: false,
                         message: String::from("There was a server error when trying to create this account."),
                     });
@@ -63,8 +72,16 @@ pub fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Respon
 
 #[post("/auth/login")]
 pub fn login(user: web::Json<Login>, pool: web::Data<Pool>) -> impl Responder {
-    web::Json(AuthResult {
-        success: false,
-        message: String::from("This route is not yet implemented."),
-    })
+    match issue_jwt(&pool, &user.email, &user.password) {
+        Ok(token) => web::Json(LoginResult {
+            success: true,
+            token,
+            message: String::from("Successfully generated token!"),
+        }),
+        Err(e) => web::Json(LoginResult {
+            success: false,
+            token: String::from(""),
+            message: String::from("Error logging you in. Are you sure your details are correct?"),
+        })
+    }
 }
