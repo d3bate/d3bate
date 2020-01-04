@@ -33,7 +33,7 @@ struct AuthResult {
 
 #[post("/auth/register")]
 fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder {
-    let db_user = get_user_by_email(pool, String::from(&user.email));
+    let db_user = get_user_by_email(&pool, String::from(&user.email));
     return match db_user {
         Ok(T) => {
             return web::Json(AuthResult {
@@ -42,9 +42,9 @@ fn register(user: web::Json<Register>, pool: web::Data<Pool>) -> impl Responder 
             });
         }
         Err(E) => {
-            return match hash(user.password, 5) {
+            return match hash(user.password.to_string(), 5) {
                 Ok(hash) => {
-                    let user = create_user(&*pool.get().unwrap(), &user.name, &user.email, hash);
+                    let user = create_user(&*pool.get().unwrap(), &user.name, &user.email, &hash);
                     return web::Json(AuthResult {
                         success: true,
                         message: String::from(format!("Successfully created that user with the id: {}", user)),

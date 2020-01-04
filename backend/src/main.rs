@@ -1,8 +1,12 @@
 #![feature(proc_macro)]
+#![feature(try_trait)]
 extern crate bcrypt;
 extern crate actix_web;
 #[macro_use]
 extern crate diesel;
+
+use r2d2_diesel::ConnectionManager;
+
 extern crate dotenv;
 extern crate jsonwebtoken as jwt;
 #[macro_use]
@@ -16,7 +20,6 @@ use std::time::Duration;
 
 use actix_web::HttpServer;
 use diesel::prelude::*;
-use diesel::r2d2::ConnectionManager;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
 
