@@ -32,6 +32,7 @@ mod schema;
 mod models;
 
 mod auth;
+mod clubs;
 
 
 pub fn establish_connection() -> SqliteConnection {
