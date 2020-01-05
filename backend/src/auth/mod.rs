@@ -127,6 +127,8 @@ pub fn get_user(pool: &web::Data<Pool>, user_id: &i32) -> Result<User, diesel::r
     Ok(user)
 }
 
+
+/// Returns the user struct (or a diesel error) corresponding to a user in the database
 pub fn get_user_by_email(pool: &web::Data<Pool>, email: String) -> Result<User, diesel::result::Error> {
     use super::schema::users::dsl::*;
     let conn: &SqliteConnection = &*pool.get().unwrap();
@@ -137,6 +139,7 @@ pub fn get_user_by_email(pool: &web::Data<Pool>, email: String) -> Result<User, 
     Ok(result.pop().unwrap())
 }
 
+/// Validates a user's password.
 pub fn check_password(password: &String, password_hash: &String) -> bool {
     match hash(password, DEFAULT_COST) {
         Ok(hashed) => {
@@ -148,6 +151,14 @@ pub fn check_password(password: &String, password_hash: &String) -> bool {
     }
 }
 
+
+/// Verifies the integrity of a JSON web token
+pub fn verify_jwt(pool: &web::Data<Pool>, token: &str) {
+    let secret = std::env::var("JWT_SECRET")?;
+}
+
+
+/// Issues a new JSON web token. The expiry time is 900 seconds after issuance.
 pub fn issue_jwt(pool: &web::Data<Pool>, user_email: &str, password: &str) -> Result<String, AuthError> {
     let conn: &SqliteConnection = &*pool.get().unwrap();
     let user = get_user_by_email(pool, String::from(user_email))?;
