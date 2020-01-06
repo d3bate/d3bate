@@ -14,7 +14,7 @@ More specifically, all people involved in the project should refrain from:
 
 And ensure that they:
 * accepting constructive criticism and taking it on board (this is not to say that criticism which is malicious in nature is acceptable)
-* giving criticism in a constructive manner – we believe that criticism is an important part of any open source project and should be encouraged. The manner of delivery, however, is important:
+* giving criticism in a constructive manner – we believe that criticism is an important part of any open source project and should be encouraged. We have a duty to build the best software we can and this involves being honest about what we think about code. The manner of delivery, however, is important and should never make other members of the project feel vindicated against or as though someone harbours malicious intent towards them:
     * criticism should be justified – reasons should be given for why the criticism is valid
     * it is useful if criticism suggests improvements, or alternative approaches, to the matter at hand
     * criticism should avoid personal attacks, and instead focus on the work which has been produced.
