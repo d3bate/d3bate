@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use super::{get_user, User, create_user, get_user_by_email};
 use bcrypt::hash;
 use crate::auth::issue_jwt;
-use actix_web::error::ReadlinesError::LimitOverflow;
 
 #[derive(Serialize)]
 struct JWT {

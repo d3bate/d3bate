@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "d3bate",
+  "name": "d3bate: a digital debating toolkit",
   "icons": [
     {
       "src": "favicon.ico",
