@@ -37,7 +37,7 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                     <form onSubmit={event => {
                         event.preventDefault();
                         firebase.firestore().collection('calendar').doc(this.props.eventID).update({
-                            startTime: moment(this.state.year + '-' + (this.state.month - 1) + '-' + this.state.day, 'YYYY-MM-DD').toDate(),
+                            startTime: moment(this.state.year + '-' + this.state.month + '-' + this.state.day, 'YYYY-MM-DD').toDate(),
                             type: this.state.type
                         }).catch(error => {
                             messages.addMessage({
