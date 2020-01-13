@@ -6,115 +6,135 @@ import ReactMarkdown from 'react-markdown';
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
 
-const SpeakerConfig = props => {
-    const [edit, setEdit] = useState(false);
-    if (edit)
-        return <>
-            <Combobox items={clubUsers.users} onChange={selected => {
-                props.setSpeaker(selected)
-            }} placeholder={props.speaker}/>
-            <Button iconAfter="tick" onClick={e => {
-                setEdit(false)
-            }}>Finish editing</Button>
-        </>;
-    else
-        return <>
-            <p>Speaker 1: {props.speaker}</p>
-            <Button iconAfter="pencil" onClick={e => {
-                setEdit(true)
-            }}>Edit</Button>
-        </>
-};
+const PersonSelector = observer((props) => {
+    return props.selectedUser === undefined ? <>
+        <Combobox items={clubUsers.users.map(user => user.email)}
+                  onChange={selected => {
+                      props.updateUser(clubUsers.users.find(user => user.email === selected))
+                  }}/>
+    </> : <Combobox items={clubUsers.users.map(user => user.email)}
+                    initialSelectedItem={{label: clubUsers.users.find(user => user.id === props.selectedUser)}}
+                    onChange={selected => {
+                        props.updateUser(clubUsers.users.find(user => user.email === selected))
+                    }}/>
+});
 
-const SpeakerBox = props => {
-    const [edit, setEdit] = useState(false);
-    if (edit)
-        return <>
-            <TextInput type="text" onChange={props.updateSpeaker} value={props.speaker}/>
-        </>;
-
-    else
-        return <>
-            <ReactMarkdown source={props.speaker}/>
-            <Button onClick={e => setEdit(true)} iconAfter="pencil">Edit</Button>
-        </>
-};
-
-const Speaker = props => {
+const DebateTeam = (props) => {
     return <>
-        <SpeakerConfig setSpeaker={props.setSpeaker} speaker={speaker}/>
-        <SpeakerBox updateSpeaker={props.updateSpeaker} speaker={speakerNotes}/>
+        <form onSubmit={event => event.preventDefault()}>
+            <PersonSelector user={props.speaker1}
+                            updateUser={user => props.handleChange({
+                                target: {
+                                    name: props.team + '-speaker1-uid',
+                                    value: user
+                                }
+                            })}/>
+            <TextInput name={props.team + '-' + 'speaker1-notes'}
+                       onChange={props.handleChange}
+            />
+            <PersonSelector user={props.speaker2}
+                            updateUser={user => props.handleChange({
+                                target: {
+                                    name: props.team + '-speaker2-uid',
+                                    value: user
+                                }
+                            })}/>
+            <TextInput name={props.team + '-' + 'speaker2-notes'}
+                       onChange={props.handleChange}
+            />
+        </form>
     </>
 };
 
-const Team = props => {
-    return <>
-        <Speaker setSpeaker={props.setSpeaker1} speaker={props.speaker1} updateSpeaker={props.updateSpeaker1}
-                 speakerNotes={props.speaker1Notes}/>
-        <Speaker setSpeaker={props.setSpeaker2} speaker={props.speaker2} updateSpeaker={props.updateSpeaker2}
-                 speakerNotes={props.speaker2Notes}/>
-    </>
-};
-
-const DebateJudger = observer(props => {
-    let doc = debateNotes.debates.find(o => o.id === props.id);
-    let state, setState;
-    if (doc) {
-        let [state, setState] = useState(doc);
-    } else {
-        let [state, setState] = {
-            clubID: debatingClub.club.id,
-            eventID: this.props.eventID,
+const DebateJudger = observer(class DebateJudger extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             og: {
-                speaker1: '',
-                speaker2: '',
-                speaker1text: '',
-                speaker2text: ''
+                speaker1: {
+                    uid: '',
+                    notes: ''
+                },
+                speaker2: {
+                    uid: '',
+                    notes: ''
+                }
             },
             oo: {
-                speaker1: '',
-                speaker2: '',
-                speaker1text: '',
-                speaker2text: ''
+                speaker1: {
+                    uid: '',
+                    notes: ''
+                },
+                speaker2: {
+                    uid: '',
+                    notes: ''
+                }
             },
             cg: {
-                speaker1: '',
-                speaker2: '',
-                speaker1text: '',
-                speaker2text: ''
+                speaker1: {
+                    uid: '',
+                    notes: ''
+                },
+                speaker2: {
+                    uid: '',
+                    notes: ''
+                }
             },
             co: {
-                speaker1: '',
-                speaker2: '',
-                speaker1text: '',
-                speaker2text: ''
+                speaker1: {
+                    uid: '',
+                    notes: ''
+                },
+                speaker2: {
+                    uid: '',
+                    notes: ''
+                }
+            }
+        };
+        this.handleChange = this.handleChange.bind(this);
+        if (debateNotes.notes) {
+            let notes = debateNotes.notes.find(o => o.id === this.props.id);
+            if (notes) {
+                this.state = notes
             }
         }
     }
-    return <>
-        <h5>Judge a debate</h5>
-        <div className="row-wrap">
-            <div className="col-50">
-                <Team setSpeaker1={e => {
-                    setState(state => {
-                        return {
-                            og: {
-                                speaker1: e.target.value,
-                                ...state.og
-                            }
-                        }
-                    })
-                }} speaker1={state.og.speaker1} setSpeaker2={e => {
-                }} speaker2={state.og.speaker2}/>
-                <Team/>
-            </div>
-            <div className="col-50">
-                <Team/>
-                <Team/>
-            </div>
-        </div>
-    </>;
 
+    handleChange(event) {
+        let {name, value} = event.target;
+        let nameParts = name.split('-');
+
+        this.setState(() => ({
+            [nameParts[0]]: {
+                [nameParts[1]]: {
+                    [nameParts[2]]: value
+                }
+            }
+        }))
+    }
+
+    render() {
+
+        return <>
+            <p><b>NOTE: This does not yet work. You can help by <a href="https://github.com/d3bate/d3bate/issues/7"
+                                                                   target="_blank">giving feedback</a> on this.</b></p>
+            <div className="row-wrap">
+                <div className="col-50">
+                    <DebateTeam team={'og'} speaker1={this.state.og.speaker1} speaker2={this.state.og.speaker2}
+                                handleChange={this.handleChange}/>
+                    <DebateTeam team={'cg'} speaker1={this.state.cg.speaker1} speaker2={this.state.cg.speaker2}
+                                handleChange={this.handleChange}/>
+                </div>
+                <div className="col-50">
+                    <DebateTeam team={'oo'} speaker1={this.state.oo.speaker1} speaker2={this.state.oo.speaker2}
+                                handleChange={this.handleChange}/>
+                    <DebateTeam team={'co'} speaker1={this.state.co.speaker1} speaker2={this.state.co.speaker2}
+                                handleChange={this.handleChange}/>
+                </div>
+            </div>
+        </>
+    }
 });
+
 
 export {DebateJudger}

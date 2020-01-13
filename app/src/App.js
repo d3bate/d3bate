@@ -13,6 +13,7 @@ import {Dashboard} from "./views/Dashboard";
 import {Profile} from "./views/Profile";
 import {ClubView} from "./views/club/ClubView";
 import {MessageBoard} from "./components/MessageBoard";
+import {DebateJudger} from "./views/DebateJudger";
 
 function App() {
     return <>
@@ -35,6 +36,7 @@ function App() {
                             <EditCalendar match={match}/>
                         }/>
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
+                        <Route path='/judge/:id' render={match => <DebateJudger id={match.match.params.id}/>}/>
                     </Switch>
                 </div>
             </div>
