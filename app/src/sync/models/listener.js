@@ -48,7 +48,7 @@ observe(appState, "user", change => {
                     });
 
                 if (doc.data().role === 'admin') {
-                    debateNotesListener = firebase.firestore().collection('judge').where('clubID', '==', doc.id).onSnapshot(snapshot => {
+                    debateNotesListener = firebase.firestore().collection('judge').where('clubID', '==', doc.data().clubID).onSnapshot(snapshot => {
                         snapshot.forEach(note => {
                             debateNotes.updateDebate({id: note.id, ...note.data()})
                         })
