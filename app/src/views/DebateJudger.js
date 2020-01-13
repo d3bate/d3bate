@@ -9,6 +9,7 @@ import {debatingClub} from "../sync/models/club";
 const PersonSelector = observer((props) => {
     return props.selectedUser === undefined ? <>
         <Combobox items={clubUsers.users.map(user => user.email)}
+                  placeholder="Speaker:"
                   onChange={selected => {
                       props.updateUser(clubUsers.users.find(user => user.email === selected))
                   }}/>
