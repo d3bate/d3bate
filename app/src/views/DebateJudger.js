@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {observer} from "mobx-react";
-import {Combobox, Button, TextInput} from "evergreen-ui";
+import {Combobox, Button, Textarea} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import ReactMarkdown from 'react-markdown';
 import {debateNotes} from "../sync/models/debateNotes";
@@ -29,8 +29,8 @@ const DebateTeam = (props) => {
                                     value: user
                                 }
                             })}/>
-            <TextInput name={props.team + '-' + 'speaker1-notes'}
-                       onChange={props.handleChange}
+            <Textarea name={props.team + '-' + 'speaker1-notes'}
+                      onChange={props.handleChange}
             />
             <PersonSelector user={props.speaker2}
                             updateUser={user => props.handleChange({
@@ -39,8 +39,8 @@ const DebateTeam = (props) => {
                                     value: user
                                 }
                             })}/>
-            <TextInput name={props.team + '-' + 'speaker2-notes'}
-                       onChange={props.handleChange}
+            <Textarea name={props.team + '-' + 'speaker2-notes'}
+                      onChange={props.handleChange}
             />
         </form>
     </>
