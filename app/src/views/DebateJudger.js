@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {observer} from "mobx-react";
-import {Combobox, Button, Textarea} from "evergreen-ui";
+import {Combobox, Card, Textarea, minorScale} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import ReactMarkdown from 'react-markdown';
 import {debateNotes} from "../sync/models/debateNotes";
@@ -22,26 +22,33 @@ const PersonSelector = observer((props) => {
 const DebateTeam = (props) => {
     return <>
         <form onSubmit={event => event.preventDefault()}>
-            <PersonSelector user={props.speaker1}
-                            updateUser={user => props.handleChange({
-                                target: {
-                                    name: props.team + '-speaker1-uid',
-                                    value: user
-                                }
-                            })}/>
-            <Textarea name={props.team + '-' + 'speaker1-notes'}
-                      onChange={props.handleChange}
-            />
-            <PersonSelector user={props.speaker2}
-                            updateUser={user => props.handleChange({
-                                target: {
-                                    name: props.team + '-speaker2-uid',
-                                    value: user
-                                }
-                            })}/>
-            <Textarea name={props.team + '-' + 'speaker2-notes'}
-                      onChange={props.handleChange}
-            />
+            <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
+                <p><b>Speaker 1</b></p>
+                <PersonSelector user={props.speaker1}
+                                updateUser={user => props.handleChange({
+                                    target: {
+                                        name: props.team + '-speaker1-uid',
+                                        value: user
+                                    }
+                                })}/>
+                <Textarea name={props.team + '-' + 'speaker1-notes'}
+                          onChange={props.handleChange}
+                />
+            </Card>
+            <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
+                <p><b>Speaker 2</b></p>
+                <PersonSelector user={props.speaker2}
+                                updateUser={user => props.handleChange({
+                                    target: {
+                                        name: props.team + '-speaker2-uid',
+                                        value: user
+                                    }
+                                })}/>
+                <Textarea name={props.team + '-' + 'speaker2-notes'}
+                          onChange={props.handleChange}
+                />
+            </Card>
+            <hr/>
         </form>
     </>
 };
