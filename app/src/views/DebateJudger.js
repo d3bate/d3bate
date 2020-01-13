@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {observer} from "mobx-react";
-import {Combobox, Card, Textarea, minorScale} from "evergreen-ui";
+import {Combobox, Card, Textarea, minorScale, Button} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import ReactMarkdown from 'react-markdown';
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
+import {firebase} from "../sync";
 
 const PersonSelector = observer((props) => {
     return props.selectedUser === undefined ? <>
@@ -22,35 +23,33 @@ const PersonSelector = observer((props) => {
 
 const DebateTeam = (props) => {
     return <>
-        <form onSubmit={event => event.preventDefault()}>
-            <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
-                <p><b>Speaker 1</b></p>
-                <PersonSelector user={props.speaker1}
-                                updateUser={user => props.handleChange({
-                                    target: {
-                                        name: props.team + '-speaker1-uid',
-                                        value: user
-                                    }
-                                })}/>
-                <Textarea name={props.team + '-' + 'speaker1-notes'}
-                          onChange={props.handleChange}
-                />
-            </Card>
-            <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
-                <p><b>Speaker 2</b></p>
-                <PersonSelector user={props.speaker2}
-                                updateUser={user => props.handleChange({
-                                    target: {
-                                        name: props.team + '-speaker2-uid',
-                                        value: user
-                                    }
-                                })}/>
-                <Textarea name={props.team + '-' + 'speaker2-notes'}
-                          onChange={props.handleChange}
-                />
-            </Card>
-            <hr/>
-        </form>
+        <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
+            <p><b>Speaker 1</b></p>
+            <PersonSelector user={props.speaker1}
+                            updateUser={user => props.handleChange({
+                                target: {
+                                    name: props.team + '-speaker1-uid',
+                                    value: user
+                                }
+                            })}/>
+            <Textarea name={props.team + '-' + 'speaker1-notes'}
+                      onChange={props.handleChange}
+            />
+        </Card>
+        <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
+            <p><b>Speaker 2</b></p>
+            <PersonSelector user={props.speaker2}
+                            updateUser={user => props.handleChange({
+                                target: {
+                                    name: props.team + '-speaker2-uid',
+                                    value: user
+                                }
+                            })}/>
+            <Textarea name={props.team + '-' + 'speaker2-notes'}
+                      onChange={props.handleChange}
+            />
+        </Card>
+        <hr/>
     </>
 };
 
@@ -97,13 +96,16 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                     uid: '',
                     notes: ''
                 }
-            }
+            },
+            exists: false
         };
         this.handleChange = this.handleChange.bind(this);
         if (debateNotes.notes) {
             let notes = debateNotes.notes.find(o => o.id === this.props.id);
             if (notes) {
                 this.state = notes
+            } else {
+                this.state.exists = false
             }
         }
     }
@@ -126,20 +128,43 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
         return <>
             <p><b>NOTE: This does not yet work. You can help by <a href="https://github.com/d3bate/d3bate/issues/7"
                                                                    target="_blank">giving feedback</a> on this.</b></p>
-            <div className="row-wrap">
-                <div className="col-50">
-                    <DebateTeam team={'og'} speaker1={this.state.og.speaker1} speaker2={this.state.og.speaker2}
-                                handleChange={this.handleChange}/>
-                    <DebateTeam team={'cg'} speaker1={this.state.cg.speaker1} speaker2={this.state.cg.speaker2}
-                                handleChange={this.handleChange}/>
+            <form onSubmit={event => {
+                event.preventDefault();
+                if (this.state.exists) {
+                    firebase.firestore().collection('judge').doc(this.props.id).update({
+                        oo: this.state.oo,
+                        og: this.state.og,
+                        co: this.state.co,
+                        cg: this.state.cg
+                    })
+                } else {
+                    firebase.firestore().collection('judge').add({
+                        clubID: debatingClub.club.clubID,
+                        oo: this.state.oo,
+                        og: this.state.og,
+                        co: this.state.co,
+                        cg: this.state.cg,
+                        judge: firebase.auth().currentUser.uid
+                    })
+                }
+            }
+            }>
+                <div className="row-wrap">
+                    <div className="col-50">
+                        <DebateTeam team={'og'} speaker1={this.state.og.speaker1} speaker2={this.state.og.speaker2}
+                                    handleChange={this.handleChange}/>
+                        <DebateTeam team={'cg'} speaker1={this.state.cg.speaker1} speaker2={this.state.cg.speaker2}
+                                    handleChange={this.handleChange}/>
+                    </div>
+                    <div className="col-50">
+                        <DebateTeam team={'oo'} speaker1={this.state.oo.speaker1} speaker2={this.state.oo.speaker2}
+                                    handleChange={this.handleChange}/>
+                        <DebateTeam team={'co'} speaker1={this.state.co.speaker1} speaker2={this.state.co.speaker2}
+                                    handleChange={this.handleChange}/>
+                    </div>
                 </div>
-                <div className="col-50">
-                    <DebateTeam team={'oo'} speaker1={this.state.oo.speaker1} speaker2={this.state.oo.speaker2}
-                                handleChange={this.handleChange}/>
-                    <DebateTeam team={'co'} speaker1={this.state.co.speaker1} speaker2={this.state.co.speaker2}
-                                handleChange={this.handleChange}/>
-                </div>
-            </div>
+                <Button>Save.</Button>
+            </form>
         </>
     }
 });
