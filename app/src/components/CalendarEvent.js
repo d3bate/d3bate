@@ -21,7 +21,7 @@ const CalendarEvent = observer(class CalendarEvent extends React.Component {
                 <Button height={majorScale(3)} onClick={this.props.showRegister} iconAfter="arrow-right"
                         intent="success">Take a register</Button>
                 <Button marginLeft={majorScale(1)} height={majorScale(3)} onClick={this.props.showDebateJudger}>Judge a
-                    debate</Button>
+                    debate (not mobile friendly)</Button>
             </Pane>
         </> : <p>Loading...</p>
     }

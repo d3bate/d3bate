@@ -132,7 +132,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
 
         return <>
             <p><b>NOTE: This does not yet work. You can help by <a href="https://github.com/d3bate/d3bate/issues/7"
-                                                                   target="_blank">giving feedback</a> on this.</b></p>
+                                                                   target="_blank">giving feedback</a> on this. To
+                escape from this page, click the escape key ('esc').</b></p>
             <form onSubmit={event => {
                 event.preventDefault();
                 if (this.state.exists) {
