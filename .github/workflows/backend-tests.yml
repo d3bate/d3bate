@@ -6,11 +6,11 @@ on:
     - "backend/**/*"
 
 jobs:
-  build:
+  tests:
+    name: Rust project
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - uses: icepuma/rust-action@master
-      with:
-        args: cd backend && cargo fmt -- --check && cargo clippy -- -Dwarnings && cargo test
+      - uses: actions/checkout@master
+      - uses: actions-rs/cargo@v1
+        with:
+          command: cd backend && build
