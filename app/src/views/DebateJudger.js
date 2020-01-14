@@ -25,7 +25,7 @@ const DebateTeam = (props) => {
     return <>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 1</b></p>
-            <PersonSelector user={props.speaker1}
+            <PersonSelector user={props.speaker1.uid}
                             updateUser={user => props.handleChange({
                                 target: {
                                     name: props.team + '-speaker1-uid',
@@ -33,12 +33,12 @@ const DebateTeam = (props) => {
                                 }
                             })}/>
             <Textarea name={props.team + '-' + 'speaker1-notes'}
-                      onChange={props.handleChange}
+                      onChange={props.handleChange} value={props.speaker1.notes}
             />
         </Card>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 2</b></p>
-            <PersonSelector user={props.speaker2}
+            <PersonSelector user={props.speaker2.uid}
                             updateUser={user => props.handleChange({
                                 target: {
                                     name: props.team + '-speaker2-uid',
@@ -46,7 +46,7 @@ const DebateTeam = (props) => {
                                 }
                             })}/>
             <Textarea name={props.team + '-' + 'speaker2-notes'}
-                      onChange={props.handleChange}
+                      onChange={props.handleChange} value={props.speaker2.notes}
             />
         </Card>
         <hr/>
@@ -97,16 +97,23 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                     notes: ''
                 }
             },
-            exists: false
+            exists: false,
         };
         this.handleChange = this.handleChange.bind(this);
-        if (debateNotes.notes) {
-            let notes = debateNotes.notes.find(o => o.id === this.props.id);
-            if (notes) {
-                this.state = notes
-            } else {
-                this.state.exists = false
-            }
+        let doc = debateNotes.debates.find(o => {
+            return o.eventID === this.props.eventID
+        });
+        if (doc) {
+            console.log(doc);
+            this.state.exists = true;
+            this.state.og = {...doc.og};
+            this.state.oo = {...doc.oo};
+            this.state.cg = {...doc.cg};
+            this.state.co = {...doc.co};
+            this.state.eventID = doc.eventID;
+            this.state.id = doc.id;
+            this.state.judge = doc.judge;
+            console.log(this.state);
         }
     }
 
@@ -114,13 +121,11 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
         let {name, value} = event.target;
         let nameParts = name.split('-');
 
-        this.setState(() => ({
-            [nameParts[0]]: {
-                [nameParts[1]]: {
-                    [nameParts[2]]: value
-                }
-            }
-        }))
+        this.setState((prevState) => {
+            let newState = {...prevState};
+            newState[nameParts[0]][nameParts[1]][nameParts[2]] = value;
+            return newState
+        })
     }
 
     render() {
@@ -131,7 +136,7 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
             <form onSubmit={event => {
                 event.preventDefault();
                 if (this.state.exists) {
-                    firebase.firestore().collection('judge').doc(this.props.id).update({
+                    firebase.firestore().collection('judge').doc(this.state.id).update({
                         oo: this.state.oo,
                         og: this.state.og,
                         co: this.state.co,
@@ -144,7 +149,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                         og: this.state.og,
                         co: this.state.co,
                         cg: this.state.cg,
-                        judge: firebase.auth().currentUser.uid
+                        judge: firebase.auth().currentUser.uid,
+                        eventID: this.props.eventID
                     })
                 }
             }

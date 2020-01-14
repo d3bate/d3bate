@@ -36,7 +36,6 @@ function App() {
                             <EditCalendar match={match}/>
                         }/>
                         <Route exact path='/club' render={(match) => <ClubView/>}/>
-                        <Route path='/judge/:id' render={match => <DebateJudger id={match.match.params.id}/>}/>
                     </Switch>
                 </div>
             </div>

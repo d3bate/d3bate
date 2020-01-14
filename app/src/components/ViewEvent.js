@@ -6,6 +6,7 @@ import {debatingClub} from "../sync/models/club";
 import {observer} from "mobx-react";
 import {CalendarEvent} from "./CalendarEvent";
 import {TakeRegister} from "./TakeRegister";
+import {DebateJudger} from "../views/DebateJudger";
 
 const ViewEvent = observer(class ViewEvent extends React.Component {
     constructor(props) {
@@ -30,6 +31,8 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                     <Pane padding={majorScale(3)}>
                         <CalendarEvent id={this.props.event.id} match={this.props.match} showRegister={() => {
                             this.setState({register: true, detailView: false})
+                        }} showDebateJudger={() => {
+                            this.setState({judge: true, detailView: false})
                         }}/>
                     </Pane>
                 </SideSheet>
@@ -39,6 +42,15 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                 }}>
                     <Pane padding={majorScale(3)}>
                         <TakeRegister id={this.props.event.id}/>
+                    </Pane>
+                </SideSheet>
+
+                <SideSheet position="top" isShown={this.state.judge} onCloseComplete={() => {
+                    this.setState({judge: false})
+                }
+                }>
+                    <Pane padding={majorScale(3)}>
+                        <DebateJudger eventID={this.props.event.id}/>
                     </Pane>
                 </SideSheet>
 
