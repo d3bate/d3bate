@@ -3,11 +3,10 @@
 use std::env;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-
 use actix_web::web;
 use bcrypt::{DEFAULT_COST, hash, verify};
 use diesel::sqlite::{SqliteConnection, Sqlite};
-use jwt::{decode, encode, Header};
+use jwt::{decode, encode, Header, Algorithm, Validation};
 use jwt;
 use serde::{Deserialize, Serialize};
 use failure::Fail;
@@ -153,8 +152,20 @@ pub fn check_password(password: &String, password_hash: &String) -> bool {
 
 
 /// Verifies the integrity of a JSON web token
-pub fn verify_jwt(pool: &web::Data<Pool>, token: &str) {
+pub fn verify_jwt(pool: &web::Data<Pool>, token: &str) -> Result<i32, AuthError> {
     let secret = std::env::var("JWT_SECRET")?;
+    let token_message: Claims = decode::<Claims>(token, secret.as_ref(), &Validation::new(Algorithm::HS256))?.claims;
+    let expiry_time = UNIX_EPOCH + std::time::Duration::from_secs(token_message.expiry as u64);
+    match expiry_time > std::time::SystemTime {
+        true => {
+            Ok(token_message.user_id)
+        }
+        false => {
+            Err(AuthError::TimeError {
+                message: String::from("Error token has expired.")
+            })
+        }
+    }
 }
 
 
