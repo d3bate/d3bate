@@ -1,65 +1,13 @@
 use actix_web::post;
 use diesel::prelude::*;
 use diesel;
+use crate::models::{ClubMemberships, Club};
 
-macro_rules! crud {
-    (struct $name:ident { $($fname: ident : $ftype:ty),* }; $table: ident) => {
-        #[derive(Queryable)]
-        #[table_name="$name"]
-        struct $name {
-            $($fname: $ftype),*
-        }
-
-        #[derive(Insertable)]
-        #[table_name="$name"]
-        struct Insertable$name<'a> {
-            $($fname: &'a $ftype),*
-        }
-
-        fn add_$name(conn: &SqliteConnection, $($fname: &'a $ftype),*) -> usize {
-            let new_$name = Insertable$name {
-                $($fname: $ftype),*
-            }
-            diesel::insert_into(table).values(&new_$name).execute(conn).expect("Could not insert that user into the table.")
-        }
-
-        fn update_$name(conn: &SqliteConnection) {}
-
-        fn delete_$name() {}
-
-        fn read_$name() {}
-
-        #[derive(Deserialize)]
-        struct Create$name {
-            $($fname: $ftype),*
-        }
-
-        #[derive(Deserialize)]
-        struct Read$name {
-            query: String,
-        }
-
-        #[derive(Deserialize)]
-        struct Update$name {
-            $($name: $ftpye),*
-        }
-
-        #[derive(Deserialize)]
-        struct Delete$name {
-            id: usize
-        }
-
-
-        #[post("/"$name"/create")]
-        pub fn create_$name() {}
-
-        #[post("/"$name"/read"), get("/"$name"/read")]
-        pub fn read_$name() {}
-
-        #[post("/"$name"/update")]
-        pub fn update_$name() {}
-
-        #[post("/"$name"/delete")]
-        pub fn read_$name() {}
-    };
+fn get_club(&conn: SqliteConnection, user_id: i32) -> Result<ClubMemberships, diesel::result::Error> {
+    use super::schema::clubmemberships;
+    let membership = clubmemberships::table.find(clubmemberships::user.eq(user_id)).first::<ClubMemberships>(conn)?;
+    Club::belonging_to(&membership)
 }
+
+#[post("/club/get")]
+fn get_club_route() {}

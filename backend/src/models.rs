@@ -25,6 +25,8 @@ pub struct User {
 }*/
 
 #[derive(Queryable)]
+#[belongs_to(User)]
+#[table_name = "club"]
 pub struct Club {
     pub id: i32,
     pub name: String,
