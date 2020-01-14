@@ -88,6 +88,14 @@ impl std::convert::From<std::time::SystemTimeError> for AuthError {
     }
 }
 
+impl std::convert::From<jwt::errors::Error> for AuthError {
+    fn from(error: jwt::errors::Error) -> Self {
+        AuthError::TokenGenerationError {
+            message: String::from("Token generation error.")
+        }
+    }
+}
+
 impl Claims {
     pub fn new(expiry_seconds: u64, user_id: i32) -> Result<Claims, AuthError> {
         let expiry = SystemTime::now().checked_add(Duration::new(expiry_seconds, 0))?;
@@ -156,13 +164,13 @@ pub fn verify_jwt(pool: &web::Data<Pool>, token: &str) -> Result<i32, AuthError>
     let secret = std::env::var("JWT_SECRET")?;
     let token_message: Claims = decode::<Claims>(token, secret.as_ref(), &Validation::new(Algorithm::HS256))?.claims;
     let expiry_time = UNIX_EPOCH + std::time::Duration::from_secs(token_message.expiry as u64);
-    match expiry_time > std::time::SystemTime {
+    match expiry_time > std::time::SystemTime::now() {
         true => {
             Ok(token_message.user_id)
         }
         false => {
             Err(AuthError::TimeError {
-                message: String::from("Error token has expired.")
+                message: String::from("Token has expired.")
             })
         }
     }
