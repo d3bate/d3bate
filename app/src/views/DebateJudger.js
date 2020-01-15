@@ -23,8 +23,8 @@ const PersonSelector = observer((props) => {
 const DebateTeam = (props) => {
     return <>
         <h5>{props.team}</h5>
-        Position: <Select value={props.position}
-                          onChange={event => props.updatePosition(props.team, event.target.value)}>
+        Place: <Select value={props.position}
+                       onChange={event => props.updatePosition(props.team, event.target.value)}>
         {[1, 2, 3, 4].map((item, key) => {
             return <option value={item} key={key}>{item}</option>
         })}
@@ -57,7 +57,6 @@ const DebateTeam = (props) => {
                       onChange={props.handleChange} value={props.speaker2.notes}
             />
         </Card>
-        <hr/>
     </>
 };
 
@@ -191,6 +190,7 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                         <DebateTeam team={'og'} speaker1={this.state.og.speaker1} speaker2={this.state.og.speaker2}
                                     handleChange={this.handleChange} position={this.state.og.position}
                                     updatePosition={this.updatePosition}/>
+                        <hr/>
                         <DebateTeam team={'cg'} speaker1={this.state.cg.speaker1} speaker2={this.state.cg.speaker2}
                                     handleChange={this.handleChange} position={this.state.cg.position}
                                     updatePosition={this.updatePosition}/>
@@ -199,6 +199,7 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                         <DebateTeam team={'oo'} speaker1={this.state.oo.speaker1} speaker2={this.state.oo.speaker2}
                                     handleChange={this.handleChange} position={this.state.oo.position}
                                     updatePosition={this.updatePosition}/>
+                        <hr/>
                         <DebateTeam team={'co'} speaker1={this.state.co.speaker1} speaker2={this.state.co.speaker2}
                                     handleChange={this.handleChange} position={this.state.co.position}
                                     updatePosition={this.updatePosition}/>
@@ -226,6 +227,7 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
 
     render() {
         return <>
+            <Button iconBefore="cross" marginY={minorScale(2)} onClick={this.props.close} intent="danger">Close</Button>
             <Alert intent='none' marginBottom={minorScale(2)}>
                 This feature is <i>experimental</i> (like the rest of the application). You can help by <a
                 href="https://github.com/d3bate/d3bate/issues/7"

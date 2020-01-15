@@ -50,7 +50,9 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                 }
                 }>
                     <Pane padding={majorScale(3)}>
-                        <SelectDebate eventID={this.props.event.id}/>
+                        <SelectDebate eventID={this.props.event.id} close={() => {
+                            this.setState({judge: false})
+                        }}/>
                     </Pane>
                 </SideSheet>
 
