@@ -30,7 +30,7 @@ type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 mod schema;
 mod models;
-
+mod helpers;
 mod auth;
 mod clubs;
 

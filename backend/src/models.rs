@@ -3,7 +3,7 @@ use std::option::Option;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Deserialize, Serialize)]
+#[derive(Queryable, Deserialize, Serialize, Identifiable)]
 pub struct User {
     pub id: Option<i32>,
     pub name: String,
@@ -25,18 +25,18 @@ pub struct User {
 }*/
 
 #[derive(Queryable)]
-#[belongs_to(User)]
 #[table_name = "club"]
 pub struct Club {
-    pub id: i32,
+    pub id: Option<i32>,
     pub name: String,
     pub owner: i32,
 }
 
-#[derive(Queryable)]
+#[derive(Queryable, Associations)]
+#[belongs_to(User)]
 pub struct ClubMemberships {
-    pub id: i32,
-    pub user: i32,
+    pub id: Option<i32>,
+    pub user_id: i32,
     pub club: i32,
 }
 

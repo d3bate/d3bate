@@ -23,9 +23,14 @@ pub mod routes;
 
 
 #[derive(Serialize, Deserialize)]
-struct Claims {
+pub struct Claims {
     user_id: i32,
     expiry: usize,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AuthenticatedRequest {
+    pub token: String
 }
 
 #[derive(Debug, Fail, Serialize)]
