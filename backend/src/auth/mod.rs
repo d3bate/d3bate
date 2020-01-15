@@ -18,6 +18,7 @@ use super::models::*;
 use super::schema::users;
 
 use super::Pool;
+use crate::helpers::RequestError;
 
 pub mod routes;
 
@@ -59,6 +60,12 @@ pub enum AuthError {
     TimeError {
         message: String
     },
+}
+
+impl std::convert::From<AuthError> for RequestError {
+    fn from(error: AuthError) -> Self {
+        actix_web::error::ErrorInternalServerError("Authentication error.").as_error()?
+    }
 }
 
 impl std::convert::From<std::option::NoneError> for AuthError {

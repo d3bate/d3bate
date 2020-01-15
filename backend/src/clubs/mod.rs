@@ -6,8 +6,8 @@ use crate::models::{ClubMemberships, Club};
 use serde::{Serialize, Deserialize};
 use super::auth::{AuthenticatedRequest, verify_jwt};
 use crate::helpers::RequestError;
+use super::auth;
 
-impl std::convert::From<auth::AuthError> for web::Json<helpers::RequestError> {}
 
 #[derive(Serialize, Deserialize)]
 struct GetClub {
