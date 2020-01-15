@@ -8,7 +8,11 @@ $$
 impact = harms \times likelihood
 $$
 
-People often focus too much on the harms of their impacts and ignore the whether or not their actions are likely to happen. When forming rebuttal you should also think about this – even if you don't disprove their harms can you prove that the probability of their harms happening is so low that their harms don't matter.
+#### Harms
+When considering the harms caused there are different factors you should evaluate them in relation to:
+1. How many people are affected?
+2. To what degree are these people affected?
+3. Are these people from a minority which deserves our protection?
 
 ### Stakeholder analysis
 One way of generating arguments that it often very helpful is to think of all the stakeholders who are affected by the motion and how it effects them. When deciding which stakeholders are most important to the debate you might want to think about some of these questions.
@@ -17,7 +21,7 @@ One way of generating arguments that it often very helpful is to think of all th
 * Are these a particularly vulnerable group of people who are morally deserving of our protection?
 
 ### THEN -> ACTION -> NOW
-This structure can help when preparing debates. 
+This structure can help as it forces you to think in relative terms, rather than absolute terms and compare yourself to teams on the other bench. 
 * Then: what is the status quo (what does the world look like before your side of the house implements its idea)
 * Action: what are you going to do?
 * Now: what does the world look like after you implement your side of the house?

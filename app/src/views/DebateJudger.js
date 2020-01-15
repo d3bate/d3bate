@@ -237,10 +237,11 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
                 this.state.availableDebates.map((debate, debateIndex) => {
                     return <Card key={debateIndex} marginY={minorScale(2)}>
                         <Button appearance="primary"
-                                onClick={() => this.setState({
-                                    selectedDebate: debateIndex,
-                                    showDebate: true
-                                })}>View debate {debateIndex}</Button>
+                                onClick={() =>
+                                    this.setState({
+                                        selectedDebate: debateIndex,
+                                        showDebate: true
+                                    })}>View debate {debateIndex}</Button>
                     </Card>
                 })
                 : null}
