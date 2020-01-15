@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react";
-import {Button, Card, Combobox, minorScale, Textarea} from "evergreen-ui";
+import {Button, Card, Combobox, minorScale, Textarea, Pane} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
@@ -22,15 +22,18 @@ const PersonSelector = observer((props) => {
 
 const DebateTeam = (props) => {
     return <>
+        <h5>{props.team}</h5>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 1</b></p>
-            <PersonSelector selectedUser={props.speaker1.uid}
-                            updateUser={user => props.handleChange({
-                                target: {
-                                    name: props.team + '-speaker1-uid',
-                                    value: user
-                                }
-                            })}/>
+            <Pane paddingBottom={minorScale(2)}>
+                <PersonSelector selectedUser={props.speaker1.uid}
+                                updateUser={user => props.handleChange({
+                                    target: {
+                                        name: props.team + '-speaker1-uid',
+                                        value: user
+                                    }
+                                })}/>
+            </Pane>
             <Textarea name={props.team + '-' + 'speaker1-notes'}
                       onChange={props.handleChange} value={props.speaker1.notes}
             />
