@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react";
-import {Button, Card, Combobox, minorScale, Textarea, Pane, Alert} from "evergreen-ui";
+import {Button, Card, Combobox, minorScale, Textarea, Pane, Alert, Select} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
@@ -23,6 +23,12 @@ const PersonSelector = observer((props) => {
 const DebateTeam = (props) => {
     return <>
         <h5>{props.team}</h5>
+        Position: <Select value={props.position}
+                          onChange={event => props.updatePosition(props.team, event.target.value)}>
+        {[1, 2, 3, 4].map((item, key) => {
+            return <option value={item} key={key}>{item}</option>
+        })}
+    </Select>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 1</b></p>
             <Pane paddingBottom={minorScale(2)}>
@@ -67,7 +73,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                 speaker2: {
                     uid: '',
                     notes: ''
-                }
+                },
+                position: 1
             },
             oo: {
                 speaker1: {
@@ -77,7 +84,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                 speaker2: {
                     uid: '',
                     notes: ''
-                }
+                },
+                position: 2
             },
             cg: {
                 speaker1: {
@@ -87,7 +95,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                 speaker2: {
                     uid: '',
                     notes: ''
-                }
+                },
+                position: 3
             },
             co: {
                 speaker1: {
@@ -97,11 +106,13 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                 speaker2: {
                     uid: '',
                     notes: ''
-                }
+                },
+                position: 4
             },
             exists: false,
         };
         this.handleChange = this.handleChange.bind(this);
+        this.updatePosition = this.updatePosition.bind(this);
         let doc = debateNotes.debates.find(o => {
             return o.eventID === this.props.eventID && o.debateNumber === this.props.debateNumber;
         });
@@ -128,11 +139,26 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
         })
     }
 
+    updatePosition(team, value) {
+        this.setState(prevState => {
+            let newState = {...prevState};
+            newState[team]['position'] = value;
+            return newState;
+        })
+    }
+
     render() {
-
         return <>
-
-
+            <Alert intent='danger' marginY={minorScale(2)}>
+                If you make any changes make sure you press save!
+            </Alert>
+            <Card>
+                <p><b>Metadata</b></p>
+                <ul>
+                    <li>Judge: <b>{clubUsers.users.find(user => user.id === this.state.judge) ? clubUsers.users.find(user => user.id === this.state.judge).email : firebase.auth().currentUser.email}</b>
+                    </li>
+                </ul>
+            </Card>
             <form onSubmit={event => {
                 event.preventDefault();
                 if (this.state.exists) {
@@ -159,18 +185,23 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                 }
             }
             }>
+
                 <div className="row-wrap">
                     <div className="col-50">
                         <DebateTeam team={'og'} speaker1={this.state.og.speaker1} speaker2={this.state.og.speaker2}
-                                    handleChange={this.handleChange}/>
+                                    handleChange={this.handleChange} position={this.state.og.position}
+                                    updatePosition={this.updatePosition}/>
                         <DebateTeam team={'cg'} speaker1={this.state.cg.speaker1} speaker2={this.state.cg.speaker2}
-                                    handleChange={this.handleChange}/>
+                                    handleChange={this.handleChange} position={this.state.cg.position}
+                                    updatePosition={this.updatePosition}/>
                     </div>
                     <div className="col-50">
                         <DebateTeam team={'oo'} speaker1={this.state.oo.speaker1} speaker2={this.state.oo.speaker2}
-                                    handleChange={this.handleChange}/>
+                                    handleChange={this.handleChange} position={this.state.oo.position}
+                                    updatePosition={this.updatePosition}/>
                         <DebateTeam team={'co'} speaker1={this.state.co.speaker1} speaker2={this.state.co.speaker2}
-                                    handleChange={this.handleChange}/>
+                                    handleChange={this.handleChange} position={this.state.co.position}
+                                    updatePosition={this.updatePosition}/>
                     </div>
                 </div>
                 <Button>Save.</Button>
@@ -201,18 +232,15 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
                 target="_blank">giving feedback</a> on this. To
                 escape from this page, click the escape key ('esc').
             </Alert>
-            <Alert intent='danger'>
-                Make sure you press 'save' before leaving this page.
-            </Alert>
+
             {this.state.showAvailable ?
                 this.state.availableDebates.map((debate, debateIndex) => {
-                    return <Card key={debateIndex}>
-                        <p>Debate {debateIndex}</p>
+                    return <Card key={debateIndex} marginY={minorScale(2)}>
                         <Button appearance="primary"
                                 onClick={() => this.setState({
                                     selectedDebate: debateIndex,
                                     showDebate: true
-                                })}>View</Button>
+                                })}>View debate {debateIndex}</Button>
                     </Card>
                 })
                 : null}
