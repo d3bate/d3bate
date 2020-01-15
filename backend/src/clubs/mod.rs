@@ -22,7 +22,7 @@ fn get_club(conn: &SqliteConnection, user_id: i32) -> Result<Club, diesel::resul
 }
 
 #[post("/club/get")]
-fn get_club_route(auth: web::Json<AuthenticatedRequest>, pool: web::data::Pool) -> impl Responder {
+fn get_club_route(auth: web::Json<AuthenticatedRequest>, pool: web::Data<Pool>) -> impl Responder {
     let conn = &pool.get().unwrap();
     let user_id = verify_jwt(&pool, &auth.token)?;
     let club_result = get_club(conn, user_id);

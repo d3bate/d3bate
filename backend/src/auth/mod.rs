@@ -64,7 +64,7 @@ pub enum AuthError {
 
 impl std::convert::From<AuthError> for RequestError {
     fn from(error: AuthError) -> Self {
-        actix_web::error::ErrorInternalServerError("Authentication error.").as_error()?
+        actix_web::error::ErrorInternalServerError("Authentication error.").as_response_error()
     }
 }
 
