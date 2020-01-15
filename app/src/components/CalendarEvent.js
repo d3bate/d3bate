@@ -18,10 +18,11 @@ const CalendarEvent = observer(class CalendarEvent extends React.Component {
                     <Button is="a" href="https://github.com/d3bate/d3bate/issues/3" iconAfter="info-sign"
                             appearance="primary">More info</Button>
                 </Card>
-                <Button height={majorScale(3)} onClick={this.props.showRegister} iconAfter="arrow-right"
+                <Button height={majorScale(3)} onClick={this.props.showRegister} iconBefore="list"
                         intent="success">Take a register</Button>
-                <Button marginLeft={majorScale(1)} height={majorScale(3)} onClick={this.props.showDebateJudger}>Judge a
-                    debate (not mobile friendly)</Button>
+                <Button iconBefore="annotation" marginLeft={majorScale(1)} height={majorScale(3)}
+                        onClick={this.props.showDebateJudger}>Judge a
+                    debate (experimental)</Button>
             </Pane>
         </> : <p>Loading...</p>
     }
