@@ -1,6 +1,6 @@
 import React from 'react';
 import {observer} from "mobx-react";
-import {Button, Card, Combobox, minorScale, Textarea, Pane} from "evergreen-ui";
+import {Button, Card, Combobox, minorScale, Textarea, Pane, Alert} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
@@ -131,9 +131,8 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
     render() {
 
         return <>
-            <p><b>NOTE: This does not yet work. You can help by <a href="https://github.com/d3bate/d3bate/issues/7"
-                                                                   target="_blank">giving feedback</a> on this. To
-                escape from this page, click the escape key ('esc').</b></p>
+
+
             <form onSubmit={event => {
                 event.preventDefault();
                 if (this.state.exists) {
@@ -196,6 +195,15 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
 
     render() {
         return <>
+            <Alert intent='none' marginBottom={minorScale(2)}>
+                This feature is <i>experimental</i> (like the rest of the application). You can help by <a
+                href="https://github.com/d3bate/d3bate/issues/7"
+                target="_blank">giving feedback</a> on this. To
+                escape from this page, click the escape key ('esc').
+            </Alert>
+            <Alert intent='danger'>
+                Make sure you press 'save' before leaving this page.
+            </Alert>
             {this.state.showAvailable ?
                 this.state.availableDebates.map((debate, debateIndex) => {
                     return <Card key={debateIndex}>
