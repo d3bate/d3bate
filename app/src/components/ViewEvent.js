@@ -6,7 +6,7 @@ import {debatingClub} from "../sync/models/club";
 import {observer} from "mobx-react";
 import {CalendarEvent} from "./CalendarEvent";
 import {TakeRegister} from "./TakeRegister";
-import {DebateJudger} from "../views/DebateJudger";
+import {SelectDebate} from "../views/DebateJudger";
 
 const ViewEvent = observer(class ViewEvent extends React.Component {
     constructor(props) {
@@ -50,7 +50,7 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
                 }
                 }>
                     <Pane padding={majorScale(3)}>
-                        <DebateJudger eventID={this.props.event.id}/>
+                        <SelectDebate eventID={this.props.event.id}/>
                     </Pane>
                 </SideSheet>
 

@@ -1,23 +1,22 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {observer} from "mobx-react";
-import {Combobox, Card, Textarea, minorScale, Button} from "evergreen-ui";
+import {Button, Card, Combobox, minorScale, Textarea} from "evergreen-ui";
 import {clubUsers} from "../sync/models/clubUsers";
-import ReactMarkdown from 'react-markdown';
 import {debateNotes} from "../sync/models/debateNotes";
 import {debatingClub} from "../sync/models/club";
 import {firebase} from "../sync";
 
 const PersonSelector = observer((props) => {
-    return props.selectedUser === undefined ? <>
+    return props.selectedUser === "" ? <>
         <Combobox items={clubUsers.users.map(user => user.email)}
                   placeholder="Speaker:"
                   onChange={selected => {
-                      props.updateUser(clubUsers.users.find(user => user.email === selected))
+                      props.updateUser(clubUsers.users.find(user => user.email === selected).uid)
                   }}/>
     </> : <Combobox items={clubUsers.users.map(user => user.email)}
-                    initialSelectedItem={{label: clubUsers.users.find(user => user.id === props.selectedUser)}}
+                    initialSelectedItem={clubUsers.users.find(user => user.id === props.selectedUser).email}
                     onChange={selected => {
-                        props.updateUser(clubUsers.users.find(user => user.email === selected))
+                        props.updateUser(clubUsers.users.find(user => user.email === selected).uid)
                     }}/>
 });
 
@@ -25,7 +24,7 @@ const DebateTeam = (props) => {
     return <>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 1</b></p>
-            <PersonSelector user={props.speaker1.uid}
+            <PersonSelector selectedUser={props.speaker1.uid}
                             updateUser={user => props.handleChange({
                                 target: {
                                     name: props.team + '-speaker1-uid',
@@ -38,7 +37,7 @@ const DebateTeam = (props) => {
         </Card>
         <Card margin={minorScale(5)} padding={minorScale(2)} elevation={1}>
             <p><b>Speaker 2</b></p>
-            <PersonSelector user={props.speaker2.uid}
+            <PersonSelector selectedUser={props.speaker2.uid}
                             updateUser={user => props.handleChange({
                                 target: {
                                     name: props.team + '-speaker2-uid',
@@ -101,10 +100,9 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
         };
         this.handleChange = this.handleChange.bind(this);
         let doc = debateNotes.debates.find(o => {
-            return o.eventID === this.props.eventID
+            return o.eventID === this.props.eventID && o.debateNumber === this.props.debateNumber;
         });
         if (doc) {
-            console.log(doc);
             this.state.exists = true;
             this.state.og = {...doc.og};
             this.state.oo = {...doc.oo};
@@ -113,7 +111,6 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
             this.state.eventID = doc.eventID;
             this.state.id = doc.id;
             this.state.judge = doc.judge;
-            console.log(this.state);
         }
     }
 
@@ -142,6 +139,7 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                         og: this.state.og,
                         co: this.state.co,
                         cg: this.state.cg
+                    }).then(result => {
                     })
                 } else {
                     firebase.firestore().collection('judge').add({
@@ -151,7 +149,10 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
                         co: this.state.co,
                         cg: this.state.cg,
                         judge: firebase.auth().currentUser.uid,
-                        eventID: this.props.eventID
+                        eventID: this.props.eventID,
+                        debateNumber: this.props.debateNumber
+                    }).then(result => {
+                        this.setState({id: result.id, exists: true})
                     })
                 }
             }
@@ -177,4 +178,43 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
 });
 
 
-export {DebateJudger}
+const SelectDebate = observer(class SelectDebate extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            availableDebates: debateNotes.debates.filter(o => {
+                return o.eventID === this.props.eventID
+            }),
+            showAvailable: true,
+            selectedDebate: 0,
+            showDebate: false
+        };
+    }
+
+    render() {
+        return <>
+            {this.state.showAvailable ?
+                this.state.availableDebates.map((debate, debateIndex) => {
+                    return <Card key={debateIndex}>
+                        <p>Debate {debateIndex}</p>
+                        <Button appearance="primary"
+                                onClick={() => this.setState({
+                                    selectedDebate: debateIndex,
+                                    showDebate: true
+                                })}>View</Button>
+                    </Card>
+                })
+                : null}
+            <Card><Button intent="success" onClick={() => this.setState({
+                selectedDebate: this.state.availableDebates.length,
+                showDebate: true
+            })}>Add a
+                debate</Button></Card>
+            {this.state.showDebate ?
+                <DebateJudger debateNumber={this.state.selectedDebate} eventID={this.props.eventID}/> : null}
+
+        </>
+    }
+});
+
+export {DebateJudger, SelectDebate}
