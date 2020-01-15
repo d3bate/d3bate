@@ -11,11 +11,10 @@ We welcome contributions to any area of the project. Contributions don't have to
 * Suggest features/improvements
 * Report bugs
 * Help ensure that our data use is ethical (and also GDPR-compliant)
-* Help implement a data analytics engine
 ### Code
 (Don't worry if you can't program, it's really easy to learn. If you'd like to learn the [Mozilla developer network](https://developer.mozilla.org/en-US/docs/Learn/JavaScript) is a great starting point.)
 * Help us implement a Bayesian model to predict whether users will attend debating events. 
-* Help us write our backend (in Rust) – we plan to use `WebSockets` to connect it to our frontend. 
+* Help us write our backend (in Rust) – we're (unsuccessfully) working on building a simple REST API to connect it to our frontend. 
 * Help on the frontend of the project
     * Styling/layout
     * State management (we're definitely creating too many firebase snapshot listeners)
