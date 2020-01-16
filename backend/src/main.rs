@@ -1,4 +1,3 @@
-#![feature(proc_macro)]
 #![feature(try_trait)]
 extern crate bcrypt;
 extern crate actix_web;

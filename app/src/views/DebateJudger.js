@@ -247,11 +247,14 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
                     </Card>
                 })
                 : null}
-            <Card><Button intent="success" onClick={() => this.setState({
-                selectedDebate: this.state.availableDebates.length,
-                showDebate: true
-            })}>Add a
-                debate</Button></Card>
+            {this.state.showDebate ? null : <>
+                <Card><Button intent="success" onClick={() => this.setState({
+                    selectedDebate: this.state.availableDebates.length,
+                    showDebate: true
+                })}>Add a
+                    debate</Button></Card>
+            </>}
+
             {this.state.showDebate ?
                 <DebateJudger debateNumber={this.state.selectedDebate} eventID={this.props.eventID}/> : null}
 
