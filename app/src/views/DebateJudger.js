@@ -151,6 +151,7 @@ const DebateJudger = observer(class DebateJudger extends React.Component {
             <Alert intent='danger' marginY={minorScale(2)}>
                 If you make any changes make sure you press save!
             </Alert>
+            <h5>Debate {this.props.debateNumber}</h5>
             <Card>
                 <p><b>Metadata</b></p>
                 <ul>
@@ -235,19 +236,21 @@ const SelectDebate = observer(class SelectDebate extends React.Component {
                 escape from this page, click the escape key ('esc').
             </Alert>
 
-            {this.state.showAvailable ?
-                this.state.availableDebates.map((debate, debateIndex) => {
-                    return <Card key={debateIndex} marginY={minorScale(2)}>
-                        <Button appearance="primary"
-                                onClick={() =>
-                                    this.setState({
-                                        selectedDebate: debateIndex,
-                                        showDebate: true
-                                    })}>View debate {debateIndex}</Button>
-                    </Card>
-                })
-                : null}
+
             {this.state.showDebate ? null : <>
+                {this.state.showAvailable ?
+                    this.state.availableDebates.map((debate, debateIndex) => {
+                        return <Card key={debateIndex} marginY={minorScale(2)}>
+                            <Button appearance="primary"
+                                    onClick={() =>
+                                        this.setState({
+                                            selectedDebate: debateIndex,
+                                            showDebate: true
+                                        })}>View debate {debateIndex}</Button>
+                        </Card>
+                    })
+                    : null}
+
                 <Card><Button intent="success" onClick={() => this.setState({
                     selectedDebate: this.state.availableDebates.length,
                     showDebate: true
