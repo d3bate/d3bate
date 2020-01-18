@@ -29,10 +29,17 @@ class Attendance(db.Model):
     debating_club = db.Column(db.Integer, db.ForeignKey('debatingclub.id'), nullable=False)
 
 
+class JudgeSpeaker(db.Model):
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    text = db.Column(db.String)
+
+
 class JudgeTeam(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    speaker_1 = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    speaker_1 = db.Column(db.Integer, db.ForeignKey('judgespeaker.id'), nullable=False)
+    speaker_2 = db.Column(db.Integer, db.ForeignKey('judgespeaker.id'), nullable=False)
     debate_id = db.Column(db.Integer, db.ForeignKey('judge.id'), nullable=False)
+    team_rank = db.Column(db.Integer)
 
 
 class Judge(db.Model):
