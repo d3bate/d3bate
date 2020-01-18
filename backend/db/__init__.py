@@ -23,6 +23,11 @@ class DebatingClub(db.Model):
     attendance = db.relationship('Attendance', backref='debatingclub', lazy=True)
 
 
+class ClubEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.Integer)  # should be a UNIX timestamp
+
+
 class Attendance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -45,4 +50,9 @@ class JudgeTeam(db.Model):
 class Judge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    debating_club = db.Column(db.Integer, db.ForeignKey('debatingclub.id'), nullable=False)
+
+
+class Register(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     debating_club = db.Column(db.Integer, db.ForeignKey('debatingclub.id'), nullable=False)
