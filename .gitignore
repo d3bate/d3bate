@@ -65,3 +65,6 @@ ml/venv
 
 # dotenv environment variables file
 .env
+
+# backend virtual environment
+backend/venv
