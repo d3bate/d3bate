@@ -42,7 +42,9 @@ nav:
   - Getting started: getting-started.md
   - Debating guide:
       - Introduction: howto/index.md
-      - Making arguments: howto/argumentation/index.md
+      - Argumentation:
+          - Introduction: howto/argumentation/index.md
+          - Structure: howto/argumentation/structure.md
       - Background:
           - Introduction: howto/background/index.md
           - Justice: howto/background/justice.md
