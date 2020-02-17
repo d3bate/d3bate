@@ -19,7 +19,7 @@ const ViewEvent = observer(class ViewEvent extends React.Component {
 
     render() {
         return <Card background="blueTint" margin={4} padding={minorScale(2)} elevation={1}
-                     height={'170px'} width={'100px'}>
+                     height={'170px'} width={majorScale(15)}>
             <p>{this.props.day} {this.props.event ?
                 <Button onClick={() => this.setState({detailView: true})}
                         height={majorScale(3)}>view</Button> : null}</p>
