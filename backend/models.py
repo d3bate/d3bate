@@ -37,3 +37,10 @@ class TrainingSession(db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     club = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
+
+
+class TrainingSessionAttendance(db.Model):
+    __tablename__ = "training_session_attendance"
+    training_session_id = db.Column(db.Integer, db.ForeignKey("training_session.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    attending = db.Column(db.Boolean, nullable=False, default=False)
