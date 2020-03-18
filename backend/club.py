@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from flask import Blueprint, request, jsonify
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from app import db
-from models import Club, User
+from models import Club, User, TrainingSession
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 club_blueprint = Blueprint("club", __name__, url_prefix="/api/club")
@@ -96,4 +98,127 @@ def leave_club():
         "type": "success",
         "message": "You have been removed from that club.",
         "suggestion": ""
+    })
+
+
+@club_blueprint.route("/training/add", methods=("POST", "PUT"))
+@jwt_required
+def add_training_session():
+    start_time = request.json["start_time"]
+    end_time = request.json["end_time"]
+    try:
+        livestream = request.json["livestream"]
+    except KeyError:
+        livestream = False
+    club_id = request.json["club_id"]
+    club = Club.query.get(club_id)
+    if not club:
+        return jsonify({
+            "type": "error",
+            "message": "That club doesn't exist.",
+            "suggestion": ""
+        })
+    training_session = TrainingSession(
+        start_time=start_time,
+        end_time=end_time,
+        livestream=livestream,
+        club=club_id
+    )
+    db.session.add(training_session)
+    db.session.commit()
+    return jsonify({
+        "type": "success",
+        "message": "The training session was successfully scheduled.",
+        "suggestion": ""
+    })
+
+
+@club_blueprint.route("/training/remove")
+@jwt_required
+def remove_debating_session():
+    current_user = get_jwt_identity()
+    session_id = request.json["session_id"]
+    club_id = request.json["club_id"]
+    user_has_privileges = Club.query.get(
+        and_(or_(Club.owners.any(id=current_user["id"]), Club.admins.any(id=current_user["id"])), Club.id.any(club_id)))
+    if not user_has_privileges:
+        return jsonify({
+            "type": "error",
+            "message": "You don't have permission to do that.",
+            "suggestion": "Ask for permission."
+        })
+    training_session = TrainingSession.query.get(session_id)
+    if not training_session:
+        return jsonify({
+            "type": "error",
+            "message": "That session doesn't exist.",
+            "suggestion": ""
+        })
+    db.session.delete(training_session)
+    db.session.commit()
+    return jsonify({
+        "type": "success",
+        "message": "Successfully deleted that post.",
+        "suggestion": ""
+    })
+
+
+@club_blueprint.route("/training/update")
+@jwt_required
+def update_training():
+    current_user = get_jwt_identity()
+    session_id = request.json["session"]
+    update = request.json["update"]
+    training_session = TrainingSession.query.get(session_id)
+    user_has_privileges = Club.query.get(
+        and_(or_(Club.owners.any(id=current_user["id"]), Club.admins.any(id=current_user["id"])),
+             Club.id.any(training_session.id)))
+    if not user_has_privileges:
+        return jsonify({
+            "type": "error",
+            "message": "You don't have permission to do that.",
+            "suggestion": "Ask for permission."
+        })
+    for (key, value) in update.items():
+        if key == "start_time":
+            training_session.start_time = datetime.utcfromtimestamp(value)
+        elif key == "end_time":
+            training_session.end_time = datetime.utcfromtimestamp(value)
+        elif key == "livestream":
+            training_session.livestream = value
+    db.session.commit()
+    return jsonify({
+        "type": "success",
+        "message": "",
+        "suggestion": ""
+    })
+
+
+def training_session_to_json(session):
+    return {
+        "id": session.id,
+        "start_time": session.start_time.timestamp(),
+        "end_time": session.end_time.timestamp(),
+        "livestream": session.livestream
+    }
+
+
+@club_blueprint.route("/training/get_all")
+@jwt_required
+def get_training_sessions():
+    current_user = get_jwt_identity()
+    club_id = request.json["club_id"]
+    club = Club.query.get(
+        and_(or_(Club.owners.any(id=current_user["id"]),
+                 or_(Club.admins.any(id=current_user["id"]), Club.members.any(id=current_user["id"]))),
+             Club.id.any(club_id)))
+    if not club:
+        return jsonify({
+            "type": "error",
+            "message": "Either that club does not exist, or you don't have permission to view it",
+            "suggestion": ""
+        })
+    return jsonify({
+        "type": "data",
+        "data": list(map(lambda x: training_session_to_json(x), club.training_sessions))
     })

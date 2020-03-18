@@ -59,6 +59,7 @@ class TrainingSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
+    livestream = db.Column(db.Boolean, default=False)
     club = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
 
 
