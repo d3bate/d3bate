@@ -19,6 +19,8 @@ def create_app() -> Flask:
     jwt_manager.init_app(app)
     from auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
+    from club import club_blueprint
+    app.register_blueprint(club_blueprint)
     return app
 
 

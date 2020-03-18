@@ -6,26 +6,18 @@ from app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    username = db.Column(db.Text)
-    email = db.Column(db.Text)
-    password_hash = db.Column(db.Text)
-    created = db.Column(db.DateTime)
+    name = db.Column(db.Text, nullable=False)
+    username = db.Column(db.Text, nullable=False)
+    email = db.Column(db.Text, nullable=False)
+    password_hash = db.Column(db.Text, nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    email_verified = db.Column(db.Boolean, nullable=False, default=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-
-class Club(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text)
-    registered_school = db.Column(db.Text)
-    school_verified = db.Column(db.Boolean, nullable=False, default=False)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    training_sessions = db.relationship("TrainingSession", backref="training_sessions", lazy=True)
 
 
 members = db.Table("club_members",
@@ -42,6 +34,18 @@ owners = db.Table("club_owners",
                   db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
                   db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
                   )
+
+
+class Club(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
+    registered_school = db.Column(db.Text)
+    school_verified = db.Column(db.Boolean, nullable=False, default=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    training_sessions = db.relationship("TrainingSession", backref="training_sessions", lazy=True)
+    owners = db.relationship("User", secondary=owners, lazy="subquery", backref=db.backref("owners", lazy=True))
+    admins = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("admins", lazy=True))
+    members = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("members", lazy=True))
 
 
 class TrainingSession(db.Model):
