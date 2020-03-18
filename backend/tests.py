@@ -45,3 +45,12 @@ class E2E(unittest.TestCase):
         get_club_list = self.client.get("/api/club/get_list",
                                         headers={"Authorization": "Bearer {}".format(self.token)}).json
         self.assertTrue(len(get_club_list["data"]["owner"]) == 1)
+        leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"]["owner"][0]["id"]},
+                                      headers={
+                                          "Authorization": "Bearer {}".format(self.token)
+                                      }).json
+        self.assertTrue(leave_club["type"] == "success")
+
+        get_club_list_2 = self.client.get("/api/club/get_list",
+                                          headers={"Authorization": "Bearer {}".format(self.token)}).json
+        self.assertTrue(len(get_club_list_2["data"]["owner"]) == 0)

@@ -64,3 +64,36 @@ def get_clubs():
 
         }
     })
+
+
+@club_blueprint.route("/leave", methods=("POST",))
+@jwt_required
+def leave_club():
+    current_user = get_jwt_identity()
+    user = User.query.get(current_user["id"])
+    club_id = request.json["club_id"]
+    club = Club.query.get(club_id)
+    if not club:
+        return jsonify({
+            "type": "error",
+            "message": "That club does not exist.",
+            "suggestion": ""
+        })
+    try:
+        club.owners.remove(user)
+    except ValueError:
+        pass
+    try:
+        club.members.remove(user)
+    except ValueError:
+        pass
+    try:
+        club.admins.remove(user)
+    except ValueError:
+        pass
+    db.session.commit()
+    return jsonify({
+        "type": "success",
+        "message": "You have been removed from that club.",
+        "suggestion": ""
+    })
