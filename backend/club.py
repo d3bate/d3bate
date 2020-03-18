@@ -38,6 +38,12 @@ def create_club():
     })
 
 
+@club_blueprint.route("/club/get_list")
+@jwt_required
+def get_clubs(club_id):
+    pass
+
+
 @club_blueprint.route("/club/<club_id>")
 @jwt_required
 def get_info(club_id):

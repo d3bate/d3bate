@@ -19,6 +19,7 @@ class E2E(unittest.TestCase):
             "email": "me@teymour.tk",
             "password": "hello"
         }).json
+
         self.assertTrue(create_user["type"] == "success")
         create_existing_user = self.client.post("/auth/register", json={
             "username": "teymour",
