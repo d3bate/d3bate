@@ -38,59 +38,29 @@ def create_club():
     })
 
 
+def club_to_json(x):
+    return {
+        "name": x.name,
+        "id": x.id,
+        "registered_school": x.registered_school,
+        "school_verified": x.school_verified,
+        "member_count": len(x.members) + len(x.owners) + len(x.admins)
+    }
+
+
 @club_blueprint.route("/get_list")
 @jwt_required
 def get_clubs():
     current_user = get_jwt_identity()
-    user = User.query.get(current_user["id"])
-    Club.query.filter((Club.owners.any(id=current_user["id"]))).all()
     return jsonify({
         "type": "data",
         "data": {
-            "admin": list(map(lambda x: {
-                "name": x.name,
-                "id": x.id,
-                "registered_school": x.registered_school,
-                "school_verified": x.school_verified
-            }, Club.query.filter((Club.admins.any(id=current_user["id"]))).all())),
-            "member": list(map(lambda x: {
-                "name": x.name,
-                "id": x.id,
-                "registered_school": x.registered_school,
-                "school_verified": x.school_verified
-            }, Club.query.filter((Club.members.any(id=current_user["id"]))).all())),
-            "owner": list(map(lambda x: {
-                "name": x.name,
-                "id": x.id,
-                "registered_school": x.registered_school,
-                "school_verified": x.school_verified
-            }, Club.query.filter((Club.owners.any(id=current_user["id"]))).all()))
+            "admin": list(
+                map(lambda x: club_to_json(x), Club.query.filter((Club.admins.any(id=current_user["id"]))).all())),
+            "member": list(
+                map(lambda x: club_to_json(x), Club.query.filter((Club.members.any(id=current_user["id"]))).all())),
+            "owner": list(
+                map(lambda x: club_to_json(x), Club.query.filter((Club.owners.any(id=current_user["id"]))).all()))
 
-        }
-    })
-
-
-@club_blueprint.route("/club/<club_id>")
-@jwt_required
-def get_info(club_id):
-    current_user = get_jwt_identity()
-    user = User.query.get(current_user["id"])
-    club = Club.query.filter(
-        or_((Club.admins.any(user.id), or_(Club.owners.any(user.id), Club.members.any(user.id))))
-    )
-    if not club:
-        return jsonify({
-            "type": "error",
-            "message": "That club doesn't exist, or you don't have permission to view it.",
-            "suggestion": ""
-        })
-    return jsonify({
-        "type": "data",
-        "data": {
-            "members": len(club.members) + len(club.owners) + len(club.admins),
-            "name": club.name,
-            "created": club.created,
-            "registered_school": club.registered_school,
-            "school_verified": club.school_verified
         }
     })
