@@ -36,9 +36,12 @@ class E2E(unittest.TestCase):
         self.assertTrue(token["type"] == "data")
         self.token = token["data"]["token"]
         create_club = self.client.post("/api/club/create", json={
-            "name": "Debating",
+            "club_name": "Debating",
             "school_website": "https://teymour.tk"
         }, headers={
             "Authorization": "Bearer {}".format(self.token)
         })
         self.assertTrue(create_club.json["type"] == "success")
+        get_club_list = self.client.get("/api/club/get_list",
+                                        headers={"Authorization": "Bearer {}".format(self.token)}).json
+        self.assertTrue(len(get_club_list["data"]["owner"]) == 1)

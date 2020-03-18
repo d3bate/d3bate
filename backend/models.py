@@ -3,23 +3,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.Text, nullable=False)
-    username = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False)
-    password_hash = db.Column(db.Text, nullable=False)
-    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    email_verified = db.Column(db.Boolean, nullable=False, default=False)
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-
 members = db.Table("club_members",
                    db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
                    db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
@@ -34,6 +17,29 @@ owners = db.Table("club_owners",
                   db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
                   db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
                   )
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text, nullable=False)
+    username = db.Column(db.Text, nullable=False)
+    email = db.Column(db.Text, nullable=False)
+    password_hash = db.Column(db.Text, nullable=False)
+    created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    email_verified = db.Column(db.Boolean, default=False)
+
+    club_ownerships = db.relationship("Club", secondary=members, lazy="subquery",
+                                      backref=db.backref("owned_clubs", lazy=True))
+    club_memberships = db.relationship("Club", secondary=members, lazy="subquery",
+                                       backref=db.backref("member_clubs", lazy=True))
+    club_adminships = db.relationship("Club", secondary=members, lazy="subquery",
+                                      backref=db.backref("admin_clubs", lazy=True))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Club(db.Model):
