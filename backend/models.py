@@ -38,6 +38,11 @@ admins = db.Table("administrators",
                   db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
                   )
 
+owners = db.Table("club_owners",
+                  db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
+                  db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
+                  )
+
 
 class TrainingSession(db.Model):
     __tablename__ = "training_session"
@@ -49,6 +54,7 @@ class TrainingSession(db.Model):
 
 class TrainingSessionAttendance(db.Model):
     __tablename__ = "training_session_attendance"
+    id = db.Column(db.Integer, primary_key=True)
     training_session_id = db.Column(db.Integer, db.ForeignKey("training_session.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     attending = db.Column(db.Boolean, nullable=False, default=False)

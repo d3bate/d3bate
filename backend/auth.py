@@ -2,11 +2,12 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy import or_
 from models import User
 from flask_jwt_extended import create_access_token
+from app import db
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@auth_blueprint.route("/login")
+@auth_blueprint.route("/login", methods=("POST",))
 def login():
     identifier = request.json["identifier"]
     password = request.json["password"]
@@ -17,21 +18,21 @@ def login():
             "message": "That user does not exist.",
             "suggestion": ""
         })
-    if not user.check_passwopord(password):
+    if not user.check_password(password):
         return jsonify({
             "type": "error",
             "message": "The password for that user is incorrect.",
             "suggestion": ""
         })
     token = create_access_token({"id": user.id, "email": user.email, "name": user.name, "username": user.username,
-                                 "created": user.created.utctimestamp()})
+                                 "created": user.created})
     return jsonify({
         "type": "data",
         "data": {"token": token}
     })
 
 
-@auth_blueprint.route("/register")
+@auth_blueprint.route("/register", methods=("POST",))
 def register():
     username = request.json["username"]
     name = request.json["name"]
