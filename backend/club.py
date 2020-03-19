@@ -111,6 +111,12 @@ def add_training_session():
     except KeyError:
         livestream = False
     club_id = request.json["club_id"]
+    if not isinstance(club_id, int):
+        return jsonify({
+            "type": "error",
+            "message": "Club IDs must be of an integer datatype.",
+            "suggestion": ""
+        })
     club = Club.query.get(club_id)
     if not club:
         return jsonify({
@@ -119,8 +125,8 @@ def add_training_session():
             "suggestion": ""
         })
     training_session = TrainingSession(
-        start_time=start_time,
-        end_time=end_time,
+        start_time=datetime.utcfromtimestamp(start_time),
+        end_time=datetime.utcfromtimestamp(end_time),
         livestream=livestream,
         club=club_id
     )
@@ -208,10 +214,10 @@ def training_session_to_json(session):
 def get_training_sessions():
     current_user = get_jwt_identity()
     club_id = request.json["club_id"]
-    club = Club.query.get(
+    club = Club.query.filter(
         and_(or_(Club.owners.any(id=current_user["id"]),
                  or_(Club.admins.any(id=current_user["id"]), Club.members.any(id=current_user["id"]))),
-             Club.id.any(club_id)))
+             (Club.id == club_id))).first()
     if not club:
         return jsonify({
             "type": "error",

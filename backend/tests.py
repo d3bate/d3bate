@@ -1,5 +1,6 @@
 from app import create_app
 from flask import Flask
+from datetime import datetime
 
 import unittest
 
@@ -19,8 +20,8 @@ class E2E(unittest.TestCase):
             "email": "me@teymour.tk",
             "password": "hello"
         }).json
-
         self.assertTrue(create_user["type"] == "success")
+
         create_existing_user = self.client.post("/auth/register", json={
             "username": "teymour",
             "name": "Teymour Aldridge",
@@ -35,6 +36,7 @@ class E2E(unittest.TestCase):
         }).json
         self.assertTrue(token["type"] == "data")
         self.token = token["data"]["token"]
+
         create_club = self.client.post("/api/club/create", json={
             "club_name": "Debating",
             "school_website": "https://teymour.tk"
@@ -42,9 +44,38 @@ class E2E(unittest.TestCase):
             "Authorization": "Bearer {}".format(self.token)
         })
         self.assertTrue(create_club.json["type"] == "success")
+
         get_club_list = self.client.get("/api/club/get_list",
                                         headers={"Authorization": "Bearer {}".format(self.token)}).json
         self.assertTrue(len(get_club_list["data"]["owner"]) == 1)
+
+        club_id = get_club_list["data"]["owner"][0]
+
+        start_time = datetime.utcnow().timestamp() + 900
+        end_time = datetime.utcnow().timestamp() + 1200
+        add_training_session_1 = self.client.post("/api/club/training/add", json={
+            "club_id": club_id["id"],
+            "livestream": False,
+            "start_time": start_time,
+            "end_time": end_time,
+            "description": "Hello World!"
+        }, headers={
+            "Authorization": "Bearer {}".format(self.token)
+        }).json
+
+        self.assertTrue(add_training_session_1["type"] == "success")
+
+        get_training_session_1 = self.client.get("/api/club/training/get_all", json={
+            "club_id": club_id["id"]
+        }, headers={
+            "Authorization": "Bearer {}".format(self.token)
+        }).json
+
+        self.assertTrue(get_training_session_1["type"] == "data")
+        training_session = get_training_session_1["data"][0]
+        self.assertTrue(training_session["start_time"] == start_time)
+        self.assertTrue(training_session["end_time"] == end_time)
+
         leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"]["owner"][0]["id"]},
                                       headers={
                                           "Authorization": "Bearer {}".format(self.token)
