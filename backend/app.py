@@ -19,7 +19,7 @@ def create_app() -> Flask:
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
     app.config["SESSION_REDIS"] = os.environ.get("REDIS_URL")
-    app.config["SESSION_TYPE"] = "redis" if os.environ.get("FLASK_ENV") == "development" else "filesystem"
+    app.config["SESSION_TYPE"] = "filesystem" if os.environ.get("FLASK_ENV") == "development" else "redis"
     db.init_app(app)
     migrate.init_app(app, db)
     jwt_manager.init_app(app)
