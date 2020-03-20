@@ -1,9 +1,25 @@
+import functools
+
 from flask import session
-from flask_socketio import SocketIO, ConnectionRefusedError, join_room, send
+from flask_socketio import SocketIO, ConnectionRefusedError, join_room, send, rooms
 from models import TrainingSession
 from sqlalchemy import and_, or_
 
 socketio = SocketIO()
+
+
+@functools.wraps
+def ws_auth(f):
+    def wrapper(data, *args, **kwargs):
+        if not session["user"]:
+            return {
+                "type": "error",
+                "message": "",
+                "suggestion": ""
+            }
+        return f(data, *args, **kwargs)
+
+    return wrapper
 
 
 @socketio.on("connect")
@@ -32,7 +48,7 @@ def on_join(data):
             "message": "Livestreams have not been enabled for this session.",
             "suggestion": ""
         }
-    join_room("/training_session/{}".format(training_session.id))
+    join_room("{}".format(training_session.id))
     send({
         "type": "user_joined",
         "data": {
@@ -40,3 +56,51 @@ def on_join(data):
             "name": session["user"].name
         }
     })
+
+
+@socketio.on("send/audio")
+@ws_auth
+def receive_stream(data):
+    audio = data["data"]
+    user_room = next(filter(lambda x: x.isnumeric(), rooms()))
+    if user_room:
+        send({
+            "type": "incoming_audio",
+            "data": {
+                "user": {
+                    "id": session["user"].id,
+                    "name": session["user"].name
+                },
+                "audio": audio
+            }
+        }, room=user_room)
+    else:
+        return {
+            "type": "error",
+            "message": "You are not in any livestreams.",
+            "suggestion": "Join one.",
+        }
+
+
+@socketio.on("send/video")
+@ws_auth
+def receive_stream(data):
+    video = data["video"]
+    user_room = next(filter(lambda x: x.isnumeric(), rooms()))
+    if user_room:
+        send({
+            "type": "incoming_video",
+            "data": {
+                "user": {
+                    "id": session["user"].id,
+                    "name": session["user"].name
+                },
+                "video": video
+            }
+        }, room=user_room)
+    else:
+        return {
+            "type": "error",
+            "message": "You are not in any livestreams.",
+            "suggestion": "Join one.",
+        }
