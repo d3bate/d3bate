@@ -2,10 +2,11 @@ import functools
 
 from flask import session
 from flask_socketio import SocketIO, ConnectionRefusedError, join_room, send, rooms
-from models import TrainingSession
 from sqlalchemy import and_, or_
 
 socketio = SocketIO()
+
+from models import TrainingSession
 
 
 @functools.wraps

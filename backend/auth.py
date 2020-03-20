@@ -57,8 +57,8 @@ def register():
     })
 
 
-@auth_blueprint.route("/login/ls")
-def login():
+@auth_blueprint.route("/ws_login")
+def ws_login():
     identifier = request.json["identifier"]
     password = request.json["password"]
     user = User.query.filter(or_((User.username == identifier) | (User.email == identifier))).first()

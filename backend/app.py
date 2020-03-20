@@ -23,6 +23,7 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
     jwt_manager.init_app(app)
     session.init_app(app)
+    socketio.init_app(app)
     from auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
     from club import club_blueprint
