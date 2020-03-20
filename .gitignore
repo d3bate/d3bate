@@ -68,3 +68,5 @@ ml/venv
 
 # backend virtual environment
 backend/venv
+
+client/node_modules
