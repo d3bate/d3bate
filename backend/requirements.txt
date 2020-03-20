@@ -9,3 +9,4 @@ pyjwt
 flask-sqlalchemy
 flask-migrate
 flask-cors
+psycopg2
