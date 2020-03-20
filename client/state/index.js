@@ -14,7 +14,17 @@ const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
 const RECEIVE_CLUB_DATA = "GET_CLUBS";
 
 function clubsReducer(state = {fetching: false, clubs: []}, action) {
-
+    switch (action.type) {
+        case REQUEST_CLUB_DATA:
+            return Object.assign(state, {}, {
+                fetching: true
+            });
+        case RECEIVE_CLUB_DATA:
+            return Object.assign(state, {}, {
+                fetching: false,
+                clubs: action.data
+            })
+    }
 }
 
 const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
