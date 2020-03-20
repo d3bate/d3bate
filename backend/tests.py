@@ -76,6 +76,24 @@ class E2E(unittest.TestCase):
         self.assertTrue(training_session["start_time"] == start_time)
         self.assertTrue(training_session["end_time"] == end_time)
 
+        update_training_session_1 = self.client.post("/api/club/training/update", json={
+            "session_id": training_session["id"],
+            "delta": {
+                start_time: start_time - 10
+            }
+        })
+        self.assertTrue(update_training_session_1["type"] == "success")
+
+        get_training_session_1_updated = self.client.get("/api/club/training/get_all", json={
+            "club_id": club_id["id"]
+        }, headers={
+            "Authorization": "Bearer {}".format(self.token)
+        }).json
+        self.assertTrue(get_training_session_1_updated["type"] == "data")
+        training_session_updated = get_training_session_1_updated["data"][0]
+        self.assertTrue(training_session_updated["start_time"] == start_time - 10)
+        self.assertTrue(training_session_updated["end_time"] == end_time)
+
         leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"]["owner"][0]["id"]},
                                       headers={
                                           "Authorization": "Bearer {}".format(self.token)

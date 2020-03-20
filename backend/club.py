@@ -173,8 +173,8 @@ def remove_debating_session():
 @jwt_required
 def update_training():
     current_user = get_jwt_identity()
-    session_id = request.json["session"]
-    update = request.json["update"]
+    session_id = request.json["session_id"]
+    delta = request.json["delta"]
     training_session = TrainingSession.query.get(session_id)
     user_has_privileges = Club.query.get(
         and_(or_(Club.owners.any(id=current_user["id"]), Club.admins.any(id=current_user["id"])),
@@ -185,7 +185,7 @@ def update_training():
             "message": "You don't have permission to do that.",
             "suggestion": "Ask for permission."
         })
-    for (key, value) in update.items():
+    for (key, value) in delta.items():
         if key == "start_time":
             training_session.start_time = datetime.utcfromtimestamp(value)
         elif key == "end_time":

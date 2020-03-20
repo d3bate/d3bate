@@ -1,7 +1,8 @@
-from flask import Blueprint, request, jsonify
-from sqlalchemy import or_
-from models import User
+from flask import Blueprint, request, jsonify, session
 from flask_jwt_extended import create_access_token
+from models import User
+from sqlalchemy import or_
+
 from app import db
 
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
@@ -53,4 +54,29 @@ def register():
         "type": "success",
         "message": "Your account has been created.",
         "suggestion": ""
+    })
+
+
+@auth_blueprint.route("/login/ls")
+def login():
+    identifier = request.json["identifier"]
+    password = request.json["password"]
+    user = User.query.filter(or_((User.username == identifier) | (User.email == identifier))).first()
+    if not user:
+        return jsonify({
+            "type": "error",
+            "message": "That user does not exist.",
+            "suggestion": ""
+        })
+    if user.check_password(password):
+        session["user"] = user
+        return jsonify({
+            "type": "success",
+            "message": "Successfully logged you in.",
+            "suggestion": ""
+        })
+    return jsonify({
+        "type": "error",
+        "message": "Your password is incorrect.",
+        "suggestion": "Please try again."
     })
