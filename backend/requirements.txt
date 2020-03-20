@@ -1,0 +1,10 @@
+flask
+eventlet
+gunicorn
+redis
+flask-socketio
+flask-session
+flask-jwt-extended
+pyjwt
+flask-sqlalchemy
+flask-migrate
