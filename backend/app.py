@@ -5,9 +5,10 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from websockets import socketio
 
 db = SQLAlchemy()
+from websockets import socketio
+
 migrate = Migrate()
 jwt_manager = JWTManager()
 session = Session()
@@ -29,7 +30,3 @@ def create_app() -> Flask:
     from club import club_blueprint
     app.register_blueprint(club_blueprint)
     return app
-
-
-if __name__ == '__main__':
-    socketio.run(create_app())
