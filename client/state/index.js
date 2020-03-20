@@ -23,7 +23,9 @@ function authReducer(state = {
             return Object.assign(state, {}, {
                 identifier: action.data.username,
                 password: action.data.password
-            })
+            });
+        default:
+            return state
     }
 }
 
@@ -52,7 +54,9 @@ function clubsReducer(state = {fetching: false, clubs: []}, action) {
             return Object.assign(state, {}, {
                 fetching: false,
                 clubs: action.data
-            })
+            });
+        default:
+            return state
     }
 }
 
@@ -78,6 +82,8 @@ function trainingSessionReducer(fetching: false, adding: true, updating: false, 
         case DELETE_TRAINING_SESSION:
             return Object.assign(state, {}, {
                 trainingSessions: state.trainingSessions.filter(o => o.id !== action.data.id)
-            })
+            });
+        default:
+            return state
     }
 }
