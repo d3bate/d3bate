@@ -10,7 +10,35 @@ function messagesReducer(state = {messages: []}, action) {
     }
 }
 
-const GET_CLUBS = "GET_CLUBS";
+const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
+const RECEIVE_CLUB_DATA = "GET_CLUBS";
+
+function clubsReducer(state = {fetching: false, clubs: []}, action) {
+
+}
+
 const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
 const UPDATE_TRAINING_SESSION = "UPDATE_TRAINING_SESSION";
 const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
+
+function trainingSessionReducer(fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
+    switch (action.type) {
+        case ADD_TRAINING_SESSION:
+            return Object.assign(state, {}, {
+                adding: false,
+                trainingSessions: [action.data, ...state.trainingSessions]
+            });
+        case UPDATE_TRAINING_SESSION:
+            let sessionItem = state.trainingSessions.findIndex(o => o.id === action.data.id);
+            let clonedList = [...state.trainingSessions];
+            clonedList[sessionItem] = {...action.data.update, ...clonedList[sessionItem]};
+            return Object.assign(state, {}, {
+                updating: false,
+                trainingSessions: clonedList
+            });
+        case DELETE_TRAINING_SESSION:
+            return Object.assign(state, {}, {
+                trainingSessions: state.trainingSessions.filter(o => o.id !== action.data.id)
+            })
+    }
+}
