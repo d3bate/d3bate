@@ -1,3 +1,32 @@
+const REQUEST_JWT = "REQUEST_JWT";
+const RECEIVE_JWT = "RECEIVE_JWT";
+const ADD_CREDENTIALS = "ADD_CREDENTIALS";
+
+function authReducer(state = {
+    fetchingCredentials: false,
+    jwt: null,
+    jwtLastFetched: null,
+    identifier: null,
+    password: null
+}, action) {
+    switch (action.type) {
+        case REQUEST_JWT:
+            return Object.assign(state, {}, {
+                fetchingCredentials: true
+            });
+        case RECEIVE_JWT:
+            return Object.assign(state, {}, {
+                jwt: action.data.token,
+                jwtLastFetched: new Date().getSeconds()
+            });
+        case ADD_CREDENTIALS:
+            return Object.assign(state, {}, {
+                identifier: action.data.username,
+                password: action.data.password
+            })
+    }
+}
+
 const ADD_MESSAGE = "ADD_MESSAGE";
 const DELETE_MESSAGE = "DELETE_MESSAGE";
 
