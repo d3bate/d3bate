@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn app:'create_app()'
+web: flask db upgrade; gunicorn --worker-class -w 1 eventlet app
