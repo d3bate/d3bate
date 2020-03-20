@@ -1,5 +1,5 @@
 # Code of conduct
-This code of conduct benefits from the admirable work undertaken by the [contributor covenant](https://contributor-covenant.org). This code of conduct is a living document and may need to be updated over time. We welcome all suggestions for improvement to the code of conduct, which should be submitted as a Github pull request.
+This code of conduct is inspired by the [Contributor Covenant Code of Conduct](https://contributor-covenant.org). This code of conduct is a living document and may need to be updated over time. We welcome all suggestions for improvement to the code of conduct, which should be submitted as a Github pull request.
 
 d3bate is a project which aims to make debating available to more people. In order to achieve this we set out guidelines for how all project members should behave and aim to provide a common understanding for these rules. Anyone is welcome to suggest  modification to the code of conduct, at any time.
 
@@ -34,7 +34,7 @@ Breaches of the code of conduct should always be reported, even if the person re
 
 The core team will investigate all raised concerns. In the event that a core team member is unable to do this because they feature in a concern raised either (a) any other members of the core team who are able to conduct an impartial investigation will do so or (b) an independent third party will be sought. In case b the independent third party must be to the satisfaction of both parties. 
 
-## A non-comprehensive list of measures which can be undertaken
+## A non-comprehensive list of sanctions
 We provide a list of measures that we will undertake in the event of certain actions:
 * Warnings
     * Private warnings
