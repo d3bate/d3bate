@@ -221,7 +221,10 @@ function deleteTrainingSession(id) {
     }
 }
 
-function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
+function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {
+    trainingSessions: [],
+    selectedSession: null
+}, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
             return Object.assign({}, state, {

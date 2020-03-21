@@ -1,5 +1,6 @@
 import React from "react";
 import {View} from "react-native";
+import {connect} from "react-redux";
 
 class ClubTrainingSessions extends React.Component {
     constructor(props) {
@@ -16,3 +17,10 @@ class ClubTrainingSessions extends React.Component {
     }
 
 }
+
+export default connect((state, ownProps) => {
+    return {
+        trainingSessions: state.trainingSessions,
+        ...ownProps
+    }
+})(ClubTrainingSessions)
