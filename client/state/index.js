@@ -1,9 +1,18 @@
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import thunkMiddleware from "redux-thunk";
+import axios from "axios";
+import {backendURL} from "../constants";
 
 const REQUEST_JWT = "REQUEST_JWT";
 const RECEIVE_JWT = "RECEIVE_JWT";
 const ADD_CREDENTIALS = "ADD_CREDENTIALS";
+
+function jwtNeeded(state) {
+    if (!state.auth.jwtLastFetched) {
+        return true
+    } else return state.auth.jwtLastFetched + 900 < new Date().getSeconds();
+}
+
 
 function requestJWT() {
     return {
@@ -18,7 +27,21 @@ function receiveJWT(token) {
     }
 }
 
-function addCredentials(identifier, password) {
+export function fetchJWTIfNeeded() {
+    return (dispatch, getState) => {
+        if (jwtNeeded(getState())) {
+            axios.post(`${backendURL}/auth/login`)
+                .then(result => result.json)
+                .then(json => {
+                    if (json["type"] === "success") {
+                        dispatch(receiveJWT(json["data"]["token"]))
+                    }
+                })
+        }
+    }
+}
+
+export function addCredentials(identifier, password) {
     return {
         type: ADD_CREDENTIALS,
         data: {identifier, password}
@@ -101,10 +124,43 @@ function receiveClubData(data) {
     }
 }
 
+export function fetchClubData() {
+    return (dispatch, getState) => {
+        dispatch(requestClubData());
+        axios.post(`${backendURL}/api/club/get_all`, {headers: {"Authorization": `Bearer ${getState().auth.jwt}`}})
+            .then(response => response.data)
+            .then(json => {
+                if (json["type"] === "data") {
+                    dispatch(receiveClubData(json["data"]))
+                }
+            })
+    }
+}
+
+
 function receiveCreateClub(club) {
     return {
         type: RECEIVE_CREATE_CLUB,
         data: club
+    }
+}
+
+export function createClub(clubName, schoolWebsite) {
+    return (dispatch, getState) => {
+        axios.post(`${backendURL}/api/club/create`,
+            {club_name: clubName, school_website: schoolWebsite},
+            {
+                headers: {
+                    "Authorization": `Bearer ${getState().auth.jwt}`
+                }
+            })
+            .then(response => response.data)
+            .then(json => {
+                if (json["type"] === "data") {
+                    dispatch(receiveClubData(json["data"]))
+                }
+            })
+
     }
 }
 

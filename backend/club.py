@@ -1,12 +1,22 @@
 from datetime import datetime
 
-from flask import Blueprint, request, jsonify
-from sqlalchemy import or_, and_
 from app import db
-from models import Club, User, TrainingSession
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import Club, User, TrainingSession
+from sqlalchemy import or_, and_
 
 club_blueprint = Blueprint("club", __name__, url_prefix="/api/club")
+
+
+def club_to_json(x):
+    return {
+        "name": x.name,
+        "id": x.id,
+        "registered_school": x.registered_school,
+        "school_verified": x.school_verified,
+        "member_count": len(x.members) + len(x.owners) + len(x.admins)
+    }
 
 
 @club_blueprint.route("/create", methods=("POST",))
@@ -33,24 +43,14 @@ def create_club():
     club.owners.append(user)
     db.session.add(club)
     db.session.commit()
+    db.session.refresh(club)
     return jsonify({
-        "type": "success",
-        "message": "Created that club.",
-        "suggestion": ""
+        "type": "data",
+        "data": club_to_json(club)
     })
 
 
-def club_to_json(x):
-    return {
-        "name": x.name,
-        "id": x.id,
-        "registered_school": x.registered_school,
-        "school_verified": x.school_verified,
-        "member_count": len(x.members) + len(x.owners) + len(x.admins)
-    }
-
-
-@club_blueprint.route("/get_list")
+@club_blueprint.route("/get_all")
 @jwt_required
 def get_clubs():
     current_user = get_jwt_identity()
