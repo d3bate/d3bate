@@ -35,6 +35,26 @@ function auth(state = {
 const ADD_MESSAGE = "ADD_MESSAGE";
 const DELETE_MESSAGE = "DELETE_MESSAGE";
 
+function addMessage(type, message, suggestion) {
+    return {
+        type: ADD_MESSAGE,
+        message: {
+            type,
+            message,
+            suggestion
+        }
+    }
+}
+
+function deleteMessage(messageID) {
+    return {
+        type: DELETE_MESSAGE,
+        data: {
+            id: messageID
+        }
+    }
+}
+
 function messages(state = {messages: []}, action) {
     switch (action.type) {
         case ADD_MESSAGE:
