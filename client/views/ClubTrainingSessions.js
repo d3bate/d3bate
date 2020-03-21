@@ -2,6 +2,7 @@ import React from "react";
 import {View} from "react-native";
 import {connect} from "react-redux";
 
+
 class ClubTrainingSessions extends React.Component {
     constructor(props) {
         super(props);
@@ -11,7 +12,7 @@ class ClubTrainingSessions extends React.Component {
     render() {
         return (
             <View>
-
+                {this.props.trainingSessions.selectedClub ? "" : ""}
             </View>
         );
     }
