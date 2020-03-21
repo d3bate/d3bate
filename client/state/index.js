@@ -164,7 +164,7 @@ export function createClub(clubName, schoolWebsite) {
     }
 }
 
-function clubsReducer(state = {fetching: false, clubs: []}, action) {
+function clubs(state = {fetching: false, clubs: []}, action) {
     switch (action.type) {
         case REQUEST_CLUB_DATA:
             return Object.assign({}, state, {
@@ -323,7 +323,17 @@ function trainingSessions(selectedClub: null, fetching: false, adding: true, upd
     }
 }
 
-let rootReducer = combineReducers({auth, messages, trainingSessions});
+const SELECT_LIVESTREAM = "SELECTED_LIVESTREAM";
+
+
+function livestream(state = {selectedLivestream: null}, action) {
+    switch (action.type) {
+        case SELECT_LIVESTREAM:
+            return Object.assign({}, state, {selectedLivestream: action.data.id})
+    }
+}
+
+let rootReducer = combineReducers({auth, messages, trainingSessions, clubs, livestream});
 
 export function configStore(preloadedState) {
     return createStore(rootReducer, preloadedState, applyMiddleware(thunkMiddleware))
