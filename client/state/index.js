@@ -204,11 +204,11 @@ function addTrainingSession(sess) {
     }
 }
 
-function updateTrainingSession(id, update) {
+function updateTrainingSession(id, delta) {
     return {
         type: UPDATE_TRAINING_SESSION,
         data: {
-            id, update
+            id, delta
         }
     }
 }
@@ -260,6 +260,33 @@ export function sendAddTrainingSession(startTime, endTime, livestream) {
             .then(json => {
                 if (json["type"] === "success+data") {
                     dispatch(addTrainingSession(json["data"]))
+                }
+            })
+    }
+}
+
+export function sendUpdateTrainingSession(id, delta) {
+    return (dispatch, getState) => {
+        axios.post(`${backendURL}/api/club/training/update`, {
+            id,
+            delta
+        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+            .then(result => result.data)
+            .then(json => {
+                if (json["type"] === "success") {
+                    dispatch(updateTrainingSession(id, delta))
+                }
+            })
+    }
+}
+
+export function fetchTrainingSessions() {
+    return (dispatch, getState) => {
+        axios.get(`${backendURL}/api/club/training/all`, {headers: {Authorization: `Bearer ${getState().auth.token}`}})
+            .then(result => result.data)
+            .then(json => {
+                if (json["type"] === "data") {
+                    dispatch(receiveClubData(json["data"]))
                 }
             })
     }

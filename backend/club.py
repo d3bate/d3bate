@@ -212,9 +212,9 @@ def training_session_to_json(session):
     }
 
 
-@club_blueprint.route("/training/get_all")
+@club_blueprint.route("/training/single_club")
 @jwt_required
-def get_training_sessions():
+def get_club_training_sessions():
     current_user = get_jwt_identity()
     club_id = request.json["club_id"]
     club = Club.query.filter(
@@ -230,4 +230,19 @@ def get_training_sessions():
     return jsonify({
         "type": "data",
         "data": list(map(lambda x: training_session_to_json(x), club.training_sessions))
+    })
+
+
+@club_blueprint.route("/training/all")
+@jwt_required
+def get_all_training_sessions():
+    current_user = get_jwt_identity()
+    training_sessions = TrainingSession.query.filter(or_(TrainingSession.club.owners.any(id=current_user["id"]),
+                                                         or_(
+                                                             TrainingSession.club.admins.any(id=current_user["id"]),
+                                                             TrainingSession.club.members.any(id=current_user["id"])
+                                                         )))
+    return jsonify({
+        "type": "data",
+        "data": list(map(lambda x: training_session_to_json(x), training_sessions))
     })
