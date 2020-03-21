@@ -1,6 +1,8 @@
 import React from "react";
 import {View} from "react-native";
 import {connect} from "react-redux";
+import {SelectClub} from "../components/ClubTrainingSessions/SelectClub";
+import ViewTrainingSessions from "../components/ClubTrainingSessions/ViewTrainingSessions";
 
 
 class ClubTrainingSessions extends React.Component {
@@ -12,7 +14,9 @@ class ClubTrainingSessions extends React.Component {
     render() {
         return (
             <View>
-                {this.props.trainingSessions.selectedClub ? "" : ""}
+                {this.props.trainingSessions.selectedClub ?
+                    <ViewTrainingSessions selectedClub={this.props.trainingSessions.selectedClub}/>
+                    : <SelectClub/>}
             </View>
         );
     }
