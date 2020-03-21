@@ -48,6 +48,26 @@ const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
 const RECEIVE_CLUB_DATA = "GET_CLUBS";
 const RECEIVE_CREATE_CLUB = "RECEIVE_CREATE_CLUB";
 
+function requestClubData() {
+    return {
+        type: REQUEST_CLUB_DATA
+    }
+}
+
+function receiveClubData(data) {
+    return {
+        type: RECEIVE_CLUB_DATA,
+        data
+    }
+}
+
+function receiveCreateClub(club) {
+    return {
+        type: RECEIVE_CREATE_CLUB,
+        data: club
+    }
+}
+
 function clubsReducer(state = {fetching: false, clubs: []}, action) {
     switch (action.type) {
         case REQUEST_CLUB_DATA:
