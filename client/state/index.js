@@ -1,3 +1,6 @@
+import {createStore} from "redux";
+import thunkMiddleware from "redux-thunk";
+
 const REQUEST_JWT = "REQUEST_JWT";
 const RECEIVE_JWT = "RECEIVE_JWT";
 const ADD_CREDENTIALS = "ADD_CREDENTIALS";
