@@ -231,6 +231,24 @@ export function selectTrainingSessions(clubID) {
     }
 }
 
+export function sendDeleteTrainingSession(sessID, clubID) {
+    return (dispatch, getState) => {
+        axios.post(`${backendURL}/api/club/training/remove`, {
+            club_id: clubID,
+            session_id: sessID
+        }, {
+            headers:
+                {Authorization: `Bearer ${getState().auth.token}`}
+        })
+            .then(response => response.data)
+            .then(json => {
+                if (json["type"] === "success") {
+                    dispatch(deleteTrainingSession(id))
+                }
+            })
+    }
+}
+
 function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {
     trainingSessions: [],
     selectedSession: null
