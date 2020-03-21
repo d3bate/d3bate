@@ -68,11 +68,44 @@ function clubsReducer(state = {fetching: false, clubs: []}, action) {
     }
 }
 
+const RECEIVE_TRAINING_SESSIONS = "RECEIVE_TRAINING_SESSIONS";
 const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
 const UPDATE_TRAINING_SESSION = "UPDATE_TRAINING_SESSION";
 const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
 
-function trainingSessions(fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
+function receiveTrainingSessions(sessions, selectedClub) {
+    return {
+        type: RECEIVE_TRAINING_SESSIONS,
+        data: {sessions, selectedClub}
+    }
+}
+
+function addTrainingSession(sess) {
+    return {
+        type: ADD_TRAINING_SESSION,
+        data: sess
+    }
+}
+
+function updateTrainingSession(id, update) {
+    return {
+        type: UPDATE_TRAINING_SESSION,
+        data: {
+            id, update
+        }
+    }
+}
+
+function deleteTrainingSession(id) {
+    return {
+        TYPE: DELETE_TRAINING_SESSION,
+        data: {
+            id
+        }
+    }
+}
+
+function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
             return Object.assign({}, state, {
