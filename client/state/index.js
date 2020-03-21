@@ -1,8 +1,11 @@
+import {applyMiddleware, combineReducers, createStore} from "redux";
+import thunkMiddleware from "redux-thunk";
+
 const REQUEST_JWT = "REQUEST_JWT";
 const RECEIVE_JWT = "RECEIVE_JWT";
 const ADD_CREDENTIALS = "ADD_CREDENTIALS";
 
-function authReducer(state = {
+function auth(state = {
     fetchingCredentials: false,
     jwt: null,
     jwtLastFetched: null,
@@ -32,7 +35,7 @@ function authReducer(state = {
 const ADD_MESSAGE = "ADD_MESSAGE";
 const DELETE_MESSAGE = "DELETE_MESSAGE";
 
-function messagesReducer(state = {messages: []}, action) {
+function messages(state = {messages: []}, action) {
     switch (action.type) {
         case ADD_MESSAGE:
             return Object.assign({}, state, {messages: [{id: state.messages.length, ...action.data}, ...state.messages]});
@@ -69,7 +72,7 @@ const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
 const UPDATE_TRAINING_SESSION = "UPDATE_TRAINING_SESSION";
 const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
 
-function trainingSessionReducer(fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
+function trainingSessions(fetching: false, adding: true, updating: false, state = {trainingSessions: []}, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
             return Object.assign({}, state, {
@@ -91,4 +94,9 @@ function trainingSessionReducer(fetching: false, adding: true, updating: false, 
         default:
             return state
     }
+}
+
+let rootReducer = combineReducers({auth, messages, trainingSessions});
+export default function configStore(preloadedState) {
+    return createStore(rootReducer, preloadedState, applyMiddleware(thunkMiddleware))
 }
