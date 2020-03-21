@@ -246,6 +246,7 @@ function trainingSessions(selectedClub: null, fetching: false, adding: true, upd
 }
 
 let rootReducer = combineReducers({auth, messages, trainingSessions});
-export default function configStore(preloadedState) {
+
+export function configStore(preloadedState) {
     return createStore(rootReducer, preloadedState, applyMiddleware(thunkMiddleware))
 }
