@@ -132,10 +132,12 @@ def add_training_session():
     )
     db.session.add(training_session)
     db.session.commit()
+    db.session.refresh(training_session)
     return jsonify({
-        "type": "success",
+        "type": "success+data",
         "message": "The training session was successfully scheduled.",
-        "suggestion": ""
+        "suggestion": "",
+        "data": training_session_to_json(training_session)
     })
 
 

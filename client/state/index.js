@@ -249,6 +249,22 @@ export function sendDeleteTrainingSession(sessID, clubID) {
     }
 }
 
+export function sendAddTrainingSession(startTime, endTime, livestream) {
+    return (dispatch, getState) => {
+        axios.post(`${backendURL}/api/club/training/add`, {
+            start_time: startTime,
+            end_time: endTime,
+            livestream
+        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+            .then(response => response.data)
+            .then(json => {
+                if (json["type"] === "success+data") {
+                    dispatch(addTrainingSession(json["data"]))
+                }
+            })
+    }
+}
+
 function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {
     trainingSessions: [],
     selectedSession: null
