@@ -5,6 +5,26 @@ const REQUEST_JWT = "REQUEST_JWT";
 const RECEIVE_JWT = "RECEIVE_JWT";
 const ADD_CREDENTIALS = "ADD_CREDENTIALS";
 
+function requestJWT() {
+    return {
+        type: REQUEST_JWT
+    }
+}
+
+function receiveJWT(token) {
+    return {
+        type: RECEIVE_JWT,
+        data: {token}
+    }
+}
+
+function addCredentials(identifier, password) {
+    return {
+        type: ADD_CREDENTIALS,
+        data: {identifier, password}
+    }
+}
+
 function auth(state = {
     fetchingCredentials: false,
     jwt: null,
