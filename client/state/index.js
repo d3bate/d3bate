@@ -188,6 +188,7 @@ const RECEIVE_TRAINING_SESSIONS = "RECEIVE_TRAINING_SESSIONS";
 const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
 const UPDATE_TRAINING_SESSION = "UPDATE_TRAINING_SESSION";
 const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
+const SELECT_TRAINING_SESSIONS = "SELECT_TRAINING_SESSIONS";
 
 function receiveTrainingSessions(sessions, selectedClub) {
     return {
@@ -214,9 +215,18 @@ function updateTrainingSession(id, update) {
 
 function deleteTrainingSession(id) {
     return {
-        TYPE: DELETE_TRAINING_SESSION,
+        type: DELETE_TRAINING_SESSION,
         data: {
             id
+        }
+    }
+}
+
+export function selectTrainingSessions(clubID) {
+    return {
+        type: SELECT_TRAINING_SESSIONS,
+        data: {
+            id: clubID
         }
     }
 }
@@ -242,6 +252,10 @@ function trainingSessions(selectedClub: null, fetching: false, adding: true, upd
         case DELETE_TRAINING_SESSION:
             return Object.assign({}, state, {
                 trainingSessions: state.trainingSessions.filter(o => o.id !== action.data.id)
+            });
+        case SELECT_TRAINING_SESSIONS:
+            return Object.assign({}, state, {
+                selectedClub: state.trainingSessions.filter(o => o["club_id"] === action.data.id)
             });
         default:
             return state

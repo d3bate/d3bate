@@ -203,6 +203,7 @@ def update_training():
 def training_session_to_json(session):
     return {
         "id": session.id,
+        "club_id": session.club,
         "start_time": session.start_time.timestamp(),
         "end_time": session.end_time.timestamp(),
         "livestream": session.livestream
