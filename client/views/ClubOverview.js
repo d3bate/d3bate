@@ -10,7 +10,6 @@ class ClubOverview extends React.Component {
     render() {
         return (
             <View>
-
             </View>
         );
     }

@@ -1,19 +1,24 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
+
+import {Route, Router, Switch} from "routing";
 
 export default function App() {
     return (
-        <View style={styles.container}>
-            <Text>Open up App.js to start working on your app!</Text>
+        <View>
+            <Text>d3bate</Text>
+            <Router>
+                <Switch>
+                    <Route exact path="/club">
+                    </Route>
+                    <Route exact path="/club/training-sessions">
+                    </Route>
+                    <Route exact path="/club/training-sessions/edit">
+                    </Route>
+                    <Route exact path="/club/training-sessions/livestream">
+                    </Route>
+                </Switch>
+            </Router>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
