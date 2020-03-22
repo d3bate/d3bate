@@ -330,6 +330,41 @@ const RECEIVE_SAMPLE = "RECEIVE_SAMPLE";
 const SEND_FRAME = "SEND_FRAME";
 const SEND_SAMPLE = "SEND_SAMPLE";
 
+function selectLivestream(id) {
+    return {
+        type: SELECT_LIVESTREAM,
+        data: {
+            id
+        }
+    }
+}
+
+function stopLivestream(id) {
+    return {
+        type: STOP_LIVESTREAM,
+        data: {
+            id
+        }
+    }
+}
+
+function receiveFrame(frame) {
+    return {
+        type: RECEIVE_FRAME,
+        data: {
+            ...frame
+        }
+    }
+}
+
+function receiveSample(sample) {
+    return {
+        type: RECEIVE_SAMPLE,
+        data: {
+            ...sample
+        }
+    }
+}
 
 function livestream(state = {
     selectedLivestream: null,
