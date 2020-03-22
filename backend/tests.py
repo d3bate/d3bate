@@ -1,8 +1,8 @@
-from app import create_app
-from flask import Flask
+import unittest
 from datetime import datetime
 
-import unittest
+from app import create_app
+from flask import Flask
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
@@ -43,10 +43,11 @@ class E2E(unittest.TestCase):
         }, headers={
             "Authorization": "Bearer {}".format(self.token)
         })
-        self.assertTrue(create_club.json["type"] == "success")
+        self.assertTrue(create_club.json["type"] == "data")
 
-        get_club_list = self.client.get("/api/club/get_list",
+        get_club_list = self.client.get("/api/club/get_all",
                                         headers={"Authorization": "Bearer {}".format(self.token)}).json
+
         self.assertTrue(len(get_club_list["data"]["owner"]) == 1)
 
         club_id = get_club_list["data"]["owner"][0]
@@ -63,9 +64,9 @@ class E2E(unittest.TestCase):
             "Authorization": "Bearer {}".format(self.token)
         }).json
 
-        self.assertTrue(add_training_session_1["type"] == "success")
+        self.assertTrue(add_training_session_1["type"] == "success+data")
 
-        get_training_session_1 = self.client.get("/api/club/training/get_all", json={
+        get_training_session_1 = self.client.get("/api/club/training/all", json={
             "club_id": club_id["id"]
         }, headers={
             "Authorization": "Bearer {}".format(self.token)
@@ -79,19 +80,21 @@ class E2E(unittest.TestCase):
         update_training_session_1 = self.client.post("/api/club/training/update", json={
             "session_id": training_session["id"],
             "delta": {
-                start_time: start_time - 10
+                "start_time": start_time + 10
             }
-        })
+        }, headers={
+            "Authorization": "Bearer {}".format(self.token)
+        }).json
         self.assertTrue(update_training_session_1["type"] == "success")
 
-        get_training_session_1_updated = self.client.get("/api/club/training/get_all", json={
+        get_training_session_1_updated = self.client.get("/api/club/training/all", json={
             "club_id": club_id["id"]
         }, headers={
             "Authorization": "Bearer {}".format(self.token)
         }).json
         self.assertTrue(get_training_session_1_updated["type"] == "data")
         training_session_updated = get_training_session_1_updated["data"][0]
-        self.assertTrue(training_session_updated["start_time"] == start_time - 10)
+        self.assertTrue(training_session_updated["start_time"] == start_time + 10)
         self.assertTrue(training_session_updated["end_time"] == end_time)
 
         leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"]["owner"][0]["id"]},
@@ -100,6 +103,6 @@ class E2E(unittest.TestCase):
                                       }).json
         self.assertTrue(leave_club["type"] == "success")
 
-        get_club_list_2 = self.client.get("/api/club/get_list",
+        get_club_list_2 = self.client.get("/api/club/get_all",
                                           headers={"Authorization": "Bearer {}".format(self.token)}).json
         self.assertTrue(len(get_club_list_2["data"]["owner"]) == 0)

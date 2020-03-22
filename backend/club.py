@@ -171,16 +171,16 @@ def remove_debating_session():
     })
 
 
-@club_blueprint.route("/training/update")
+@club_blueprint.route("/training/update", methods=("POST",))
 @jwt_required
 def update_training():
     current_user = get_jwt_identity()
     session_id = request.json["session_id"]
     delta = request.json["delta"]
     training_session = TrainingSession.query.get(session_id)
-    user_has_privileges = Club.query.get(
-        and_(or_(Club.owners.any(id=current_user["id"]), Club.admins.any(id=current_user["id"])),
-             Club.id.any(training_session.id)))
+    user_has_privileges = Club.query.filter(
+        (Club.owners.any(id=current_user["id"]) | Club.admins.any(id=current_user["id"])) & (
+                Club.id == training_session.club)).first()
     if not user_has_privileges:
         return jsonify({
             "type": "error",
@@ -237,11 +237,9 @@ def get_club_training_sessions():
 @jwt_required
 def get_all_training_sessions():
     current_user = get_jwt_identity()
-    training_sessions = TrainingSession.query.filter(or_(TrainingSession.club.owners.any(id=current_user["id"]),
-                                                         or_(
-                                                             TrainingSession.club.admins.any(id=current_user["id"]),
-                                                             TrainingSession.club.members.any(id=current_user["id"])
-                                                         )))
+    clubs = Club.query.filter((Club.admins.any(id=current_user["id"])) | (
+        Club.owners.any(id=current_user["id"])) | (Club.members.any(id=current_user["id"]))).all()
+    training_sessions = TrainingSession.query.filter(or_(*[(TrainingSession.club == club.id) for club in clubs]))
     return jsonify({
         "type": "data",
         "data": list(map(lambda x: training_session_to_json(x), training_sessions))
