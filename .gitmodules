@@ -1,3 +1,0 @@
-[submodule "app/src/sabre"]
-	path = app/src/sabre
-	url = https://github.com/d3bate/sabre
