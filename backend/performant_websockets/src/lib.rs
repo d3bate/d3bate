@@ -1,8 +1,11 @@
 use std::collections::HashMap;
 
+
 use actix::{Actor, StreamHandler};
 
 use actix_web_actions::ws;
+
+mod db;
 
 struct ReceiveVideo;
 
@@ -29,7 +32,7 @@ pub struct PerformantWebsockets {
 impl PerformantWebsockets {
     pub fn new() -> Self {
         Self {
-            sessions: HashMap::new();
+            sessions: HashMap::new()
         }
     }
 
