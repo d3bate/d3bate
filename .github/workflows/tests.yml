@@ -6,10 +6,10 @@ name: Python application
 on:
   push:
     paths:
-      - "backend/**/*"
+    - "backend/**/*"
   pull_request:
     paths:
-      - "backend/**/*"
+    - "backend/**/*"
 
 jobs:
   build:
@@ -29,4 +29,11 @@ jobs:
         pip install -r requirements.txt
         cd ../
     - name: Run tests
-      run: cd backend; python -m unittest tests; cd ../ 
+      run: |
+        cd backend
+        export FLASK_APP=app:create_app
+        export DATABASE_URL=sqlite:///test.db
+        export SECRET_KEY=afghrbej3424thnr1452@lafd2t.ewgrf4t4njhnr-gsfdjknbmv
+        flask db upgrade
+        python -m unittest tests.py
+        rm -rf test.db
