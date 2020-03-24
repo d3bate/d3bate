@@ -85,6 +85,7 @@ class ChatMessageThread(db.Model):
 
 class ChatMessage(db.Model):
     __tablename__ = "chat_message"
+    id = db.Column(db.Integer, primary_key=True)
     is_reply = db.Column(db.Boolean)
     reply_to = db.Column(db.Integer, nullable=True)
     created = db.Column(db.DateTime, nullable=False)
