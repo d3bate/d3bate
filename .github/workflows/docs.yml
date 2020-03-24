@@ -16,7 +16,9 @@ jobs:
       run: wget -q -O - "https://github.com/getzola/zola/releases/download/v0.9.0/zola-v0.9.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
 
     - name: Build site
-      run: zola build
+      run: |
+      cd docs
+      zola build
 
     - name: Deploy site
       uses: peaceiris/actions-gh-pages@v2.5.0
