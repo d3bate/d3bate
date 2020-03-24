@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "expo": "~36.0.0",
+    "expo-camera": "^8.0.0",
+    "expo-face-detector": "^8.0.1",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
     "react": "~16.9.0",
