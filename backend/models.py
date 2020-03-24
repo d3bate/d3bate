@@ -60,7 +60,7 @@ class TrainingSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
-    livestream = db.Column(db.Boolean, default=False)
+    livestream = db.Column(db.Boolean, default=False, nullable=False)
     description = db.Column(db.Text)
     club = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
 
@@ -76,7 +76,6 @@ class TrainingSessionAttendance(db.Model):
 class ChatMessageThread(db.Model):
     __tablename__ = "chat_message_thread"
     id = db.Column(db.Integer, primary_key=True)
-    start_message = db.Column(db.Integer, db.ForeignKey("chat_message.id"), nullable=False)
     last_active = db.Column(db.DateTime, nullable=False)
     user_count = db.Column(db.Integer, nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
@@ -88,6 +87,6 @@ class ChatMessage(db.Model):
     __tablename__ = "chat_message"
     id = db.Column(db.Integer, primary_key=True)
     thread_id = db.Column(db.Integer, db.ForeignKey("chat_message_thread.id"))
-    is_reply = db.Column(db.Boolean)
+    is_reply = db.Column(db.Boolean, nullable=False)
     reply_to = db.Column(db.Integer, db.ForeignKey("chat_message.id"))
     created = db.Column(db.DateTime, nullable=False)
