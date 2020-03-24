@@ -1,7 +1,7 @@
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 members = db.Table("club_members",
                    db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
@@ -52,6 +52,7 @@ class Club(db.Model):
     owners = db.relationship("User", secondary=owners, lazy="subquery", backref=db.backref("owners", lazy=True))
     admins = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("admins", lazy=True))
     members = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("members", lazy=True))
+    chat_messages = db.relationship("ChatMessageThread", backref="club_chat_messages", lazy=True)
 
 
 class TrainingSession(db.Model):
@@ -70,3 +71,20 @@ class TrainingSessionAttendance(db.Model):
     training_session_id = db.Column(db.Integer, db.ForeignKey("training_session.id"), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     attending = db.Column(db.Boolean, nullable=False, default=False)
+
+
+class ChatMessageThread(db.Model):
+    __tablename__ = "chat_message_thread"
+    id = db.Column(db.Integer, primary_key=True)
+    start_message = db.Column(db.Integer, db.ForeignKey("chat_message.id"), nullable=False)
+    last_active = db.Column(db.DateTime, nullable=False)
+    user_count = db.Column(db.Integer, nullable=False)
+    club_id = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
+    club = db.relationship("Club", backref="message_thread_club", lazy=True)
+
+
+class ChatMessage(db.Model):
+    __tablename__ = "chat_message"
+    is_reply = db.Column(db.Boolean)
+    reply_to = db.Column(db.Integer, nullable=True)
+    created = db.Column(db.DateTime, nullable=False)
