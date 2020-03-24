@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from app import db
 
 members = db.Table("club_members",
                    db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),

@@ -11,8 +11,16 @@ impl Actor for ReceiveVideo {
 }
 
 impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for ReceiveVideo {
-    fn handle(&mut self) {}
+    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
+        match msg {
+            Ok(ws::Message::Ping(msg)) => ctx.pong(&msg),
+            Ok(ws::Messge::Text(text)) => ctx.text(text),
+            Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
+            _ => (),
+        }
+    }
 }
+
 
 pub struct PerformantWebsockets {
     sessions: HashMap<String, String>
