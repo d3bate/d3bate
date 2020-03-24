@@ -81,11 +81,13 @@ class ChatMessageThread(db.Model):
     user_count = db.Column(db.Integer, nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
     club = db.relationship("Club", backref="message_thread_club", lazy=True)
+    messages = db.relationship("ChatMessage", backref="message_thread_chat_messages", lazy=True)
 
 
 class ChatMessage(db.Model):
     __tablename__ = "chat_message"
     id = db.Column(db.Integer, primary_key=True)
+    thread_id = db.Column(db.Integer, db.ForeignKey("chat_message_thread.id"))
     is_reply = db.Column(db.Boolean)
-    reply_to = db.Column(db.Integer, nullable=True)
+    reply_to = db.Column(db.Integer, db.ForeignKey("chat_message.id"))
     created = db.Column(db.DateTime, nullable=False)
