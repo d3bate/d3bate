@@ -4,6 +4,7 @@ import {Camera} from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
 import io from "socket.io-client"
 import {backendURL} from "../constants";
+import {Path, Svg} from "react-native-svg";
 
 
 class TrainingSessionLivestream extends React.Component {
@@ -47,6 +48,11 @@ class TrainingSessionLivestream extends React.Component {
                     <Text>Save my (face and audio) data for later review</Text>
                     <Switch value={this.state.saveData ? 1 : 0}/>
                 </View>
+                {this.state.others.length > 0 ? this.state.others.map(
+                    (other, otherIndex) => {
+                        return <View key={otherIndex}><Svg><Path/></Svg></View>
+                    }
+                ) : <Text>There are no other people in this debate.</Text>}
                 <Camera zoom={} ratio={} focusDepth={} onMountError={} pictureSize={} onCameraReady={} useCamera2Api={}
                         onBarCodeScanned={} barCodeScannerSettings={} onFacesDetected={this.sendFaceData}
                         faceDetectorSettings={{
