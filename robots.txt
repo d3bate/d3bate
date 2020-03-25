@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://d3bate.github.io/d3bate/sitemap.xml

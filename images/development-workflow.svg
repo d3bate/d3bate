@@ -1,0 +1,78 @@
+<svg version="1.1" baseProfile="full" width="587.25" height="680" viewbox="0 0 587.25 680"
+     xmlns="http://www.w3.org/2000/svg"
+     style="font-weight:bold; font-size:12pt; font-family:'Calibri', Helvetica, sans-serif;;stroke-width:3;stroke-linejoin:round;stroke-linecap:round">
+    <title>Devlopment flow</title>
+    <desc>[Want to add a new feature?]-&gt;[&lt;choice&gt; Can you program?]
+        [&lt;choice&gt; Can you program?]-&gt;[Yes]
+        [Yes]-&gt;[Create an issue]
+        [Create an issue]-&gt;[Discuss the feature]
+        [Discuss the feature]-&gt;[Create a pull request]
+        [Create a pull request]-&gt;[See your feature deployed]
+        [&lt;choice&gt; Can you program?]-&gt;[No]
+        [No] -&gt; [Mention this in the issue]
+        [&lt;note&gt; Someone will help you!] -- [Mention this in the issue]
+        [Mention this in the issue] -&gt; [Create an issue]
+        #padding: 15
+    </desc>
+    <path d="M161.5 65.5 L161.5 85.5 L161.5 105.5 L161.5 105.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M156.2 92.2 L161.5 98.8 L166.8 92.2 L161.5 105.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M144.4 150.5 L129.3 170.5 L129.3 213 L129.3 213 L129.3 255.5 L129.3 255.5 L129.3 275.5 L129.3 275.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M123.9 262.2 L129.3 268.8 L134.6 262.2 L129.3 275.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M129.3 320.5 L129.3 340.5 L187.7 360.5 L187.7 360.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M173.4 361.2 L181.4 358.3 L176.8 351.1 L187.7 360.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M253.5 405.5 L253.5 425.5 L253.5 445.5 L253.5 445.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M248.2 432.2 L253.5 438.8 L258.8 432.2 L253.5 445.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M253.5 490.5 L253.5 510.5 L253.5 530.5 L253.5 530.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M248.2 517.2 L253.5 523.8 L258.8 517.2 L253.5 530.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M253.5 575.5 L253.5 595.5 L253.5 615.5 L253.5 615.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M248.2 602.2 L253.5 608.8 L258.8 602.2 L253.5 615.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M215.9 150.5 L264.3 170.5 L264.3 190.5 L264.3 190.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M258.9 177.2 L264.3 183.8 L269.6 177.2 L264.3 190.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M264.3 235.5 L264.3 255.5 L307.5 275.5 L307.5 275.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M293.2 274.8 L301.5 272.7 L297.7 265.1 L307.5 275.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <path d="M448.3 235.5 L448.3 255.5 L405 275.5 L405 275.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:6 6;"></path>
+    <path d="M356.3 320.5 L356.3 340.5 L307.9 360.5 L307.9 360.5 "
+          style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <path d="M318.2 350.5 L314.1 358 L322.3 360.3 L307.9 360.5 Z"
+          style="stroke:#33322E;fill:#33322E;stroke-dasharray:none;"></path>
+    <rect x="20.5" y="20.5" height="45" width="282" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="161.5" y="49" style="fill: #33322E;text-anchor: middle;">Want to add a new feature?</text>
+    <path d="M161.5 90.5 L267.5 128 L161.5 165.5 L55.5 128 Z"
+          style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></path>
+    <text x="161.5" y="134" style="fill: #33322E;font-weight:normal;text-anchor: middle;">Can you program?</text>
+    <rect x="99.5" y="275.5" height="45" width="59" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="129" y="304" style="fill: #33322E;text-anchor: middle;">Yes</text>
+    <rect x="167.5" y="360.5" height="45" width="173" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="254" y="389" style="fill: #33322E;text-anchor: middle;">Create an issue</text>
+    <rect x="148.5" y="445.5" height="45" width="211" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="254" y="474" style="fill: #33322E;text-anchor: middle;">Discuss the feature</text>
+    <rect x="138.5" y="530.5" height="45" width="230" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="253.5" y="559" style="fill: #33322E;text-anchor: middle;">Create a pull request</text>
+    <rect x="119.5" y="615.5" height="45" width="268" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="253.5" y="644" style="fill: #33322E;text-anchor: middle;">See your feature deployed</text>
+    <rect x="239.5" y="190.5" height="45" width="49" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="264" y="219" style="fill: #33322E;text-anchor: middle;">No</text>
+    <rect x="220.5" y="275.5" height="45" width="272" style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></rect>
+    <text x="356.5" y="304" style="fill: #33322E;text-anchor: middle;">Mention this in the issue</text>
+    <path d="M328.5 190.5 L552.5 190.5 L567.5 205.5 L567.5 235.5 L328.5 235.5 L328.5 190.5 Z"
+          style="stroke:#33322E;fill:#eee8d5;stroke-dasharray:none;"></path>
+    <path d="M552.5 190.5 L552.5 205.5 L567.5 205.5" style="stroke:#33322E;fill:none;stroke-dasharray:none;"></path>
+    <text x="343.5" y="219" style="fill: #33322E;font-weight:normal;">Someone will help you!</text>
+</svg>
