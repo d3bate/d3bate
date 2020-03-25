@@ -138,3 +138,25 @@ impl Handler<VideoSnapshot> for WsDebateSession {
     }
 }
 
+impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsDebateSession {
+    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
+        let msg = match msg {
+            Err(_) => {
+                ctx.stop();
+                return;
+            }
+            Ok(msg) => msg
+        };
+
+        match msg {
+            ws::Message::Ping(msg) => {
+                self.hb = Instant::now();
+                ctx.pong(&msg);
+            }
+            ws::Message::Text(text) => {
+                let m = text.trim();
+            }
+            _ => {}
+        }
+    }
+}
