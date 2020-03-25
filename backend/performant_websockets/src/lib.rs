@@ -12,9 +12,13 @@ pub struct PerformantWebsockets {}
 #[pymethods]
 impl PerformantWebsockets {
     #[new]
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {}
     }
+    /// Runs websockets and the main application in parallel.
+    /// It is intended for this function to accept a Flask app as a parameter and spawn this on a
+    /// separate thread.
+    pub fn run() {}
 }
 
 #[cfg(test)]

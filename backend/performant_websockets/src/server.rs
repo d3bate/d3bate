@@ -12,7 +12,7 @@ use actix_web_actions::ws;
 pub struct ChatMessage {
     pub text: String,
     // This should be the id in the database (not the hashmap)
-    pub debate: usize
+    pub debate: usize,
 }
 
 #[derive(Message)]
@@ -27,7 +27,6 @@ struct UserRequestDebateJoin {
     // id should correspond to the id of a column in the 'training_session' table
     pub debate: usize,
 }
-
 
 /// The face struct represents data from the client about a specific face. More than one person might
 /// use a single device. All the fields are instances of the `Option` enum because the client will
@@ -62,6 +61,11 @@ pub struct VideoSnapshot {
     pub faces: Vec<Face>,
 }
 
+#[derive(Message)]
+#[type (usize)]
+pub struct AudioSnapshot {}
+
+
 /// Represents a debate
 /// The `session_id` field should correspond to a database entry
 pub struct Debate {
@@ -77,4 +81,23 @@ pub struct PerformantWebsockets {
 
 impl Actor for PerformantWebsockets {
     type Context = Context<Self>;
+}
+
+pub struct WsDebateSession {
+    id: usize,
+    hb: std::time::Instant,
+    debate: usize,
+    authenticated: bool,
+    name: String,
+    username: String,
+    addr: Addr<PerformantWebsockets>,
+    jwt: String,
+}
+
+impl Actor for WsDebateSession {
+    type Context = ws::WebsocketContext<Self>;
+    fn started(&mut self, ctx: &mut Self::Context) {
+        self.hb(ctx);
+        let addr = ctx.address();
+    }
 }
