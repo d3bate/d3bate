@@ -1,5 +1,5 @@
 +++
-title=d3bate
+title="d3bate"
 +++
 d3bate is a digital debating toolkit. It is developed entirely as open source software (under a Mozilla Public License 2.0) and you can host it entirely yourself should you wish to do so. 
 
