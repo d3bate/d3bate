@@ -26,6 +26,10 @@ nav {
   color: white;
 }
 
+.text-full-width {
+  text-transform: full-width;
+}
+
 .content {
   padding: 4em;
   color: #e3e3e3;
@@ -47,4 +51,10 @@ nav {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+}
+
+footer {
+  padding: 4em;
+  text-align: center;
+  color: #e3e3e3;
 }
