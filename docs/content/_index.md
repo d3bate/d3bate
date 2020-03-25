@@ -1,7 +1,7 @@
 +++
 title="d3bate"
 +++
-d3bate is a digital debating toolkit. It is developed entirely as open source software (under a Mozilla Public License 2.0) and you can host it entirely yourself should you wish to do so. 
+d3bate is a digital debating toolkit. It is developed entirely as open source software (under a Mozilla Public License 2.0) and you can host it entirely yourself should you wish to do so. A [publicly hosted version](https://debating.web.app) is also provided.
 
 d3bate allows you to:
 + quickly schedule events in your club's calendar (planned)
