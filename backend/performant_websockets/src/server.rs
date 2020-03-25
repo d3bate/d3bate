@@ -155,7 +155,32 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsDebateSession {
             }
             ws::Message::Text(text) => {
                 let m = text.trim();
+                if m.starts_with("/") {
+                    let v: Vec<&str> = m.splitn(2, ' ').collect();
+                    match v[0] {
+                        "/list" => {}
+                        "/debate/start" => {}
+                        "/debate/speaker/add" => {}
+                        "/debate/speaker/remove" => {}
+                        "/debate/join" => {
+                            if v.len() == 2 {
+                                self.debate = v[1].to_owned().parse::<usize>().unwrap();
+                            } else {
+                                ctx.text("You must supply the ID of the session you wish to join.")
+                            }
+                        }
+
+                        "/speech/start" => {}
+                        "/speech/stop" => {}
+                        "/speech/offer_poi" => {}
+                        "/speech/accept_poi" => {}
+                        _ => {
+                            ctx.text(format!("The command '{}' is not known to the server.", m)))
+                        }
+                    }
+                }
             }
+            ws::Message::Binary(bin) => {}
             _ => {}
         }
     }
