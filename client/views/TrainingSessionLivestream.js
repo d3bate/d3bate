@@ -2,8 +2,7 @@ import React from "react";
 import {Switch, Text, View} from "react-native";
 import {Camera} from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
-import io from "socket.io-client"
-import {backendURL} from "../constants";
+import {backendWebsocketURL} from "../constants";
 import {Path, Svg} from "react-native-svg";
 
 
@@ -19,17 +18,7 @@ class TrainingSessionLivestream extends React.Component {
     }
 
     componentDidMount() {
-        this.websocket = io.connect(`${backendURL}/video`);
-        this.state.connecting = false;
-        this.websocket.on("receive_face_data", (data) => {
-            let index = this.state.others.findIndex(o => o.userID === data.userID);
-            if (!index) {
-                this.state.others.push(data)
-            }
-            else {
-                this.state.others[index] = data
-            }
-        })
+        this.websocket = new WebSocket(`${backendWebsocketURL}`);
     }
 
     componentWillUnmount() {
