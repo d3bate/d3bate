@@ -3,6 +3,7 @@ use std::option::Option;
 
 use actix::{Actor, StreamHandler};
 use actix::prelude::*;
+use actix::Running;
 
 use actix_web_actions::ws;
 
@@ -99,5 +100,8 @@ impl Actor for WsDebateSession {
     fn started(&mut self, ctx: &mut Self::Context) {
         self.hb(ctx);
         let addr = ctx.address();
+    }
+    fn stopping(&mut self, ctx: &mut Self::Context) -> Running {
+        Running::Stop
     }
 }
