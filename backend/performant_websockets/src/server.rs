@@ -137,3 +137,4 @@ impl Handler<VideoSnapshot> for WsDebateSession {
         ctx.ping(msg);
     }
 }
+

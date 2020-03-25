@@ -11,4 +11,4 @@ d3bate allows you to:
     - run training sessions (with one presenter and multiple listeners)
     - run debates (with multiple debaters and a judge) and allow teams to prep their debates in advance
 
-Keep track of the development of the application on our [Github page](https://github.com/d3abte/d3bate).
+Keep track of the development of the application on our [Github page](https://github.com/d3bate/d3bate).
