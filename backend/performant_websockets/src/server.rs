@@ -6,7 +6,32 @@ use actix::prelude::*;
 use actix::Running;
 
 use actix_web_actions::ws;
+use std::time::{Duration, Instant};
+use actix_web::{HttpRequest, web, HttpResponse, Error};
 
+const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(15);
+const CLIENT_TIMEOUT: Duration = Duration::from_secs(30);
+
+async fn live_debate(
+    req: HttpRequest,
+    stream: web::Payload,
+    srv: web::Data<Addr<PerformantWebsocketsServer>>,
+) -> Result<HttpResponse, Error> {
+    ws::start(
+        WsDebateSession {
+            id: 0,
+            hb: Instant::now(),
+            debate: 0,
+            authenticated: false,
+            name: String::from("Placeholder Name"),
+            username: String::from("placeholder_username"),
+            addr: srv.get_ref().clone(),
+            jwt: "".to_string(),
+        },
+        &req,
+        stream,
+    )
+}
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -74,13 +99,13 @@ pub struct Debate {
     pub session_id: usize,
 }
 
-pub struct PerformantWebsockets {
+pub struct PerformantWebsocketsServer {
     sessions: HashMap<usize, Recipient<Message>>,
     debates: HashMap<usize, Debate>,
 }
 
 
-impl Actor for PerformantWebsockets {
+impl Actor for PerformantWebsocketsServer {
     type Context = Context<Self>;
 }
 
@@ -91,7 +116,7 @@ pub struct WsDebateSession {
     authenticated: bool,
     name: String,
     username: String,
-    addr: Addr<PerformantWebsockets>,
+    addr: Addr<PerformantWebsocketsServer>,
     jwt: String,
 }
 
@@ -103,5 +128,12 @@ impl Actor for WsDebateSession {
     }
     fn stopping(&mut self, ctx: &mut Self::Context) -> Running {
         Running::Stop
+    }
+}
+
+impl Handler<VideoSnapshot> for WsDebateSession {
+    type Result = ();
+    fn handle(&mut self, msg: VideoSnapshot, ctx: &mut self::Context<Self>) {
+        ctx.ping(msg);
     }
 }
