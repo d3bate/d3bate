@@ -67,7 +67,7 @@ function auth(state = {
             });
         case ADD_CREDENTIALS:
             return Object.assign({}, state, {
-                identifier: action.data.username,
+                identifier: action.data.identifier,
                 password: action.data.password
             });
         default:

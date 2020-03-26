@@ -23,16 +23,16 @@ class Login extends React.Component {
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
-                    this.receiveJWT(json["data"]["token"]);
-                    this.addCredentials(this.state.identifier, this.state.password)
+                    this.props.receiveJWT(json["data"]["token"]);
+                    this.props.addCredentials(this.state.identifier, this.state.password)
                 }
                 else {
                     this.addMessage(json["type"], json["message"], json["suggestion"])
                 }
 
             })
-            .catch(() => {
-                this.props.addMessage("Error", "We encountered an unexpected error.", "This error has been logged.")
+            .catch((e) => {
+                this.props.addMessage("Error", "We encountered an unexpected error.", `${e}`)
             })
     }
 
