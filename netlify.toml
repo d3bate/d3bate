@@ -1,6 +1,6 @@
 base="client"
 publish="client/web-build"
-command="expo build:web"
+command="npm install -g expo-cli; expo build:web"
 [[redirects]]
 from="/*"
 to="/index.html"
