@@ -4,6 +4,7 @@ import axios from "axios";
 import {backendURL} from "../constants";
 import {connect} from "react-redux";
 import {Redirect} from "../routing/routing";
+import {validEmail} from "../helpers";
 
 class Register extends React.Component {
     constructor(props) {
@@ -19,6 +20,8 @@ class Register extends React.Component {
     }
 
     register() {
+        if (!validEmail(this.state.email))
+            this.props.addMessage("error", "That email isn't valid.", "Check your spelling and try again.");
         axios.post(`${backendURL}/auth/register`, {
             name: this.state.name,
             username: this.state.username,
