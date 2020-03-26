@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Text, TextInput, View} from "react-native";
+import {Button, Text, TextInput, TouchableOpacity, View} from "react-native";
 import axios from "axios";
 import {backendURL} from "../constants";
 import {connect} from "react-redux";
@@ -45,14 +45,52 @@ class Register extends React.Component {
             return <Redirect to="/"/>;
         return (
             <View>
-                <Text>Register</Text>
-                <TextInput placeholder="Name" onTextChange={value => this.setState({name: value})}/>
-                <TextInput placeholder="Username" onTextChange={value => this.setState({username: value})}/>
-                <TextInput placeholder="Email" onTextChange={value => this.setState({email: value})}/>
-                <TextInput placeholder="Password" onTextChange={value => this.setState({password: value})}/>
+                <Text style={{fontSize: 24, marginBottom: 5}}>Register</Text>
+                <TextInput placeholder="Name" onTextChange={value => this.setState({name: value})} style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    borderRadius: 3,
+                    maxWidth: 300,
+                    marginBottom: 5
+                }}/>
+                <TextInput placeholder="Username" onTextChange={value => this.setState({username: value})} style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    borderRadius: 3,
+                    maxWidth: 300,
+                    marginBottom: 5
+                }}/>
+                <TextInput placeholder="Email" onTextChange={value => this.setState({email: value})} style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    borderRadius: 3,
+                    maxWidth: 300,
+                    marginBottom: 5
+                }}/>
+                <TextInput placeholder="Password" onTextChange={value => this.setState({password: value})} style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    borderRadius: 3,
+                    maxWidth: 300,
+                    marginBottom: 5
+                }}/>
                 <TextInput placeholder="Password confirmation"
-                           onTextChange={value => this.setState({passwordConfirmation: value})}/>
-                <Button title="Register" onPress={this.register}/>
+                           onTextChange={value => this.setState({passwordConfirmation: value})} style={{
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: "grey",
+                    borderRadius: 3,
+                    maxWidth: 300,
+                    marginBottom: 5
+                }}/>
+                <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 75, borderRadius: 3}}
+                                  onPress={this.register}>
+                    <Text>Register</Text>
+                </TouchableOpacity>
             </View>
         );
     }
