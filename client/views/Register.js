@@ -64,4 +64,4 @@ export default connect((state, ownProps) => {
         auth: state.auth,
         ...ownProps
     }
-})
+})(Register);
