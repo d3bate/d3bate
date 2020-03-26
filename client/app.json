@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "d3bate",
-    "slug": "com.d3bate.client",
+    "slug": "d3bate-client",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
