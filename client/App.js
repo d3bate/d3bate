@@ -6,6 +6,7 @@ import {configStore} from "./state";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import Navbar from "./components/Navbar";
+import Messages from "./components/Messages";
 
 let store = configStore();
 
@@ -16,6 +17,7 @@ export default function App() {
                 <View>
                     <Navbar/>
                     <View style={{margin: 10}}>
+                        <Messages/>
                         <Router>
                             <Switch>
                                 <Route exact path="/">

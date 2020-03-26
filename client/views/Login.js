@@ -24,10 +24,13 @@ class Login extends React.Component {
             .then(json => {
                 if (json["type"] === "data") {
                     this.props.receiveJWT(json["data"]["token"]);
-                    this.props.addCredentials(this.state.identifier, this.state.password)
+                    this.props.addCredentials(this.state.identifier, this.state.password);
+                    this.setState({
+                        redirect: "/"
+                    })
                 }
                 else {
-                    this.addMessage(json["type"], json["message"], json["suggestion"])
+                    this.props.addMessage(json["type"], json["message"], json["suggestion"])
                 }
 
             })
