@@ -104,6 +104,8 @@ function messages(state = {messages: []}, action) {
             return Object.assign({}, state, {messages: [{id: state.messages.length, ...action.data}, ...state.messages]});
         case DELETE_MESSAGE:
             return Object.assign({}, state, {messages: state.messages.filter(o => o.id !== action.data.id)})
+        default:
+            return state
     }
 }
 
@@ -292,9 +294,13 @@ export function fetchTrainingSessions() {
     }
 }
 
-function trainingSessions(selectedClub: null, fetching: false, adding: true, updating: false, state = {
+function trainingSessions(state = {
     trainingSessions: [],
-    selectedSession: null
+    selectedSession: null,
+    selectedClub: null,
+    fetching: false,
+    adding: true,
+    updating: false,
 }, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
