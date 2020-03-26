@@ -20,7 +20,7 @@ function requestJWT() {
     }
 }
 
-function receiveJWT(token) {
+export function receiveJWT(token) {
     return {
         type: RECEIVE_JWT,
         data: {token}
@@ -78,7 +78,7 @@ function auth(state = {
 const ADD_MESSAGE = "ADD_MESSAGE";
 const DELETE_MESSAGE = "DELETE_MESSAGE";
 
-function addMessage(type, message, suggestion) {
+export function addMessage(type, message, suggestion) {
     return {
         type: ADD_MESSAGE,
         message: {
