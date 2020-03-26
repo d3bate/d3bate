@@ -22,19 +22,22 @@ class Register extends React.Component {
     register() {
         if (!validEmail(this.state.email))
             this.props.addMessage("error", "That email isn't valid.", "Check your spelling and try again.");
-        axios.post(`${backendURL}/auth/register`, {
-            name: this.state.name,
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password,
-            redirect: null
-        })
-            .then(result => result.json)
-            .then(json => {
-                if (json["type"] === "success") {
-
-                }
+        if (!(this.state.password === this.state.passwordConfirmation))
+            this.props.addMessage("error", "Your passwords don't match", "Try re-entering them.");
+        else
+            axios.post(`${backendURL}/auth/register`, {
+                name: this.state.name,
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password,
+                redirect: null
             })
+                .then(result => result.json)
+                .then(json => {
+                    if (json["type"] === "success") {
+                        this.props.addMessage(json["type"], json["message"], json["suggestion"])
+                    }
+                })
     }
 
     render() {
