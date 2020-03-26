@@ -1,6 +1,6 @@
 base="client"
 publish="client/web-build"
-command="yarn install && expo build:web"
+command="expo build:web"
 [[redirects]]
 from="/*"
 to="/index.html"
