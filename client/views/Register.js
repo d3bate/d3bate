@@ -41,7 +41,7 @@ class Register extends React.Component {
     }
 
     render() {
-        if (this.auth.jwt)
+        if (this.props.auth.jwt)
             return <Redirect to="/"/>;
         return (
             <View>
