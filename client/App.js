@@ -15,26 +15,28 @@ export default function App() {
             <Provider store={store}>
                 <View>
                     <Navbar/>
-                    <Router>
-                        <Switch>
-                            <Route exact path="/">
-                            </Route>
-                            <Route exact path="/login">
-                                <Login/>
-                            </Route>
-                            <Route exact path="/register">
-                                <Register/>
-                            </Route>
-                            <Route exact path="/club">
-                            </Route>
-                            <Route exact path="/club/training-sessions">
-                            </Route>
-                            <Route exact path="/club/training-sessions/edit">
-                            </Route>
-                            <Route exact path="/club/training-sessions/livestream">
-                            </Route>
-                        </Switch>
-                    </Router>
+                    <View style={{margin: 10}}>
+                        <Router>
+                            <Switch>
+                                <Route exact path="/">
+                                </Route>
+                                <Route exact path="/login">
+                                    <Login/>
+                                </Route>
+                                <Route exact path="/register">
+                                    <Register/>
+                                </Route>
+                                <Route exact path="/club">
+                                </Route>
+                                <Route exact path="/club/training-sessions">
+                                </Route>
+                                <Route exact path="/club/training-sessions/edit">
+                                </Route>
+                                <Route exact path="/club/training-sessions/livestream">
+                                </Route>
+                            </Switch>
+                        </Router>
+                    </View>
                 </View>
             </Provider>
         </SafeAreaView>

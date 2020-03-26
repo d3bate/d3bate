@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Text, TextInput, View} from "react-native";
+import {Button, Text, TextInput, View, TouchableOpacity} from "react-native";
 import {connect} from "react-redux";
 import {receiveJWT} from "../state/";
 import axios from "axios";
@@ -41,12 +41,31 @@ class Login extends React.Component {
             return <Redirect to={this.state.redirect}/>;
         return (
             <View>
-                <Text>Login</Text>
+                <Text style={{fontSize: 24, marginBottom: 5}}>Login</Text>
                 <TextInput onChangeText={text => this.setState({identifier: text})} textContentType="username"
-                           placeholder="Username: "/>
+                           placeholder="Username: "
+                           style={{
+                               padding: 10,
+                               borderWidth: 1,
+                               borderColor: "grey",
+                               borderRadius: 3,
+                               maxWidth: 300,
+                               marginBottom: 5
+                           }}/>
                 <TextInput onChangeText={text => this.setState({password: text})} secureTextEntry={true}
-                           textContentType="password" placeholder="Password: "/>
-                <Button title="Login" onPress={this.login}/>
+                           textContentType="password" placeholder="Password: "
+                           style={{
+                               padding: 10,
+                               borderWidth: 1,
+                               borderColor: "grey",
+                               borderRadius: 3,
+                               maxWidth: 300,
+                               marginBottom: 5
+                           }}/>
+                <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 60, borderRadius: 3}}
+                                  onPress={this.login}>
+                    <Text>Login</Text>
+                </TouchableOpacity>
             </View>
         );
     }
