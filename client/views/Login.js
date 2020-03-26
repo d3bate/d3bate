@@ -32,7 +32,7 @@ class Login extends React.Component {
 
             })
             .catch(() => {
-                this.addMessage("Error", "We encountered an unexpected error.", "This error has been logged.")
+                this.props.addMessage("Error", "We encountered an unexpected error.", "This error has been logged.")
             })
     }
 

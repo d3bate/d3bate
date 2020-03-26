@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_session import Session
@@ -16,7 +17,7 @@ session = Session()
 
 def create_app() -> Flask:
     app = Flask(__name__)
-
+    CORS(app)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
     app.config["SESSION_REDIS"] = os.environ.get("REDIS_URL")
