@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
+import {SafeAreaView, View} from 'react-native';
 import {Provider} from "react-redux";
 import {Route, Router, Switch} from "./routing/routing";
 import {configStore} from "./state";
@@ -14,11 +14,12 @@ export default function App() {
     return (
         <SafeAreaView>
             <Provider store={store}>
-                <View>
-                    <Navbar/>
-                    <View style={{margin: 10}}>
-                        <Messages/>
-                        <Router>
+                <Router>
+
+                    <View>
+                        <Navbar/>
+                        <View style={{margin: 10}}>
+                            <Messages/>
                             <Switch>
                                 <Route exact path="/">
                                 </Route>
@@ -37,9 +38,9 @@ export default function App() {
                                 <Route exact path="/club/training-sessions/livestream">
                                 </Route>
                             </Switch>
-                        </Router>
+                        </View>
                     </View>
-                </View>
+                </Router>
             </Provider>
         </SafeAreaView>
     );

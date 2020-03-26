@@ -3,6 +3,7 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {colours} from "../styles";
 import {connect} from "react-redux";
+import {Link} from "../routing/routing";
 
 class Navbar extends React.Component {
     constructor(props) {
@@ -26,17 +27,29 @@ class Navbar extends React.Component {
 
                 </View>
                 <View style={{backgroundColor: colours.primary, display: "flex", flexDirection: "column", padding: 10}}>
-                    <Text style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Home</Text>
+                    <Link to="/" style={{textDecoration: 'none'}}><Text
+                        style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Home</Text></Link>
                     {this.props.auth.jwt ? <>
-                            <Text style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Club</Text>
+                            <Link to="/club" style={{textDecoration: 'none'}}><Text
+                                style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Club</Text></Link>
                             <Text style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Calendar</Text>
                             <Text style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Join debate</Text>
                         </> :
                         <>
-                            <Text
-                                style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Login</Text>
-                            <Text
-                                style={{fontSize: 24, color: "white", paddingLeft: 10, paddingTop: 2}}>Register</Text>
+                            <Link to="/login" style={{textDecoration: 'none'}}><Text
+                                style={{
+                                    fontSize: 24,
+                                    color: "white",
+                                    paddingLeft: 10,
+                                    paddingTop: 2
+                                }}>Login</Text></Link>
+                            <Link to="/register" style={{textDecoration: 'none'}}><Text
+                                style={{
+                                    fontSize: 24,
+                                    color: "white",
+                                    paddingLeft: 10,
+                                    paddingTop: 2
+                                }}>Register</Text></Link>
                         </>}
                 </View>
             </>;
