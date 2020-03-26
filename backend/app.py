@@ -34,3 +34,8 @@ def create_app() -> Flask:
     from club import club_blueprint
     app.register_blueprint(club_blueprint)
     return app
+
+
+if __name__ == "__main__":
+    app = create_app()
+    socketio.run(app)
