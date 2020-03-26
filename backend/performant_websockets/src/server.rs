@@ -106,6 +106,18 @@ pub struct Debate {
     pub audience: Vec<AudienceMember>,
 }
 
+impl Debate {
+    fn find_speaker(&self, id: &usize) -> Speaker {
+        for team in self.teams {
+            for speaker in team.speakers {
+                if &speaker.id == id {
+                    return speaker;
+                }
+            }
+        }
+    }
+}
+
 pub struct DebateServer {
     sessions: HashMap<usize, Recipient<Message>>,
     debates: HashMap<String, Debate>,
@@ -176,4 +188,14 @@ impl Handler<Join> for DebateServer {
             }
         }
     }
+}
+
+impl Handler<AudioPacket> for DebateServer {
+    type Result = ();
+    fn handle(&self, msg: AudioPacket, _: Context<Self>) {}
+}
+
+impl Handler<VideoPacket> for DebateServer {
+    type Result = ();
+    fn handle(&self, msg: VideoPacket, _: Context<Self>) {}
 }
