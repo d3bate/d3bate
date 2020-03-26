@@ -5,6 +5,7 @@ import {Route, Router, Switch} from "./routing/routing";
 import {configStore} from "./state";
 import Login from "./views/Login";
 import Register from "./views/Register";
+import Navbar from "./components/Navbar";
 
 let store = configStore();
 
@@ -13,7 +14,7 @@ export default function App() {
         <SafeAreaView>
             <Provider store={store}>
                 <View>
-                    <Text>d3bate</Text>
+                    <Navbar/>
                     <Router>
                         <Switch>
                             <Route exact path="/">

@@ -6,7 +6,7 @@ const colours = {
     secondary: "#e3e3e3"
 };
 
-export let baseStyles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
     primary: {
         backgroundColor: colours.primary,
     },
@@ -20,16 +20,21 @@ export let baseStyles = StyleSheet.create({
         display: "flex",
         flexDirection: "row"
     },
+});
+
+const headerStyles = StyleSheet.create({
     primaryHeader: {
         padding: 10,
-        ...this.primary
+        ...baseStyles.primary
     },
     secondaryHeader: {
         padding: 10,
-        ...this.secondary
+        ...baseStyles.secondary
     },
     tertiaryHeader: {
         padding: 10,
-        ...this.tertiary
+        ...baseStyles.tertiary
     }
 });
+
+export {baseStyles, headerStyles, colours};
