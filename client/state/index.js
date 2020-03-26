@@ -81,7 +81,7 @@ const DELETE_MESSAGE = "DELETE_MESSAGE";
 export function addMessage(type, message, suggestion) {
     return {
         type: ADD_MESSAGE,
-        message: {
+        data: {
             type,
             message,
             suggestion
@@ -402,6 +402,8 @@ function livestream(state = {
 
 let rootReducer = combineReducers({auth, messages, trainingSessions, clubs, livestream});
 
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export function configStore(preloadedState) {
-    return createStore(rootReducer, preloadedState, applyMiddleware(thunkMiddleware))
+    return createStore(rootReducer, preloadedState, composeEnhancer(applyMiddleware(thunkMiddleware)))
 }
