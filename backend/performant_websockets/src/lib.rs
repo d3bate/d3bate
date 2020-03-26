@@ -1,17 +1,15 @@
+#![feature(slice_patterns)]
+
 #[macro_use]
 extern crate diesel;
 
-use pyo3::prelude::*;
 
 mod server;
 mod db;
 
-#[pyclass]
 pub struct PerformantWebsockets {}
 
-#[pymethods]
 impl PerformantWebsockets {
-    #[new]
     fn new() -> Self {
         Self {}
     }

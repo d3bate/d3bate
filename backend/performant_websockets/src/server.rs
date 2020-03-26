@@ -1,65 +1,35 @@
-use std::collections::{HashMap, HashSet};
-use std::option::Option;
-
-use actix::{Actor, StreamHandler};
 use actix::prelude::*;
-use actix::Running;
+use std::collections::{HashMap, HashSet};
+use std::io::Bytes;
+use rand::rngs::ThreadRng;
+use rand::Rng;
 
-use actix_web_actions::ws;
-use std::time::{Duration, Instant};
-use actix_web::{HttpRequest, web, HttpResponse, Error};
+#[derive(Message)]
+#[rtype(result = "()")]
+pub struct Message(pub String);
 
-const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(15);
-const CLIENT_TIMEOUT: Duration = Duration::from_secs(30);
-
-async fn live_debate(
-    req: HttpRequest,
-    stream: web::Payload,
-    srv: web::Data<Addr<PerformantWebsocketsServer>>,
-) -> Result<HttpResponse, Error> {
-    ws::start(
-        WsDebateSession {
-            id: 0,
-            hb: Instant::now(),
-            debate: 0,
-            authenticated: false,
-            name: String::from("Placeholder Name"),
-            username: String::from("placeholder_username"),
-            addr: srv.get_ref().clone(),
-            jwt: "".to_string(),
-        },
-        &req,
-        stream,
-    )
+#[derive(Message)]
+#[rtype(usize)]
+pub struct Connect {
+    pub addr: Recipient<Message>
 }
 
 #[derive(Message)]
 #[rtype(result = "()")]
-pub struct ChatMessage {
-    pub text: String,
-    // This should be the id in the database (not the hashmap)
-    pub debate: usize,
+pub struct Disconnect {
+    pub id: usize
 }
 
-#[derive(Message)]
-#[rtype(usize)]
-struct UserJoin {
-    pub addr: Recipeient<Message>
+#[derive(Message, Clone)]
+#[rtype(result = "()")]
+pub struct AudioPacket {
+    pub id: usize,
+    pub audio: String,
+    pub debate: String,
 }
 
-#[derive(Message)]
-#[rtype(usize)]
-struct UserRequestDebateJoin {
-    // id should correspond to the id of a column in the 'training_session' table
-    pub debate: usize,
-}
-
-/// The face struct represents data from the client about a specific face. More than one person might
-/// use a single device. All the fields are instances of the `Option` enum because the client will
-/// only send data to the server if its value has changed.
-/// The client is using expo's [face detection API](https://docs.expo.io/versions/latest/sdk/facedetector/)
-/// which is where the fields of the struct come from.
-struct Face {
+#[derive(Clone)]
+pub struct Face {
     pub face_id: i32,
     pub bounds_origin: Option<(i32, i32)>,
     pub bounds_size: Option<(i32, i32)>,
@@ -80,108 +50,130 @@ struct Face {
     pub nose_base_position: Option<(i32, i32)>,
 }
 
-#[derive(Message)]
-#[rtype(usize)]
-pub struct VideoSnapshot {
-    pub people_count: u8,
+#[derive(Clone)]
+pub struct VideoPacket {
+    pub id: usize,
     pub faces: Vec<Face>,
 }
 
 #[derive(Message)]
-#[type (usize)]
-pub struct AudioSnapshot {}
+#[rtype(result = "()")]
+pub struct Join {
+    pub id: usize,
+    pub join_code: String,
+    pub name: String,
+}
 
+pub struct Speaker {
+    pub id: usize,
+    pub name: String,
+    // Preferred gender pronouns
+    pub pgp: String,
+}
 
-/// Represents a debate
-/// The `session_id` field should correspond to a database entry
+pub struct Team {
+    pub speakers: Vec<Speaker>
+}
+
+pub enum DebateStage {
+    Prep,
+    Debate,
+    Feedback,
+}
+
+pub enum CurrentSpeech {
+    PM,
+    DPM,
+    LO,
+    DLO,
+    MG,
+    GW,
+    MO,
+    OW,
+}
+
+pub struct AudienceMember {
+    pub id: usize,
+    pub name: String,
+}
+
 pub struct Debate {
-    pub users: HashSet<usize>,
-    pub session_id: usize,
+    pub current_speaker: usize,
+    pub join_code: String,
+    pub teams: Vec<Team>,
+    pub stage: DebateStage,
+    pub current_speech: Option<CurrentSpeech>,
+    pub audience: Vec<AudienceMember>,
 }
 
-pub struct PerformantWebsocketsServer {
+pub struct DebateServer {
     sessions: HashMap<usize, Recipient<Message>>,
-    debates: HashMap<usize, Debate>,
+    debates: HashMap<String, Debate>,
+    rng: ThreadRng,
 }
 
-
-impl Actor for PerformantWebsocketsServer {
-    type Context = Context<Self>;
-}
-
-pub struct WsDebateSession {
-    id: usize,
-    hb: std::time::Instant,
-    debate: usize,
-    authenticated: bool,
-    name: String,
-    username: String,
-    addr: Addr<PerformantWebsocketsServer>,
-    jwt: String,
-}
-
-impl Actor for WsDebateSession {
-    type Context = ws::WebsocketContext<Self>;
-    fn started(&mut self, ctx: &mut Self::Context) {
-        self.hb(ctx);
-        let addr = ctx.address();
-    }
-    fn stopping(&mut self, ctx: &mut Self::Context) -> Running {
-        Running::Stop
-    }
-}
-
-impl Handler<VideoSnapshot> for WsDebateSession {
-    type Result = ();
-    fn handle(&mut self, msg: VideoSnapshot, ctx: &mut self::Context<Self>) {
-        ctx.ping(msg);
-    }
-}
-
-impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WsDebateSession {
-    fn handle(&mut self, msg: Result<ws::Message, ws::ProtocolError>, ctx: &mut Self::Context) {
-        let msg = match msg {
-            Err(_) => {
-                ctx.stop();
-                return;
-            }
-            Ok(msg) => msg
-        };
-
-        match msg {
-            ws::Message::Ping(msg) => {
-                self.hb = Instant::now();
-                ctx.pong(&msg);
-            }
-            ws::Message::Text(text) => {
-                let m = text.trim();
-                if m.starts_with("/") {
-                    let v: Vec<&str> = m.splitn(2, ' ').collect();
-                    match v[0] {
-                        "/list" => {}
-                        "/debate/start" => {}
-                        "/debate/speaker/add" => {}
-                        "/debate/speaker/remove" => {}
-                        "/debate/join" => {
-                            if v.len() == 2 {
-                                self.debate = v[1].to_owned().parse::<usize>().unwrap();
-                            } else {
-                                ctx.text("You must supply the ID of the session you wish to join.")
-                            }
-                        }
-
-                        "/speech/start" => {}
-                        "/speech/stop" => {}
-                        "/speech/offer_poi" => {}
-                        "/speech/accept_poi" => {}
-                        _ => {
-                            ctx.text(format!("The command '{}' is not known to the server.", m)))
+impl DebateServer {
+    fn send_message(&self, debate: &str, message: &str, skip_id: usize) {
+        if let Some(debate) = self.debates.get(debate) {
+            for team in &debate.teams {
+                for speaker in &team.speakers {
+                    if speaker.id != skip_id {
+                        if let Some(addr) = self.sessions.get(&speaker.id) {
+                            let _ = addr.do_send(Message(String::from(message)));
                         }
                     }
                 }
             }
-            ws::Message::Binary(bin) => {}
-            _ => {}
+        }
+    }
+}
+
+impl Actor for DebateServer {
+    type Context = Context<Self>;
+}
+
+impl Handler<Connect> for DebateServer {
+    type Result = usize;
+    fn handle(&mut self, msg: Connect, _: &mut Context<Self>) -> Self::Result {
+        let id = self.rng.gen::<usize>();
+        self.sessions.insert(id, msg.addr);
+        id
+    }
+}
+
+impl Handler<Disconnect> for DebateServer {
+    type Result = ();
+    fn handle(&mut self, msg: Disconnect, _: &mut Context<Self>) {
+        let mut debates: Vec<String> = Vec::new();
+        if self.sessions.remove(&msg.id).is_some() {
+            for (name, debate) in &mut self.debates {
+                for team in &mut debate.teams {
+                    let mut remove: Vec<usize> = Vec::new();
+                    for (i, speaker) in team.speakers.iter().enumerate() {
+                        if speaker.id == msg.id {
+                            remove.push(i);
+                        }
+                    }
+                    for item in remove {
+                        team.speakers.remove(item);
+                    }
+                }
+            }
+        }
+    }
+}
+
+impl Handler<Join> for DebateServer {
+    type Result = ();
+    fn handle(&mut self, msg: Join, _: Context<Self>) {
+        for (name, debate) in &mut self.debates {
+            if msg.join_code == debate.join_code {
+                debate.audience.push(AudienceMember {
+                    id: msg.id,
+                    name: msg.name,
+                });
+                self.send_message(name, "{\"type\": \"success\", \"message\":\"You have join that debate.\", \"suggestion\": \"Start watching\"}", msg.id)
+            }
         }
     }
 }

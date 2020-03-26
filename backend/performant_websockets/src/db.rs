@@ -1,5 +1,5 @@
 use diesel;
-use diesel::preclude::*;
+use diesel::prelude::*;
 
 
 #[macro_export]
