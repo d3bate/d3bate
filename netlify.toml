@@ -1,0 +1,22 @@
+base="client"
+publish="client/web-build"
+command="yarn install && expo build:web"
+[[redirects]]
+from="/*"
+to="/index.html"
+status=200
+[build.processing]
+skip_processing = false
+[build.processing.css]
+bundle = true
+minify = true
+[build.processing.js]
+bundle=false
+minify=true
+[build.processing.js]
+bundle=true
+minify=false
+[build.processing.images]
+compress=true
+[context.deploy-preview.processing]
+skip_processing = true
