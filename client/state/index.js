@@ -89,7 +89,7 @@ export function addMessage(type, message, suggestion) {
     }
 }
 
-function deleteMessage(messageID) {
+export function deleteMessage(messageID) {
     return {
         type: DELETE_MESSAGE,
         data: {
@@ -103,7 +103,7 @@ function messages(state = {messages: []}, action) {
         case ADD_MESSAGE:
             return Object.assign({}, state, {messages: [{id: state.messages.length, ...action.data}, ...state.messages]});
         case DELETE_MESSAGE:
-            return Object.assign({}, state, {messages: state.messages.filter(o => o.id !== action.data.id)})
+            return Object.assign({}, state, {messages: state.messages.filter(o => o.id !== action.data.id)});
         default:
             return state
     }

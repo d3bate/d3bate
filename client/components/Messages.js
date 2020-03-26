@@ -1,7 +1,9 @@
 import React from "react";
-import {Text, View} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {connect} from "react-redux";
 import {colours} from "../styles";
+import {deleteMessage} from "../state";
+import {Ionicons} from "@expo/vector-icons";
 
 class Messages extends React.Component {
     render() {
@@ -20,11 +22,18 @@ class Messages extends React.Component {
                             backgroundColor: message.type === "success" ? colours.tertiary : colours.danger,
                             padding: 10,
                             borderRadius: 3,
-                            maxWidth: 300
+                            maxWidth: 300,
+                            display: "flex",
+                            flexDirection: "row"
                         }}
                         key={messageIndex}>
-                        <Text>{message.message}</Text>
-                        <Text>{message.suggestion}</Text>
+                        <TouchableOpacity onPress={() => {
+                            this.props.deleteMessage(message.id)
+                        }} style={{marginRight: 5, paddingTop: 1}}>
+                            <Ionicons name="md-remove-circle" size={20} color="white"/>
+                        </TouchableOpacity>
+                        <Text style={{color: "white", paddingTop: 3}}>{message.message}</Text>
+                        <Text style={{color: "white", paddingTop: 3}}>{message.suggestion}</Text>
                     </View>
                 })}
                 <View
@@ -44,4 +53,4 @@ export default connect((state, ownProps) => {
         messages: state.messages.messages,
         ...ownProps
     }
-})(Messages)
+}, {deleteMessage})(Messages)
