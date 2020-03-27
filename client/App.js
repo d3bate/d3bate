@@ -7,6 +7,7 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import Navbar from "./components/Navbar";
 import Messages from "./components/Messages";
+import Clubs from "./views/Clubs";
 
 let store = configStore();
 
@@ -30,6 +31,7 @@ export default function App() {
                                     <Register/>
                                 </Route>
                                 <Route exact path="/club">
+                                    <Clubs/>
                                 </Route>
                                 <Route exact path="/club/training-sessions">
                                 </Route>

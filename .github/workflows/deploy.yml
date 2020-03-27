@@ -37,7 +37,6 @@ jobs:
     steps:
     - name: Install dependencies
       run: wget -q -O - "https://github.com/getzola/zola/releases/download/v0.9.0/zola-v0.9.0-x86_64-unknown-linux-gnu.tar.gz" | sudo tar xzf - -C /usr/local/bin
-
     - name: Build site
       run: |
           cd docs
