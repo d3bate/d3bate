@@ -134,6 +134,8 @@ export function fetchClubData() {
             .then(json => {
                 if (json["type"] === "data") {
                     dispatch(receiveClubData(json["data"]))
+                } else {
+                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
             .catch(error => {
