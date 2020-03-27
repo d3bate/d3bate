@@ -49,6 +49,13 @@ def login():
             "message": "That user does not exist.",
             "suggestion": ""
         })
+    if not os.environ.get("TESTING"):
+        if not user.email_verified:
+            return jsonify({
+                "type": "error",
+                "message": "You have not verified your email",
+                "suggestion": "Check your inbox, verify your email and then try again."
+            })
     if not user.check_password(password):
         return jsonify({
             "type": "error",
