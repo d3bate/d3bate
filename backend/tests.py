@@ -98,7 +98,7 @@ class E2E(unittest.TestCase):
         self.assertTrue(training_session_updated["start_time"] == start_time + 10)
         self.assertTrue(training_session_updated["end_time"] == end_time)
 
-        leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"]["owner"][0]["id"]},
+        leave_club = self.client.post("/api/club/leave", json={"club_id": get_club_list["data"][0]["id"]},
                                       headers={
                                           "Authorization": "Bearer {}".format(self.token)
                                       }).json
