@@ -159,7 +159,7 @@ export function createClub(clubName, schoolWebsite) {
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
-                    dispatch(receiveClubData(json["data"]))
+                    dispatch(receiveCreateClub(json["data"]))
                 }
             })
 

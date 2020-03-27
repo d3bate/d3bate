@@ -2,6 +2,7 @@ import React from "react";
 import {Text, View} from "react-native";
 import {connect} from "react-redux";
 import {Redirect} from "../routing/routing";
+import CreateClub from "../components/Clubs/CreateClub";
 
 class Clubs extends React.Component {
     constructor(props) {
@@ -15,6 +16,16 @@ class Clubs extends React.Component {
             <View>
                 {this.props.clubs.clubs.length > 0 ? null : <View>
                     <Text style={{fontSize: 24}}>You are not a member of any clubs</Text>
+                    <View style={{
+                        marginTop: 5,
+                        borderColor: "grey",
+                        borderRadius: 3,
+                        borderWidth: 1,
+                        maxWidth: 300,
+                        padding: 10
+                    }}>
+                        <CreateClub/>
+                    </View>
                 </View>}
             </View>
         );
