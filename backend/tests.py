@@ -1,8 +1,9 @@
 import unittest
 from datetime import datetime
 
-from app import create_app
 from flask import Flask
+
+from app import create_app
 
 unittest.TestLoader.sortTestMethodsUsing = None
 
