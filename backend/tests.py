@@ -92,6 +92,7 @@ class E2E(unittest.TestCase):
         }, headers={
             "Authorization": "Bearer {}".format(self.token)
         }).json
+
         self.assertTrue(get_training_session_1_updated["type"] == "data")
         training_session_updated = get_training_session_1_updated["data"][0]
         self.assertTrue(training_session_updated["start_time"] == start_time + 10)

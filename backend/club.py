@@ -56,16 +56,16 @@ def get_clubs():
     current_user = get_jwt_identity()
     return jsonify({
         "type": "data",
-        "data": [list(
+        "data": [*list(
             map(lambda x: {"role": "admin", **club_to_json(x)},
                 Club.query.filter((Club.admins.any(id=current_user["id"]))).all())),
-            list(
-                map(lambda x: {"role": "member", **club_to_json(x)},
-                    Club.query.filter((Club.members.any(id=current_user["id"]))).all())),
-            list(
-                map(lambda x: {"role": "owner", **club_to_json(x)},
-                    Club.query.filter((Club.owners.any(id=current_user["id"]))).all()))
-        ]
+                 *list(
+                     map(lambda x: {"role": "member", **club_to_json(x)},
+                         Club.query.filter((Club.members.any(id=current_user["id"]))).all())),
+                 *list(
+                     map(lambda x: {"role": "owner", **club_to_json(x)},
+                         Club.query.filter((Club.owners.any(id=current_user["id"]))).all()))
+                 ]
     })
 
 
