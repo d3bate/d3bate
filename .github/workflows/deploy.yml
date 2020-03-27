@@ -60,6 +60,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+
     - name: Download documentation build
       uses: actions/download-artifact@v1
       with:
@@ -72,6 +73,7 @@ jobs:
       run: |
         mv web-build public
         mv doc-build public/docs
+        
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
