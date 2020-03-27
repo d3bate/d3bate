@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://d3bate.github.io/d3bate/sitemap.xml
+Sitemap: https://debating.web.app/docs/sitemap.xml
