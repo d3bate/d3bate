@@ -1,10 +1,19 @@
 from datetime import datetime
 
-from app import db
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import Club, User, TrainingSession
 from sqlalchemy import or_, and_
+
+from app import db
+from models import Club, User, TrainingSession
+
+words = (
+    "steel", "happy", "sad", "mean", "trick", "friday", "suitcase", "window", "lamp", "tap", "cheap", "bottle", "red",
+    "green", "blue", "walking", "catching", "running", "piano", "world", "map", "head", "pencil", "book", "writer",
+    "paper", "desk", "pen", "human", "brush", "cupboard", "shelf", "knob", "switch", "coffee", "toaster", "car",
+    "workbook", "frame", "bowl", "cushion", "bear", "table", "block", "shield", "lid", "packet", "wrapping", "stapler",
+    "ruler", "painting", "poster"
+)
 
 club_blueprint = Blueprint("club", __name__, url_prefix="/api/club")
 
@@ -39,7 +48,15 @@ def create_club():
             "message": "There is already a club with that name.",
             "suggestion": ""
         })
-    club = Club(name=club_name, registered_school=registered_school)
+    n = str(Club.query.filter().count())
+    code = ""
+    if len(n) == 1:
+        code = words[0] + "-" + words[0] + "-" + words[int(n)]
+    elif len(n) == 2:
+        code = words[0] + "-" + words[int(n[0])] + "-" + words[int(n[1])]
+    else:
+        code = words[int(n[0])] + "-" + words[int(n[1])] + "-" + words[int(n[2])]
+    club = Club(name=club_name, registered_school=registered_school, join_code=code)
     club.owners.append(user)
     db.session.add(club)
     db.session.commit()
