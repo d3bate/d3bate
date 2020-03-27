@@ -1,3 +1,4 @@
+import json
 import os
 
 import requests
@@ -11,17 +12,30 @@ from models import User
 auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth", template_folder="templates")
 
 
-def send_mail(to, subject, html, text):
-    resp = requests.post("https://api.eu.mailgun.net/v3/{}/messages".format(os.environ.get("MAILGUN_DOMAIN")),
-                         auth=("api", "{}".format(os.environ.get("MAILGUN_API_KEY"))),
-                         data={
-                             "from": "d3bate (do not reply) <bureaucrat@debating.web.app>",
-                             "to": [to] if isinstance(to, str) else [*to],
-                             "subject": subject,
-                             "html": html,
-                             "text": text
-                         })
-    print(resp.content)
+def send_mail(to, subject, html, text, from_email="bureaucrat@debating.web.app",
+              api_key=os.environ.get("SENDGRID_API_KEY")):
+    return requests.request(data=json.dumps({
+        "personalizations": [
+            {
+                "to": [{"email": to}] if isinstance(to, str) else [{"email": email} for email in to]
+            },
+        ],
+        "subject": subject,
+        "from": {
+            "email": from_email
+        },
+        "content": [
+            {
+                "type": "text/plain",
+                "value": text
+            },
+            {
+                "type": "text/html",
+                "value": html
+            }
+        ]
+    }), method="POST", url="https://api.sendgrid.com/v3/mail/send",
+        headers={"Authorization": "Bearer {}".format(api_key), "Content-Type": "application/json"})
 
 
 @auth_blueprint.route("/login", methods=("POST",))
