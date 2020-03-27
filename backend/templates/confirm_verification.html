@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+    <h1>You have confirmed your email</h1>
+    <p>If you are not redirected, click the link below.</p>
+    <a href="{{ redirect_url }}">Back to the app</a>
+    <script>
+        window.setTimeout(function () {
+            window.location.href = 'http://debating.web.app';
+        }, 5000);
+    </script>
+{% endblock %}

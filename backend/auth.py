@@ -1,11 +1,13 @@
-from flask import Blueprint, request, jsonify, session
-from flask_jwt_extended import create_access_token
-from models import User
+from flask import Blueprint, request, jsonify, session, render_template, current_app
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_mail import Message
 from sqlalchemy import or_
 
 from app import db
+from app import mail
+from models import User
 
-auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth")
+auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth", template_folder="templates")
 
 
 @auth_blueprint.route("/login", methods=("POST",))
@@ -50,11 +52,33 @@ def register():
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
+    db.session.refresh(user)
+    confirmation_email = Message("[d3bate] Verify your email",
+                                 recipients=[user.email])
+    jwt_token = create_access_token({"id": user.id, "email_confirmation": True})
+    confirmation_email.html = render_template("email_confirmation.html",
+                                              confirmation_url="https://d3bate.herokuapp.com/auth/confirm?token={}".format(
+                                                  jwt_token))
+    mail.send(confirmation_email)
     return jsonify({
         "type": "success",
         "message": "Your account has been created.",
         "suggestion": ""
     })
+
+
+@auth_blueprint.route("/confirm")
+@jwt_required
+def confirm_email():
+    token = get_jwt_identity()
+    if "email_confirmation" in token:
+        if token["email_confirmation"] is True:
+            user = User.query.get(token["id"])
+            user.email_verified = True
+            db.session.commit()
+            return render_template("confirm_verification.html", redirect_url=current_app.config["FRONTEND_URL"])
+    else:
+        return render_template("confirm_failiure.html", application_url=current_app.config["FRONTEND_URL"])
 
 
 @auth_blueprint.route("/ws_login")
