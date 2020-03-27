@@ -12,15 +12,16 @@ auth_blueprint = Blueprint("auth", __name__, url_prefix="/auth", template_folder
 
 
 def send_mail(to, subject, html, text):
-    requests.post("https://api.eu.mailgun.net/v3/{}/messages".format(os.environ.get("MAILGUN_DOMAIN")),
-                  auth=("api", "{}".format(os.environ.get("MAILGUN_API_KEY"))),
-                  data={
-                      "from": "d3bate (do not reply) <bureaucrat@debating.web.app>",
-                      "to": [to] if isinstance(to, str) else [*to],
-                      "subject": subject,
-                      "html": html,
-                      "text": text
-                  })
+    resp = requests.post("https://api.eu.mailgun.net/v3/{}/messages".format(os.environ.get("MAILGUN_DOMAIN")),
+                         auth=("api", "{}".format(os.environ.get("MAILGUN_API_KEY"))),
+                         data={
+                             "from": "d3bate (do not reply) <bureaucrat@debating.web.app>",
+                             "to": [to] if isinstance(to, str) else [*to],
+                             "subject": subject,
+                             "html": html,
+                             "text": text
+                         })
+    print(resp.content)
 
 
 @auth_blueprint.route("/login", methods=("POST",))
