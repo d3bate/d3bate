@@ -46,7 +46,7 @@ def create_club():
     db.session.refresh(club)
     return jsonify({
         "type": "data",
-        "data": club_to_json(club)
+        "data": {"role": "owner", **club_to_json(club)}
     })
 
 
