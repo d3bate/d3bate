@@ -129,12 +129,15 @@ function receiveClubData(data) {
 export function fetchClubData() {
     return (dispatch, getState) => {
         dispatch(requestClubData());
-        axios.post(`${backendURL}/api/club/get_all`, {headers: {"Authorization": `Bearer ${getState().auth.jwt}`}})
+        axios.get(`${backendURL}/api/club/get_all`, {headers: {"Authorization": `Bearer ${getState().auth.jwt}`}})
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
                     dispatch(receiveClubData(json["data"]))
                 }
+            })
+            .catch(error => {
+                dispatch(addMessage("error", "An unexpected error occurred (yes, we have contingency plans for some errors).", `${error}`))
             })
     }
 }

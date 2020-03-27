@@ -3,10 +3,15 @@ import {Text, View} from "react-native";
 import {connect} from "react-redux";
 import {Redirect} from "../routing/routing";
 import CreateClub from "../components/Clubs/CreateClub";
+import {fetchClubData} from "../state";
 
 class Clubs extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        this.props.fetchClubData();
     }
 
     render() {
@@ -39,4 +44,4 @@ export default connect((state, ownProps) => {
         auth: state.auth,
         ...ownProps
     }
-})(Clubs);
+}, {fetchClubData})(Clubs);
