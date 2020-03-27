@@ -48,9 +48,9 @@ class E2E(unittest.TestCase):
         get_club_list = self.client.get("/api/club/get_all",
                                         headers={"Authorization": "Bearer {}".format(self.token)}).json
 
-        self.assertTrue(len(get_club_list["data"]["owner"]) == 1)
+        self.assertTrue(len(get_club_list["data"]) == 1)
 
-        club_id = get_club_list["data"]["owner"][0]
+        club_id = get_club_list["data"][0]
 
         start_time = datetime.utcnow().timestamp() + 900
         end_time = datetime.utcnow().timestamp() + 1200
@@ -105,4 +105,5 @@ class E2E(unittest.TestCase):
 
         get_club_list_2 = self.client.get("/api/club/get_all",
                                           headers={"Authorization": "Bearer {}".format(self.token)}).json
-        self.assertTrue(len(get_club_list_2["data"]["owner"]) == 0)
+
+        self.assertTrue(len(get_club_list_2["data"]) == 0)
