@@ -35,7 +35,6 @@ class E2E(unittest.TestCase):
             "identifier": "me@teymour.tk",
             "password": "hello"
         }).json
-        print(token)
         self.assertTrue(token["type"] == "data")
         self.token = token["data"]["token"]
 
