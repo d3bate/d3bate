@@ -49,6 +49,7 @@ class Club(db.Model):
     registered_school = db.Column(db.Text)
     school_verified = db.Column(db.Boolean, nullable=False, default=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    join_code = db.Column(db.Text)
     training_sessions = db.relationship("TrainingSession", backref="training_sessions", lazy=True)
     owners = db.relationship("User", secondary=owners, lazy="subquery", backref=db.backref("owners", lazy=True))
     admins = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("admins", lazy=True))
