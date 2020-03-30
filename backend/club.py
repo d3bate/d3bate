@@ -67,6 +67,28 @@ def create_club():
     })
 
 
+@club_blueprint.route("/join", methods=("POST",))
+@jwt_required
+def join_club():
+    current_user = get_jwt_identity()
+    user = User.query.get(current_user["id"])
+    join_code = request.json["join_code"]
+    club = Club.query.filter_by(join_code=join_code).first()
+    if not club:
+        return jsonify({
+            "type": "error",
+            "message": "That join code is invalid.",
+            "suggestion": ""
+        })
+    club.members.append(user)
+    db.session.commit()
+    return jsonify({
+        "type": "success",
+        "message": "You have joined that club.",
+        "suggestion": ""
+    })
+
+
 @club_blueprint.route("/get_all")
 @jwt_required
 def get_clubs():

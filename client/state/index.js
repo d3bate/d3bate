@@ -167,7 +167,7 @@ export function sendJoinClub(joinCode) {
             .then(result => result.data)
             .then(json => {
                 if (json["type"] === "success") {
-                    dispatch()
+                    dispatch(receiveJoinClub(json["data"]))
                 }
             })
     }

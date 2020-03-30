@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Text, TextInput, View, TouchableOpacity} from "react-native";
+import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import {connect} from "react-redux";
 import {receiveJWT} from "../state/";
 import axios from "axios";
