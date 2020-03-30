@@ -1,6 +1,8 @@
 import React from "react";
 import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import {Redirect} from "../../routing/routing";
+import {connect} from "react-redux";
+import {sendJoinClub} from "../../state";
 
 class JoinClub extends React.Component {
     constructor(props) {
@@ -12,7 +14,7 @@ class JoinClub extends React.Component {
     }
 
     joinClub() {
-
+        this.props.sendJoinClub(this.state.joinCode)
     }
 
     render() {
@@ -20,6 +22,7 @@ class JoinClub extends React.Component {
             return <Redirect to="/login"/>;
         return (
             <View>
+                <Text style={{fontSize: 24, marginBottom: 5}}>Join a club</Text>
                 <TextInput onChangeText={text => this.setState({joinCode: text})} textContentType="none"
                            placeholder="Join code: "
                            style={{
@@ -32,10 +35,13 @@ class JoinClub extends React.Component {
                            }}/>
                 <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 60, borderRadius: 3}}
                                   onPress={this.joinClub}>
-                    <Text>Join</Text>
+                    <Text>Join club</Text>
                 </TouchableOpacity>
             </View>
         );
     }
-
 }
+
+export default connect((state, ownProps) => {
+    return ownProps
+}, {sendJoinClub})(JoinClub);

@@ -5,6 +5,7 @@ import {Redirect} from "../routing/routing";
 import CreateClub from "../components/Clubs/CreateClub";
 import {fetchClubData} from "../state";
 import ClubList from "../components/Clubs/ClubList";
+import JoinClub from "../components/Clubs/JoinClub";
 
 class Clubs extends React.Component {
     constructor(props) {
@@ -22,7 +23,10 @@ class Clubs extends React.Component {
             return <Redirect to="/login"/>;
         return (
             <View>
-                {this.props.clubs.clubs.length > 0 ? <ClubList clubs={this.props.clubs.clubs}/> : <View>
+                {this.props.clubs.clubs.length > 0 ? <>
+                    <JoinClub/>
+                    <ClubList clubs={this.props.clubs.clubs}/>
+                </> : <View>
                     <Text style={{fontSize: 24}}>You are not a member of any clubs</Text>
                     <View style={{
                         marginTop: 5,

@@ -168,6 +168,8 @@ export function sendJoinClub(joinCode) {
             .then(json => {
                 if (json["type"] === "success") {
                     dispatch(receiveJoinClub(json["data"]))
+                } else {
+                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
     }
