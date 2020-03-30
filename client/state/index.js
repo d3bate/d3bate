@@ -112,6 +112,7 @@ function messages(state = {messages: []}, action) {
 const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
 const RECEIVE_CLUB_DATA = "GET_CLUBS";
 const RECEIVE_CREATE_CLUB = "RECEIVE_CREATE_CLUB";
+const RECEIVE_JOIN_CLUB = "RECEIVE_JOIN_CLUB";
 
 function requestClubData() {
     return {
@@ -149,6 +150,26 @@ function receiveCreateClub(club) {
     return {
         type: RECEIVE_CREATE_CLUB,
         data: club
+    }
+}
+
+function receiveJoinClub(club) {
+    return {
+        type: RECEIVE_JOIN_CLUB,
+        data: club
+    }
+}
+
+export function sendJoinClub(joinCode) {
+    return (dispatch, getState) => {
+        dispatch(fetchJWTIfNeeded());
+        axios.post(`${backendURL}/club/join`, {join_code: joinCode}, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+            .then(result => result.data)
+            .then(json => {
+                if (json["type"] === "success") {
+                    dispatch()
+                }
+            })
     }
 }
 

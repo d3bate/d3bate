@@ -104,6 +104,30 @@ def register():
     })
 
 
+@auth_blueprint.route("/resend_email", methods=("POST",))
+def resend_email_verification():
+    identifier = request.json["identifier"]
+    user = User.query.filter((User.username == identifier) | (User.email == identifier)).first()
+    if not user:
+        return jsonify({
+            "type": "error",
+            "message": "That user account cannot be found.",
+            "suggestion": "Register an account."
+        })
+    if user.email_verified:
+        return jsonify({
+            "type": "error",
+            "message": "You have already verified your email.",
+            "suggestion": ""
+        })
+    if not os.environ.get("TESTING"):
+        jwt_token = create_access_token({"id": user.id, "email_confirmation": True})
+        html = render_template("email_confirmation.html",
+                               confirm_email="https://d3bate.herokuapp.com/auth/confirm?token={}".format(jwt_token))
+        send_mail(user.email, "[d3bate] email verification", html,
+                  "Please copy the following URL and paste it into your browser: {}".format(jwt_token))
+
+
 @auth_blueprint.route("/confirm")
 @jwt_required
 def confirm_email():

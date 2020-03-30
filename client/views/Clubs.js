@@ -12,7 +12,9 @@ class Clubs extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchClubData();
+        if (this.props.auth.jwt) {
+            this.props.fetchClubData();
+        }
     }
 
     render() {

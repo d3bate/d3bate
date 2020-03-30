@@ -87,7 +87,7 @@ class Register extends React.Component {
                            }}/>
                 <TextInput value={this.state.passwordConfirmation}
                            onChangeText={text => this.setState({passwordConfirmation: text})} secureTextEntry={true}
-                           textContentType="password" placeholder="Password: "
+                           textContentType="password" placeholder="Confirm your password: "
                            style={{
                                padding: 10,
                                borderWidth: 1,
