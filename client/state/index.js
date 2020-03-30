@@ -214,109 +214,80 @@ function clubs(state = {fetching: false, clubs: []}, action) {
     }
 }
 
-const RECEIVE_TRAINING_SESSIONS = "RECEIVE_TRAINING_SESSIONS";
 const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
-const UPDATE_TRAINING_SESSION = "UPDATE_TRAINING_SESSION";
 const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
-const SELECT_TRAINING_SESSIONS = "SELECT_TRAINING_SESSIONS";
+const UPDATE_TRAINING_SESSION = "MODIFY_TRAINING_SESSION";
+const RECEIVE_CLUB_SESSIONS = "RECEIVE_CLUB_SESSIONS";
+const RECEIVE_ALL_SESSIONS = "RECEIVE_ALL_SESSIONS";
+const SELECT_CLUB_TRAINING_SESSIONS = "SELECT_CLUB_TRAINING_SESSIONS";
 
-function receiveTrainingSessions(sessions, selectedClub) {
-    return {
-        type: RECEIVE_TRAINING_SESSIONS,
-        data: {sessions, selectedClub}
-    }
-}
-
-function addTrainingSession(sess) {
+function receiveAddTrainingSession(data) {
     return {
         type: ADD_TRAINING_SESSION,
-        data: sess
+        data: data
     }
 }
 
-function updateTrainingSession(id, delta) {
+function receiveClubSessions(clubID, data) {
     return {
-        type: UPDATE_TRAINING_SESSION,
+        type: RECEIVE_CLUB_SESSIONS,
         data: {
-            id, delta
+            clubID,
+            trainingSessions: data
         }
     }
 }
 
-function deleteTrainingSession(id) {
+function receiveAllSessions(data) {
     return {
-        type: DELETE_TRAINING_SESSION,
-        data: {
-            id
-        }
+        type: RECEIVE_ALL_SESSIONS,
+        data: data
     }
 }
 
-export function selectTrainingSessions(clubID) {
-    return {
-        type: SELECT_TRAINING_SESSIONS,
-        data: {
-            id: clubID
-        }
-    }
-}
-
-export function sendDeleteTrainingSession(sessID, clubID) {
+export function addTrainingSession(start, end, livestream, clubID) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/remove`, {
-            club_id: clubID,
-            session_id: sessID
-        }, {
-            headers:
-                {Authorization: `Bearer ${getState().auth.token}`}
+        axios.put(`${backendURL}/api/club/training/add`, {
+            start_time: start,
+            end_time: end,
+            livestream: livestream,
+            club_id: clubID
         })
             .then(response => response.data)
             .then(json => {
-                if (json["type"] === "success") {
-                    dispatch(deleteTrainingSession(id))
+                if (json["type"] === "success+data") {
+                    dispatch(receiveAddTrainingSession(json["data"]))
+                } else {
+                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
     }
 }
 
-export function sendAddTrainingSession(startTime, endTime, livestream) {
+export function fetchClubSessions(clubID) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/add`, {
-            start_time: startTime,
-            end_time: endTime,
-            livestream
-        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+        axios.get(`${backendURL}/api/club/training/single_club`, {club_id: clubID},
+            {headers: {Authorization: `Bearer ${getState().auth.token}`}})
             .then(response => response.data)
             .then(json => {
-                if (json["type"] === "success+data") {
-                    dispatch(addTrainingSession(json["data"]))
+                if (json["type"] === "data") {
+
+                } else {
+                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
     }
 }
 
-export function sendUpdateTrainingSession(id, delta) {
-    return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/update`, {
-            id,
-            delta
-        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
-            .then(result => result.data)
-            .then(json => {
-                if (json["type"] === "success") {
-                    dispatch(updateTrainingSession(id, delta))
-                }
-            })
-    }
-}
-
-export function fetchTrainingSessions() {
+export function fetchAllSessions() {
     return (dispatch, getState) => {
         axios.get(`${backendURL}/api/club/training/all`, {headers: {Authorization: `Bearer ${getState().auth.token}`}})
             .then(result => result.data)
             .then(json => {
                 if (json["type"] === "data") {
-                    dispatch(receiveClubData(json["data"]))
+                    dispatch(receiveAllSessions(json["data"]))
+                } else {
+                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
     }
@@ -324,38 +295,34 @@ export function fetchTrainingSessions() {
 
 function trainingSessions(state = {
     trainingSessions: [],
-    selectedSession: null,
-    selectedClub: null,
-    fetching: false,
-    adding: true,
-    updating: false,
+    selectedClub: null
 }, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
-            return Object.assign({}, state, {
-                adding: false,
-                trainingSessions: [action.data, ...state.trainingSessions]
-            });
-        case UPDATE_TRAINING_SESSION:
-            let sessionItem = state.trainingSessions.findIndex(o => o.id === action.data.id);
-            let clonedList = [...state.trainingSessions];
-            clonedList[sessionItem] = {...action.data.update, ...clonedList[sessionItem]};
-            return Object.assign({}, state, {
-                updating: false,
-                trainingSessions: clonedList
-            });
+            return Object.assign({}, state, {trainingSessions: [action.data, ...state.trainingSessions]});
         case DELETE_TRAINING_SESSION:
+            return Object.assign({}, state, {trainingSessions: state.trainingSessions.filter(o.id !== action.data.id)});
+        case UPDATE_TRAINING_SESSION:
+            let dup = [...state.trainingSessions];
+            let updateIndex = dup.find(o => o.id === action.data.id);
+            dup[updateIndex] = {...dup[updateIndex], ...action.data.update};
+            return Object.assign({}, state, {trainingSessions: dup});
+        case SELECT_CLUB_TRAINING_SESSIONS:
+            return Object.assign({}, state, {selectedClub: action.data.clubID});
+        case RECEIVE_CLUB_SESSIONS:
             return Object.assign({}, state, {
-                trainingSessions: state.trainingSessions.filter(o => o.id !== action.data.id)
+                trainingSessions: [...action.data.trainingSessions,
+                    ...state.trainingSessions.filter(o => o.clubID !== action.data.clubID)]
             });
-        case SELECT_TRAINING_SESSIONS:
+        case RECEIVE_ALL_SESSIONS:
             return Object.assign({}, state, {
-                selectedClub: state.trainingSessions.filter(o => o["club_id"] === action.data.id)
+                trainingSessions: action.data
             });
         default:
             return state
     }
 }
+
 
 const SELECT_LIVESTREAM = "SELECTED_LIVESTREAM";
 const STOP_LIVESTREAM = "STOP_LIVESTREAM";

@@ -1,11 +1,10 @@
 from datetime import datetime
 
+from app import db
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import or_, and_
-
-from app import db
 from models import Club, User, TrainingSession
+from sqlalchemy import or_, and_
 
 words = (
     "steel", "happy", "sad", "mean", "trick", "friday", "suitcase", "window", "lamp", "tap", "cheap", "bottle", "red",
