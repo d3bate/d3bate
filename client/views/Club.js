@@ -4,6 +4,7 @@ import {fetchClubSessions, selectClub, selectClubTrainingSessions} from "../stat
 import {Redirect} from "../routing/routing"
 import {Text, View} from "react-native";
 import AddTrainingSession from "../components/Club/AddTrainingSession";
+import {colours} from "../styles";
 
 /**
  * The `Club` component shows a list of training sessions associated with a club.
@@ -30,25 +31,29 @@ class Club extends React.Component {
             <Text style={{fontSize: 24}}>{this.props.clubs.selectedClub.name}</Text>
             <Text
                 style={{fontSize: 18}}>{this.props.clubs.selectedClub.role === "owner" ? "You own this club" : this.props.clubs.selectedClub.role === "admin" ? "You are an administrator for this club" : "You are a member of this club"}</Text>
-            <View>
+            <View style={{backgroundColor: colours.primary, padding: 5, borderRadius: 3, marginBottom: 5}}>
+                <Text style={{fontSize: 18}}>Training sessions</Text>
                 {trainingSessions.length > 0 ? <View>
                     {trainingSessions.map((session, sessionIndex) => {
-                        return <View key={sessionIndex}>
-                            <Text>{new Date(session.start_time).toString()}</Text>
-                            <Text>{new Date(session.end_time).toString()}</Text>
+                        return <View key={sessionIndex} style={{
+                            backgroundColor: "white",
+                            borderRadius: 3,
+                            marginTop: 5,
+                            marginBottom: 5,
+                            padding: 5
+                        }}>
+                            <Text>Start time: {new Date(session.start_time).toString()}</Text>
+                            <Text>End time: {new Date(session.end_time).toString()}</Text>
                         </View>
                     })}
-                    {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
-                        <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :
-                        null}
                 </View> : <View>
                     <Text>THERE ARE NO CLUB SESSIONS YET.</Text>
                     {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
                         <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :
                         <Text>Watch this space for updates.</Text>}
                 </View>}
-
             </View>
+            <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/>
         </View> : <Text>Loading...</Text>
     }
 }
