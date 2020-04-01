@@ -113,6 +113,7 @@ const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
 const RECEIVE_CLUB_DATA = "GET_CLUBS";
 const RECEIVE_CREATE_CLUB = "RECEIVE_CREATE_CLUB";
 const RECEIVE_JOIN_CLUB = "RECEIVE_JOIN_CLUB";
+const SELECT_CLUB = "SELECT_CLUB";
 
 function requestClubData() {
     return {
@@ -194,7 +195,16 @@ export function createClub(clubName, schoolWebsite) {
     }
 }
 
-function clubs(state = {fetching: false, clubs: []}, action) {
+export function selectClub(clubID) {
+    return {
+        type: SELECT_CLUB,
+        data: {
+            clubID
+        }
+    }
+}
+
+function clubs(state = {fetching: false, clubs: [], selectedClub: false}, action) {
     switch (action.type) {
         case REQUEST_CLUB_DATA:
             return Object.assign({}, state, {
@@ -208,6 +218,10 @@ function clubs(state = {fetching: false, clubs: []}, action) {
         case RECEIVE_CREATE_CLUB:
             return Object.assign({}, state, {
                 clubs: [action.data, ...state.clubs]
+            });
+        case SELECT_CLUB:
+            return Object.assign({}, state, {
+                selectedClub: state.clubs.find(o => o.id === parseInt(action.data.clubID))
             });
         default:
             return state
@@ -266,22 +280,28 @@ export function addTrainingSession(start, end, livestream, clubID) {
 
 export function fetchClubSessions(clubID) {
     return (dispatch, getState) => {
-        axios.get(`${backendURL}/api/club/training/single_club`, {club_id: clubID},
-            {headers: {Authorization: `Bearer ${getState().auth.token}`}})
+        axios.post(`${backendURL}/api/club/training/single_club`, {club_id: clubID}, {
+            headers: {
+                "Authorization": `Bearer ${getState().auth.jwt}`
+            }
+        })
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
-
+                    dispatch(receiveClubSessions(clubID, json["data"]))
                 } else {
                     dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
+            })
+            .catch(error => {
+                dispatch(addMessage("error", "An unexpected error occurred.", `Message: ${error}`))
             })
     }
 }
 
 export function fetchAllSessions() {
     return (dispatch, getState) => {
-        axios.get(`${backendURL}/api/club/training/all`, {headers: {Authorization: `Bearer ${getState().auth.token}`}})
+        axios.get(`${backendURL}/api/club/training/all`, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
             .then(result => result.data)
             .then(json => {
                 if (json["type"] === "data") {
@@ -293,9 +313,17 @@ export function fetchAllSessions() {
     }
 }
 
+export function selectClubTrainingSessions(clubID) {
+    return {
+        type: SELECT_CLUB_TRAINING_SESSIONS,
+        data: clubID
+    }
+}
+
+
 function trainingSessions(state = {
     trainingSessions: [],
-    selectedClub: null
+    selectedSessions: null
 }, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
@@ -308,7 +336,7 @@ function trainingSessions(state = {
             dup[updateIndex] = {...dup[updateIndex], ...action.data.update};
             return Object.assign({}, state, {trainingSessions: dup});
         case SELECT_CLUB_TRAINING_SESSIONS:
-            return Object.assign({}, state, {selectedClub: action.data.clubID});
+            return Object.assign({}, state, {selectedSessions: state.trainingSessions.filter(o => o.id !== action.data.clubID)});
         case RECEIVE_CLUB_SESSIONS:
             return Object.assign({}, state, {
                 trainingSessions: [...action.data.trainingSessions,

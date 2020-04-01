@@ -251,7 +251,7 @@ def training_session_to_json(session):
     }
 
 
-@club_blueprint.route("/training/single_club")
+@club_blueprint.route("/training/single_club", methods=("POST", "GET"))
 @jwt_required
 def get_club_training_sessions():
     current_user = get_jwt_identity()

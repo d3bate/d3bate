@@ -28,6 +28,7 @@ class Clubs extends React.Component {
                     <ClubList clubs={this.props.clubs.clubs}/>
                 </> : <View>
                     <Text style={{fontSize: 24}}>You are not a member of any clubs</Text>
+                    <JoinClub/>
                     <View style={{
                         marginTop: 5,
                         borderColor: "grey",

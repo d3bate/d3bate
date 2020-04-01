@@ -14,12 +14,10 @@ class JoinClub extends React.Component {
     }
 
     joinClub() {
-        this.props.sendJoinClub(this.state.joinCode)
+        this.props.sendJoinClub(this.state.joinCode);
     }
 
     render() {
-        if (!this.props.auth.jwt)
-            return <Redirect to="/login"/>;
         return (
             <View>
                 <Text style={{fontSize: 24, marginBottom: 5}}>Join a club</Text>
