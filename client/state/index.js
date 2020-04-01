@@ -261,12 +261,12 @@ function receiveAllSessions(data) {
 
 export function addTrainingSession(start, end, livestream, clubID) {
     return (dispatch, getState) => {
-        axios.put(`${backendURL}/api/club/training/add`, {
+        axios.post(`${backendURL}/api/club/training/add`, {
             start_time: start,
             end_time: end,
             livestream: livestream,
             club_id: clubID
-        })
+        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "success+data") {

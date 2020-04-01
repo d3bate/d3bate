@@ -13,11 +13,13 @@ from websockets import socketio
 migrate = Migrate()
 jwt_manager = JWTManager()
 session = Session()
+cors = CORS()
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app)
+    cors.init_app(app, resources={r"/api/*": {"origins": "*"}, r"/auth/login": {"origins": "*"},
+                                  r"/auth/register": {"origins": "*"}})
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
     app.config["SESSION_REDIS"] = os.environ.get("REDIS_URL")

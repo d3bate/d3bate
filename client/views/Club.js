@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {fetchClubSessions, selectClub, selectClubTrainingSessions} from "../state";
 import {Redirect} from "../routing/routing"
 import {Text, View} from "react-native";
+import AddTrainingSession from "../components/Club/AddTrainingSession";
 
 /**
  * The `Club` component shows a list of training sessions associated with a club.
@@ -36,6 +37,9 @@ class Club extends React.Component {
                     </View>
                 }) : <View>
                     <Text>THERE ARE NO CLUB SESSIONS YET.</Text>
+                    {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
+                        <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :
+                        <Text>Watch this space for updates.</Text>}
                 </View>}
 
             </View>
