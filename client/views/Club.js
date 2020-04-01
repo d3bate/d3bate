@@ -18,12 +18,12 @@ class Club extends React.Component {
     componentDidMount() {
         if (this.props.auth.jwt) {
             this.props.fetchClubSessions(this.props.match.match.params.clubID);
-            this.props.selectClubTrainingSessions(this.props.match.match.params.clubID);
             this.props.selectClub(this.props.match.match.params.clubID);
         }
     }
 
     render() {
+        let trainingSessions = this.props.trainingSessions.trainingSessions.filter(o => o.id === parseInt(this.props.match.match.params.clubID));
         if (!this.props.auth.jwt)
             return <Redirect to="/login"/>;
         return this.props.clubs.selectedClub ? <View>
@@ -31,11 +31,17 @@ class Club extends React.Component {
             <Text
                 style={{fontSize: 18}}>{this.props.clubs.selectedClub.role === "owner" ? "You own this club" : this.props.clubs.selectedClub.role === "admin" ? "You are an administrator for this club" : "You are a member of this club"}</Text>
             <View>
-                {this.props.trainingSessions.length > 0 ? this.props.trainingSessions.selectedSessions.map((session, sessionIndex) => {
-                    return <View key={sessionIndex}>
-                        <Text>{session.start_time}</Text>
-                    </View>
-                }) : <View>
+                {trainingSessions.length > 0 ? <View>
+                    {trainingSessions.map((session, sessionIndex) => {
+                        return <View key={sessionIndex}>
+                            <Text>{new Date(session.start_time).toString()}</Text>
+                            <Text>{new Date(session.end_time).toString()}</Text>
+                        </View>
+                    })}
+                    {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
+                        <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :
+                        null}
+                </View> : <View>
                     <Text>THERE ARE NO CLUB SESSIONS YET.</Text>
                     {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
                         <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :

@@ -29,15 +29,16 @@ class AddTrainingSession extends React.Component {
 
     addSession() {
         this.props.addTrainingSession(
-            new Date(this.state.startTime.year,
-                this.state.startTime.month, this.state.startTime.day, this.state.startTime.hour, this.state.startTime.minute).getSeconds(),
-            new Date(this.state.endTime.year, this.state.endTime.month, this.state.endTime.day,
-                this.state.endTime.hour, this.state.endTime.minute).getSeconds(), this.state.livestream, this.props.clubID);
+            Math.round(new Date(this.state.startTime.year,
+                this.state.startTime.month, this.state.startTime.day, this.state.startTime.hour, this.state.startTime.minute).valueOf() / 1000),
+            Math.round(new Date(this.state.endTime.year, this.state.endTime.month, this.state.endTime.day,
+                this.state.endTime.hour, this.state.endTime.minute).valueOf() / 1000), this.state.livestream, this.props.clubID);
     }
 
     render() {
         return (
             <View style={{backgroundColor: colours.tertiary, padding: 10, borderRadius: 3,}}>
+                <Text style={{fontSize: 24}}>Add a session.</Text>
                 <Text>Start time</Text>
                 <View style={{display: "flex", flexDirection: "row", borderColor: "black"}}>
                     <TextInput autoCompleteType={"cc-number"} placeholder="Year: "

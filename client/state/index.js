@@ -336,7 +336,7 @@ function trainingSessions(state = {
             dup[updateIndex] = {...dup[updateIndex], ...action.data.update};
             return Object.assign({}, state, {trainingSessions: dup});
         case SELECT_CLUB_TRAINING_SESSIONS:
-            return Object.assign({}, state, {selectedSessions: state.trainingSessions.filter(o => o.id !== action.data.clubID)});
+            return Object.assign({}, state, {selectedSessions: state.trainingSessions.filter(o => o.id === parseInt(action.data.clubID))});
         case RECEIVE_CLUB_SESSIONS:
             return Object.assign({}, state, {
                 trainingSessions: [...action.data.trainingSessions,
