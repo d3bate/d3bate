@@ -12,6 +12,11 @@ const linkStyles = {
     paddingTop: 2
 };
 
+const createLink = (to, text) => {
+    <Link to={to} style={{ textDecoration: 'none' }}><Text
+    style={linkStyles}>{text}</Text></Link>
+}
+
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
@@ -34,19 +39,15 @@ class Navbar extends React.Component {
 
                 </View>
                 <View style={{ backgroundColor: colours.primary, display: "flex", flexDirection: "column", padding: 10 }}>
-                    <Link to="/" style={{ textDecoration: 'none' }}><Text
-                        style={linkStyles}>Home</Text></Link>
+                    {createLink("/", "Home")}
                     {this.props.auth.jwt ? <>
-                        <Link to="/club" style={{ textDecoration: 'none' }}><Text
-                            style={linkStyles}>Club</Text></Link>
+                        {createLink("/club", "Club")}
                         <Text style={linkStyles}>Calendar</Text>
                         <Text style={linkStyles}>Join debate</Text>
                     </> :
                         <>
-                            <Link to="/login" style={{ textDecoration: 'none' }}><Text
-                                style={linkStyles}>Login</Text></Link>
-                            <Link to="/register" style={{ textDecoration: 'none' }}><Text
-                                style={linkStyles}>Register</Text></Link>
+                            {createLink("/login", "Login")}
+                            {createLink("/register", "Register")}
                         </>}
                 </View>
             </>;
