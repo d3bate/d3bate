@@ -3,9 +3,9 @@ import thunkMiddleware from "redux-thunk";
 import axios from "axios";
 import { backendURL } from "../constants";
 
-const REQUEST_JWT = "REQUEST_JWT";
-const RECEIVE_JWT = "RECEIVE_JWT";
-const ADD_CREDENTIALS = "ADD_CREDENTIALS";
+export const REQUEST_JWT = "REQUEST_JWT";
+export const RECEIVE_JWT = "RECEIVE_JWT";
+export const ADD_CREDENTIALS = "ADD_CREDENTIALS";
 
 function jwtNeeded(state) {
     if (!state.auth.jwtLastFetched) {
@@ -48,33 +48,6 @@ export function addCredentials(identifier, password) {
     }
 }
 
-function auth(state = {
-    fetchingCredentials: false,
-    jwt: null,
-    jwtLastFetched: null,
-    identifier: null,
-    password: null
-}, action) {
-    switch (action.type) {
-        case REQUEST_JWT:
-            return Object.assign({}, state, {
-                fetchingCredentials: true
-            });
-        case RECEIVE_JWT:
-            return Object.assign({}, state, {
-                jwt: action.data.token,
-                jwtLastFetched: new Date().getSeconds()
-            });
-        case ADD_CREDENTIALS:
-            return Object.assign({}, state, {
-                identifier: action.data.identifier,
-                password: action.data.password
-            });
-        default:
-            return state
-    }
-}
-
 const ADD_MESSAGE = "ADD_MESSAGE";
 const DELETE_MESSAGE = "DELETE_MESSAGE";
 
@@ -109,11 +82,11 @@ function messages(state = { messages: [] }, action) {
     }
 }
 
-const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
-const RECEIVE_CLUB_DATA = "GET_CLUBS";
-const RECEIVE_CREATE_CLUB = "RECEIVE_CREATE_CLUB";
+export const REQUEST_CLUB_DATA = "REQUEST_CLUB_DATA";
+export const RECEIVE_CLUB_DATA = "GET_CLUBS";
+export const RECEIVE_CREATE_CLUB = "RECEIVE_CREATE_CLUB";
 const RECEIVE_JOIN_CLUB = "RECEIVE_JOIN_CLUB";
-const SELECT_CLUB = "SELECT_CLUB";
+export const SELECT_CLUB = "SELECT_CLUB";
 
 function requestClubData() {
     return {
@@ -204,36 +177,12 @@ export function selectClub(clubID) {
     }
 }
 
-function clubs(state = { fetching: false, clubs: [], selectedClub: false }, action) {
-    switch (action.type) {
-        case REQUEST_CLUB_DATA:
-            return Object.assign({}, state, {
-                fetching: true
-            });
-        case RECEIVE_CLUB_DATA:
-            return Object.assign({}, state, {
-                fetching: false,
-                clubs: action.data
-            });
-        case RECEIVE_CREATE_CLUB:
-            return Object.assign({}, state, {
-                clubs: [action.data, ...state.clubs]
-            });
-        case SELECT_CLUB:
-            return Object.assign({}, state, {
-                selectedClub: state.clubs.find(o => o.id === parseInt(action.data.clubID))
-            });
-        default:
-            return state
-    }
-}
-
-const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
-const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
-const UPDATE_TRAINING_SESSION = "MODIFY_TRAINING_SESSION";
-const RECEIVE_CLUB_SESSIONS = "RECEIVE_CLUB_SESSIONS";
-const RECEIVE_ALL_SESSIONS = "RECEIVE_ALL_SESSIONS";
-const SELECT_CLUB_TRAINING_SESSIONS = "SELECT_CLUB_TRAINING_SESSIONS";
+export const ADD_TRAINING_SESSION = "ADD_TRAINING_SESSION";
+export const DELETE_TRAINING_SESSION = "DELETE_TRAINING_SESSION";
+export const UPDATE_TRAINING_SESSION = "MODIFY_TRAINING_SESSION";
+export const RECEIVE_CLUB_SESSIONS = "RECEIVE_CLUB_SESSIONS";
+export const RECEIVE_ALL_SESSIONS = "RECEIVE_ALL_SESSIONS";
+export const SELECT_CLUB_TRAINING_SESSIONS = "SELECT_CLUB_TRAINING_SESSIONS";
 
 function receiveAddTrainingSession(data) {
     return {
@@ -321,43 +270,12 @@ export function selectClubTrainingSessions(clubID) {
 }
 
 
-function trainingSessions(state = {
-    trainingSessions: [],
-    selectedSessions: null
-}, action) {
-    switch (action.type) {
-        case ADD_TRAINING_SESSION:
-            return Object.assign({}, state, { trainingSessions: [action.data, ...state.trainingSessions] });
-        case DELETE_TRAINING_SESSION:
-            return Object.assign({}, state, { trainingSessions: state.trainingSessions.filter(o.id !== action.data.id) });
-        case UPDATE_TRAINING_SESSION:
-            let dup = [...state.trainingSessions];
-            let updateIndex = dup.find(o => o.id === action.data.id);
-            dup[updateIndex] = { ...dup[updateIndex], ...action.data.update };
-            return Object.assign({}, state, { trainingSessions: dup });
-        case SELECT_CLUB_TRAINING_SESSIONS:
-            return Object.assign({}, state, { selectedSessions: state.trainingSessions.filter(o => o.id === parseInt(action.data.clubID)) });
-        case RECEIVE_CLUB_SESSIONS:
-            return Object.assign({}, state, {
-                trainingSessions: [...action.data.trainingSessions,
-                ...state.trainingSessions.filter(o => o.clubID !== action.data.clubID)]
-            });
-        case RECEIVE_ALL_SESSIONS:
-            return Object.assign({}, state, {
-                trainingSessions: action.data
-            });
-        default:
-            return state
-    }
-}
-
-
-const SELECT_LIVESTREAM = "SELECTED_LIVESTREAM";
-const STOP_LIVESTREAM = "STOP_LIVESTREAM";
-const RECEIVE_FRAME = "RECEIVE_FRAME";
-const RECEIVE_SAMPLE = "RECEIVE_SAMPLE";
-const SEND_FRAME = "SEND_FRAME";
-const SEND_SAMPLE = "SEND_SAMPLE";
+export const SELECT_LIVESTREAM = "SELECTED_LIVESTREAM";
+export const STOP_LIVESTREAM = "STOP_LIVESTREAM";
+export const RECEIVE_FRAME = "RECEIVE_FRAME";
+export const RECEIVE_SAMPLE = "RECEIVE_SAMPLE";
+export const SEND_FRAME = "SEND_FRAME";
+export const SEND_SAMPLE = "SEND_SAMPLE";
 
 function selectLivestream(id) {
     return {
@@ -395,33 +313,6 @@ function receiveSample(sample) {
     }
 }
 
-
-function livestream(state = {
-    selectedLivestream: null,
-    frames: [],
-    samples: [],
-    ownFrame: null,
-    selectedUsers: []
-}, action) {
-    switch (action.type) {
-        case SELECT_LIVESTREAM:
-            return Object.assign({}, state, { selectedLivestream: action.data.id });
-        case STOP_LIVESTREAM:
-            return Object.assign({}, state, { selectedLivestream: null });
-        case RECEIVE_FRAME:
-            return Object.assign({}, state, { frames: [action.data, ...state.frames.filter(o => o.user_id !== action.data.userID)] });
-        case RECEIVE_SAMPLE:
-            return Object.assign({}, state, { frames: [action.data, ...state.samples.filter(o => o.user_id !== action.data.userID)] });
-        case SEND_FRAME:
-            return Object.assign({}, state, { ownFrame: action.data.frame });
-        case SEND_SAMPLE:
-            return state;
-        default:
-            return state
-
-
-    }
-}
 
 let rootReducer = combineReducers({ auth, messages, trainingSessions, clubs, livestream });
 
