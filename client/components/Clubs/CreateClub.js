@@ -2,6 +2,7 @@ import React from "react";
 import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import {connect} from "react-redux";
 import {addMessage, createClub} from "../../state";
+import CustomButton from "../../styles/CustomButton";
 
 class CreateClub extends React.Component {
     constructor(props) {
@@ -45,10 +46,7 @@ class CreateClub extends React.Component {
                                maxWidth: 300,
                                marginBottom: 5
                            }}/>
-                <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 100, borderRadius: 3}}
-                                  onPress={this.createClub}>
-                    <Text>Create club</Text>
-                </TouchableOpacity>
+                <CustomButton title="Create club" onPress={this.createClub}/>
             </View>
         );
     }

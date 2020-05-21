@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Redirect } from "../routing/routing";
 import { validEmail } from "../helpers";
 import { addMessage } from "../state";
+import CustomButton, { customButton } from "../styles/CustomButton";
 
 const textInputStyle = {
     padding: 10,
@@ -70,10 +71,7 @@ class Register extends React.Component {
                     onChangeText={text => this.setState({ passwordConfirmation: text })} secureTextEntry={true}
                     textContentType="password" placeholder="Confirm your password: "
                     style={textInputStyle} />
-                <TouchableOpacity style={{ backgroundColor: "lightgrey", padding: 10, maxWidth: 75, borderRadius: 3 }}
-                    onPress={this.register}>
-                    <Text>Register</Text>
-                </TouchableOpacity>
+                <CustomButton title="Register" onPress={this.register} />
             </View>
         );
     }

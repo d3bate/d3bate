@@ -3,6 +3,7 @@ import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import {Redirect} from "../../routing/routing";
 import {connect} from "react-redux";
 import {sendJoinClub} from "../../state";
+import CustomButton from "../../styles/CustomButton";
 
 class JoinClub extends React.Component {
     constructor(props) {
@@ -31,10 +32,7 @@ class JoinClub extends React.Component {
                                maxWidth: 300,
                                marginBottom: 5
                            }}/>
-                <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 60, borderRadius: 3}}
-                                  onPress={this.joinClub}>
-                    <Text>Join club</Text>
-                </TouchableOpacity>
+                <CustomButton title="Join club" onPress={this.joinClub}/>
             </View>
         );
     }
