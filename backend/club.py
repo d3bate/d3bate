@@ -7,11 +7,58 @@ from models import Club, User, TrainingSession
 from sqlalchemy import or_, and_
 
 words = (
-    "steel", "happy", "sad", "mean", "trick", "friday", "suitcase", "window", "lamp", "tap", "cheap", "bottle", "red",
-    "green", "blue", "walking", "catching", "running", "piano", "world", "map", "head", "pencil", "book", "writer",
-    "paper", "desk", "pen", "human", "brush", "cupboard", "shelf", "knob", "switch", "coffee", "toaster", "car",
-    "workbook", "frame", "bowl", "cushion", "bear", "table", "block", "shield", "lid", "packet", "wrapping", "stapler",
-    "ruler", "painting", "poster"
+    "steel",
+    "happy",
+    "sad",
+    "mean",
+    "trick",
+    "friday",
+    "suitcase",
+    "window",
+    "lamp",
+    "tap",
+    "cheap",
+    "bottle",
+    "red",
+    "green",
+    "blue",
+    "walking",
+    "catching",
+    "running",
+    "piano",
+    "world",
+    "map",
+    "head",
+    "pencil",
+    "book",
+    "writer",
+    "paper",
+    "desk",
+    "pen",
+    "human",
+    "brush",
+    "cupboard",
+    "shelf",
+    "knob",
+    "switch",
+    "coffee",
+    "toaster",
+    "car",
+    "workbook",
+    "frame",
+    "bowl",
+    "cushion",
+    "bear",
+    "table",
+    "block",
+    "shield",
+    "lid",
+    "packet",
+    "wrapping",
+    "stapler",
+    "ruler",
+    "painting",
+    "poster",
 )
 
 club_blueprint = Blueprint("club", __name__, url_prefix="/api/club")
@@ -23,7 +70,7 @@ def club_to_json(x):
         "id": x.id,
         "registered_school": x.registered_school,
         "school_verified": x.school_verified,
-        "member_count": len(x.members) + len(x.owners) + len(x.admins)
+        "member_count": len(x.members) + len(x.owners) + len(x.admins),
     }
 
 
@@ -33,20 +80,18 @@ def create_club():
     current_user = get_jwt_identity()
     user = User.query.get(current_user["id"])
     if not user:
-        return jsonify({
-            "type": "error",
-            "message": "",
-            "suggestion": ""
-        })
+        return jsonify({"type": "error", "message": "", "suggestion": ""})
     club_name = request.json["club_name"]
     registered_school = request.json["school_website"]
     existing_club = Club.query.filter(Club.name == club_name).first()
     if existing_club:
-        return jsonify({
-            "type": "error",
-            "message": "There is already a club with that name.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "There is already a club with that name.",
+                "suggestion": "",
+            }
+        )
     n = str(Club.query.filter().count())
     code = ""
     if len(n) == 1:
@@ -60,10 +105,7 @@ def create_club():
     db.session.add(club)
     db.session.commit()
     db.session.refresh(club)
-    return jsonify({
-        "type": "data",
-        "data": {"role": "owner", **club_to_json(club)}
-    })
+    return jsonify({"type": "data", "data": {"role": "owner", **club_to_json(club)}})
 
 
 @club_blueprint.route("/join", methods=("POST",))
@@ -74,37 +116,51 @@ def join_club():
     join_code = request.json["join_code"]
     club = Club.query.filter_by(join_code=join_code).first()
     if not club:
-        return jsonify({
-            "type": "error",
-            "message": "That join code is invalid.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {"type": "error", "message": "That join code is invalid.", "suggestion": ""}
+        )
     club.members.append(user)
     db.session.commit()
-    return jsonify({
-        "type": "success",
-        "message": "You have joined that club.",
-        "suggestion": ""
-    })
+    return jsonify(
+        {"type": "success", "message": "You have joined that club.", "suggestion": ""}
+    )
 
 
 @club_blueprint.route("/get_all")
 @jwt_required
 def get_clubs():
     current_user = get_jwt_identity()
-    return jsonify({
-        "type": "data",
-        "data": [*list(
-            map(lambda x: {"role": "admin", **club_to_json(x)},
-                Club.query.filter((Club.admins.any(id=current_user["id"]))).all())),
-                 *list(
-                     map(lambda x: {"role": "member", **club_to_json(x)},
-                         Club.query.filter((Club.members.any(id=current_user["id"]))).all())),
-                 *list(
-                     map(lambda x: {"role": "owner", **club_to_json(x)},
-                         Club.query.filter((Club.owners.any(id=current_user["id"]))).all()))
-                 ]
-    })
+    return jsonify(
+        {
+            "type": "data",
+            "data": [
+                *list(
+                    map(
+                        lambda x: {"role": "admin", **club_to_json(x)},
+                        Club.query.filter(
+                            (Club.admins.any(id=current_user["id"]))
+                        ).all(),
+                    )
+                ),
+                *list(
+                    map(
+                        lambda x: {"role": "member", **club_to_json(x)},
+                        Club.query.filter(
+                            (Club.members.any(id=current_user["id"]))
+                        ).all(),
+                    )
+                ),
+                *list(
+                    map(
+                        lambda x: {"role": "owner", **club_to_json(x)},
+                        Club.query.filter(
+                            (Club.owners.any(id=current_user["id"]))
+                        ).all(),
+                    )
+                ),
+            ],
+        }
+    )
 
 
 @club_blueprint.route("/leave", methods=("POST",))
@@ -115,11 +171,9 @@ def leave_club():
     club_id = request.json["club_id"]
     club = Club.query.get(club_id)
     if not club:
-        return jsonify({
-            "type": "error",
-            "message": "That club does not exist.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {"type": "error", "message": "That club does not exist.", "suggestion": ""}
+        )
     try:
         club.owners.remove(user)
     except ValueError:
@@ -133,11 +187,13 @@ def leave_club():
     except ValueError:
         pass
     db.session.commit()
-    return jsonify({
-        "type": "success",
-        "message": "You have been removed from that club.",
-        "suggestion": ""
-    })
+    return jsonify(
+        {
+            "type": "success",
+            "message": "You have been removed from that club.",
+            "suggestion": "",
+        }
+    )
 
 
 @club_blueprint.route("/training/add", methods=("POST", "PUT"))
@@ -151,33 +207,35 @@ def add_training_session():
         livestream = False
     club_id = request.json["club_id"]
     if not isinstance(club_id, int):
-        return jsonify({
-            "type": "error",
-            "message": "Club IDs must be of an integer datatype.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "Club IDs must be of an integer datatype.",
+                "suggestion": "",
+            }
+        )
     club = Club.query.get(club_id)
     if not club:
-        return jsonify({
-            "type": "error",
-            "message": "That club doesn't exist.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {"type": "error", "message": "That club doesn't exist.", "suggestion": ""}
+        )
     training_session = TrainingSession(
         start_time=datetime.utcfromtimestamp(start_time),
         end_time=datetime.utcfromtimestamp(end_time),
         livestream=livestream,
-        club=club_id
+        club=club_id,
     )
     db.session.add(training_session)
     db.session.commit()
     db.session.refresh(training_session)
-    return jsonify({
-        "type": "success+data",
-        "message": "The training session was successfully scheduled.",
-        "suggestion": "",
-        "data": training_session_to_json(training_session)
-    })
+    return jsonify(
+        {
+            "type": "success+data",
+            "message": "The training session was successfully scheduled.",
+            "suggestion": "",
+            "data": training_session_to_json(training_session),
+        }
+    )
 
 
 @club_blueprint.route("/training/remove")
@@ -187,27 +245,40 @@ def remove_debating_session():
     session_id = request.json["session_id"]
     club_id = request.json["club_id"]
     user_has_privileges = Club.query.get(
-        and_(or_(Club.owners.any(id=current_user["id"]), Club.admins.any(id=current_user["id"])), Club.id.any(club_id)))
+        and_(
+            or_(
+                Club.owners.any(id=current_user["id"]),
+                Club.admins.any(id=current_user["id"]),
+            ),
+            Club.id.any(club_id),
+        )
+    )
     if not user_has_privileges:
-        return jsonify({
-            "type": "error",
-            "message": "You don't have permission to do that.",
-            "suggestion": "Ask for permission."
-        })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "You don't have permission to do that.",
+                "suggestion": "Ask for permission.",
+            }
+        )
     training_session = TrainingSession.query.get(session_id)
     if not training_session:
-        return jsonify({
-            "type": "error",
-            "message": "That session doesn't exist.",
-            "suggestion": ""
-        })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "That session doesn't exist.",
+                "suggestion": "",
+            }
+        )
     db.session.delete(training_session)
     db.session.commit()
-    return jsonify({
-        "type": "success",
-        "message": "Successfully deleted that post.",
-        "suggestion": ""
-    })
+    return jsonify(
+        {
+            "type": "success",
+            "message": "Successfully deleted that post.",
+            "suggestion": "",
+        }
+    )
 
 
 @club_blueprint.route("/training/update", methods=("POST",))
@@ -218,14 +289,20 @@ def update_training():
     delta = request.json["delta"]
     training_session = TrainingSession.query.get(session_id)
     user_has_privileges = Club.query.filter(
-        (Club.owners.any(id=current_user["id"]) | Club.admins.any(id=current_user["id"])) & (
-                Club.id == training_session.club)).first()
+        (
+            Club.owners.any(id=current_user["id"])
+            | Club.admins.any(id=current_user["id"])
+        )
+        & (Club.id == training_session.club)
+    ).first()
     if not user_has_privileges:
-        return jsonify({
-            "type": "error",
-            "message": "You don't have permission to do that.",
-            "suggestion": "Ask for permission."
-        })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "You don't have permission to do that.",
+                "suggestion": "Ask for permission.",
+            }
+        )
     for (key, value) in delta.items():
         if key == "start_time":
             training_session.start_time = datetime.utcfromtimestamp(value)
@@ -234,11 +311,7 @@ def update_training():
         elif key == "livestream":
             training_session.livestream = value
     db.session.commit()
-    return jsonify({
-        "type": "success",
-        "message": "",
-        "suggestion": ""
-    })
+    return jsonify({"type": "success", "message": "", "suggestion": ""})
 
 
 def training_session_to_json(session):
@@ -247,7 +320,7 @@ def training_session_to_json(session):
         "club_id": session.club,
         "start_time": session.start_time.timestamp(),
         "end_time": session.end_time.timestamp(),
-        "livestream": session.livestream
+        "livestream": session.livestream,
     }
 
 
@@ -257,29 +330,45 @@ def get_club_training_sessions():
     current_user = get_jwt_identity()
     club_id = request.json["club_id"]
     club = Club.query.filter(
-        and_(or_(Club.owners.any(id=current_user["id"]),
-                 or_(Club.admins.any(id=current_user["id"]), Club.members.any(id=current_user["id"]))),
-             (Club.id == club_id))).first()
+        and_(
+            or_(
+                Club.owners.any(id=current_user["id"]),
+                or_(
+                    Club.admins.any(id=current_user["id"]),
+                    Club.members.any(id=current_user["id"]),
+                ),
+            ),
+            (Club.id == club_id),
+        )
+    ).first()
     if not club:
-        return jsonify({
-            "type": "error",
-            "message": "Either that club does not exist, or you don't have permission to view it",
-            "suggestion": ""
-        })
-    return jsonify({
-        "type": "data",
-        "data": list(map(training_session_to_json, club.training_sessions))
-    })
+        return jsonify(
+            {
+                "type": "error",
+                "message": "Either that club does not exist, or you don't have permission to view it",
+                "suggestion": "",
+            }
+        )
+    return jsonify(
+        {
+            "type": "data",
+            "data": list(map(training_session_to_json, club.training_sessions)),
+        }
+    )
 
 
 @club_blueprint.route("/training/all")
 @jwt_required
 def get_all_training_sessions():
     current_user = get_jwt_identity()
-    clubs = Club.query.filter((Club.admins.any(id=current_user["id"])) | (
-        Club.owners.any(id=current_user["id"])) | (Club.members.any(id=current_user["id"]))).all()
-    training_sessions = TrainingSession.query.filter(or_(*[(TrainingSession.club == club.id) for club in clubs]))
-    return jsonify({
-        "type": "data",
-        "data": list(map(training_session_to_json, training_sessions))
-    })
+    clubs = Club.query.filter(
+        (Club.admins.any(id=current_user["id"]))
+        | (Club.owners.any(id=current_user["id"]))
+        | (Club.members.any(id=current_user["id"]))
+    ).all()
+    training_sessions = TrainingSession.query.filter(
+        or_(*[(TrainingSession.club == club.id) for club in clubs])
+    )
+    return jsonify(
+        {"type": "data", "data": list(map(training_session_to_json, training_sessions))}
+    )

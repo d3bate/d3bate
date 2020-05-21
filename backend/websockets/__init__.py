@@ -13,11 +13,7 @@ from models import TrainingSession
 def ws_auth(f):
     def wrapper(data, *args, **kwargs):
         if not session["user"]:
-            return {
-                "type": "error",
-                "message": "",
-                "suggestion": ""
-            }
+            return {"type": "error", "message": "", "suggestion": ""}
         return f(data, *args, **kwargs)
 
     return wrapper
@@ -32,31 +28,37 @@ def connect():
 @socketio.on("join")
 def on_join(data):
     training_session_id = data["session_id"]
-    training_session = TrainingSession.query.filter(and_((TrainingSession.id == training_session_id), or_(
-        or_(TrainingSession.club.members.any(id=session["user"].id),
-            TrainingSession.club.admins.any(id=session["user"].id)),
-        TrainingSession.club.owners.any(id=session["user"].id)
-    )))
+    training_session = TrainingSession.query.filter(
+        and_(
+            (TrainingSession.id == training_session_id),
+            or_(
+                or_(
+                    TrainingSession.club.members.any(id=session["user"].id),
+                    TrainingSession.club.admins.any(id=session["user"].id),
+                ),
+                TrainingSession.club.owners.any(id=session["user"].id),
+            ),
+        )
+    )
     if not training_session:
         return {
             "type": "error",
             "message": "That training session cannot be found.",
-            "suggestion": "Has it been deleted?"
+            "suggestion": "Has it been deleted?",
         }
     if not training_session.livestream:
         return {
             "type": "error",
             "message": "Livestreams have not been enabled for this session.",
-            "suggestion": ""
+            "suggestion": "",
         }
     join_room("{}".format(training_session.id))
-    send({
-        "type": "user_joined",
-        "data": {
-            "id": session["user"].id,
-            "name": session["user"].name
+    send(
+        {
+            "type": "user_joined",
+            "data": {"id": session["user"].id, "name": session["user"].name},
         }
-    })
+    )
 
 
 @socketio.on("send/audio")
@@ -65,16 +67,16 @@ def receive_stream(data):
     audio = data["data"]
     user_room = next(filter(lambda x: x.isnumeric(), rooms()))
     if user_room:
-        send({
-            "type": "incoming_audio",
-            "data": {
-                "user": {
-                    "id": session["user"].id,
-                    "name": session["user"].name
+        send(
+            {
+                "type": "incoming_audio",
+                "data": {
+                    "user": {"id": session["user"].id, "name": session["user"].name},
+                    "audio": audio,
                 },
-                "audio": audio
-            }
-        }, room=user_room)
+            },
+            room=user_room,
+        )
     else:
         return {
             "type": "error",
@@ -89,16 +91,16 @@ def receive_stream(data):
     video = data["video"]
     user_room = next(filter(lambda x: x.isnumeric(), rooms()))
     if user_room:
-        send({
-            "type": "incoming_video",
-            "data": {
-                "user": {
-                    "id": session["user"].id,
-                    "name": session["user"].name
+        send(
+            {
+                "type": "incoming_video",
+                "data": {
+                    "user": {"id": session["user"].id, "name": session["user"].name},
+                    "video": video,
                 },
-                "video": video
-            }
-        }, room=user_room)
+            },
+            room=user_room,
+        )
     else:
         return {
             "type": "error",

@@ -4,20 +4,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 
-members = db.Table("club_members",
-                   db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
-                   db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
-                   )
+members = db.Table(
+    "club_members",
+    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+)
 
-admins = db.Table("administrators",
-                  db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
-                  db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
-                  )
+admins = db.Table(
+    "administrators",
+    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+)
 
-owners = db.Table("club_owners",
-                  db.Column('club_id', db.Integer, db.ForeignKey("club.id"), primary_key=True),
-                  db.Column('user_id', db.Integer, db.ForeignKey("user.id"), primary_key=True)
-                  )
+owners = db.Table(
+    "club_owners",
+    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+)
 
 
 class User(db.Model):
@@ -29,12 +32,24 @@ class User(db.Model):
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     email_verified = db.Column(db.Boolean, default=False)
 
-    club_ownerships = db.relationship("Club", secondary=members, lazy="subquery",
-                                      backref=db.backref("owned_clubs", lazy=True))
-    club_memberships = db.relationship("Club", secondary=members, lazy="subquery",
-                                       backref=db.backref("member_clubs", lazy=True))
-    club_adminships = db.relationship("Club", secondary=members, lazy="subquery",
-                                      backref=db.backref("admin_clubs", lazy=True))
+    club_ownerships = db.relationship(
+        "Club",
+        secondary=members,
+        lazy="subquery",
+        backref=db.backref("owned_clubs", lazy=True),
+    )
+    club_memberships = db.relationship(
+        "Club",
+        secondary=members,
+        lazy="subquery",
+        backref=db.backref("member_clubs", lazy=True),
+    )
+    club_adminships = db.relationship(
+        "Club",
+        secondary=members,
+        lazy="subquery",
+        backref=db.backref("admin_clubs", lazy=True),
+    )
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -50,11 +65,30 @@ class Club(db.Model):
     school_verified = db.Column(db.Boolean, nullable=False, default=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     join_code = db.Column(db.Text)
-    training_sessions = db.relationship("TrainingSession", backref="training_sessions", lazy=True)
-    owners = db.relationship("User", secondary=owners, lazy="subquery", backref=db.backref("owners", lazy=True))
-    admins = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("admins", lazy=True))
-    members = db.relationship("User", secondary=members, lazy="subquery", backref=db.backref("members", lazy=True))
-    chat_messages = db.relationship("ChatMessageThread", backref="club_chat_messages", lazy=True)
+    training_sessions = db.relationship(
+        "TrainingSession", backref="training_sessions", lazy=True
+    )
+    owners = db.relationship(
+        "User",
+        secondary=owners,
+        lazy="subquery",
+        backref=db.backref("owners", lazy=True),
+    )
+    admins = db.relationship(
+        "User",
+        secondary=members,
+        lazy="subquery",
+        backref=db.backref("admins", lazy=True),
+    )
+    members = db.relationship(
+        "User",
+        secondary=members,
+        lazy="subquery",
+        backref=db.backref("members", lazy=True),
+    )
+    chat_messages = db.relationship(
+        "ChatMessageThread", backref="club_chat_messages", lazy=True
+    )
 
 
 class TrainingSession(db.Model):
@@ -70,7 +104,9 @@ class TrainingSession(db.Model):
 class TrainingSessionAttendance(db.Model):
     __tablename__ = "training_session_attendance"
     id = db.Column(db.Integer, primary_key=True)
-    training_session_id = db.Column(db.Integer, db.ForeignKey("training_session.id"), nullable=False)
+    training_session_id = db.Column(
+        db.Integer, db.ForeignKey("training_session.id"), nullable=False
+    )
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     attending = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -82,7 +118,9 @@ class ChatMessageThread(db.Model):
     user_count = db.Column(db.Integer, nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey("club.id"), nullable=False)
     club = db.relationship("Club", backref="message_thread_club", lazy=True)
-    messages = db.relationship("ChatMessage", backref="message_thread_chat_messages", lazy=True)
+    messages = db.relationship(
+        "ChatMessage", backref="message_thread_chat_messages", lazy=True
+    )
 
 
 class ChatMessage(db.Model):
