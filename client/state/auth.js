@@ -1,5 +1,5 @@
 import { REQUEST_JWT, RECEIVE_JWT, ADD_CREDENTIALS } from "./index";
-function auth(state = {
+export function auth(state = {
     fetchingCredentials: false,
     jwt: null,
     jwtLastFetched: null,

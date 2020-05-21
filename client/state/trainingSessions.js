@@ -1,5 +1,5 @@
 import { ADD_TRAINING_SESSION, DELETE_TRAINING_SESSION, UPDATE_TRAINING_SESSION, SELECT_CLUB_TRAINING_SESSIONS, RECEIVE_CLUB_SESSIONS, RECEIVE_ALL_SESSIONS } from "./index";
-function trainingSessions(state = {
+export function trainingSessions(state = {
     trainingSessions: [],
     selectedSessions: null
 }, action) {

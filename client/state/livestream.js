@@ -1,5 +1,5 @@
 import { SELECT_LIVESTREAM, STOP_LIVESTREAM, RECEIVE_FRAME, RECEIVE_SAMPLE, SEND_FRAME, SEND_SAMPLE } from "./index";
-function livestream(state = {
+export function livestream(state = {
     selectedLivestream: null,
     frames: [],
     samples: [],
