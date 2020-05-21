@@ -1,5 +1,4 @@
 # d3bate
-[![](https://tokei.rs/b1/github/d3bate/d3bate)](https://github.com/d3bate/d3bate)
 d3bate is a digital debating platform. It's designed to make it easy to run debating-related activities. 
 # Quickstart
 There are multiple ways (listed here in order of complexity) to use d3bate. 

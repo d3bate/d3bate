@@ -1,10 +1,10 @@
 import React from "react";
-import {connect} from "react-redux";
-import {fetchClubSessions, selectClub, selectClubTrainingSessions} from "../state";
-import {Redirect} from "../routing/routing"
-import {Text, View} from "react-native";
+import { connect } from "react-redux";
+import { fetchClubSessions, selectClub, selectClubTrainingSessions } from "../state";
+import { Redirect } from "../routing/routing"
+import { Text, View } from "react-native";
 import AddTrainingSession from "../components/Club/AddTrainingSession";
-import {colours} from "../styles";
+import { colours } from "../styles";
 
 /**
  * The `Club` component shows a list of training sessions associated with a club.
@@ -26,13 +26,13 @@ class Club extends React.Component {
     render() {
         let trainingSessions = this.props.trainingSessions.trainingSessions.filter(o => o.id === parseInt(this.props.match.match.params.clubID));
         if (!this.props.auth.jwt)
-            return <Redirect to="/login"/>;
+            return <Redirect to="/login" />;
         return this.props.clubs.selectedClub ? <View>
-            <Text style={{fontSize: 24}}>{this.props.clubs.selectedClub.name}</Text>
+            <Text style={{ fontSize: 24 }}>{this.props.clubs.selectedClub.name}</Text>
             <Text
-                style={{fontSize: 18}}>{this.props.clubs.selectedClub.role === "owner" ? "You own this club" : this.props.clubs.selectedClub.role === "admin" ? "You are an administrator for this club" : "You are a member of this club"}</Text>
-            <View style={{backgroundColor: colours.primary, padding: 5, borderRadius: 3, marginBottom: 5}}>
-                <Text style={{fontSize: 18}}>Training sessions</Text>
+                style={{ fontSize: 18 }}>{this.props.clubs.selectedClub.role === "owner" ? "You own this club" : this.props.clubs.selectedClub.role === "admin" ? "You are an administrator for this club" : "You are a member of this club"}</Text>
+            <View style={{ backgroundColor: colours.primary, padding: 5, borderRadius: 3, marginBottom: 5 }}>
+                <Text style={{ fontSize: 18 }}>Training sessions</Text>
                 {trainingSessions.length > 0 ? <View>
                     {trainingSessions.map((session, sessionIndex) => {
                         return <View key={sessionIndex} style={{
@@ -47,13 +47,13 @@ class Club extends React.Component {
                         </View>
                     })}
                 </View> : <View>
-                    <Text>THERE ARE NO CLUB SESSIONS YET.</Text>
-                    {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
-                        <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/> :
-                        <Text>Watch this space for updates.</Text>}
-                </View>}
+                        <Text>THERE ARE NO CLUB SESSIONS YET.</Text>
+                        {this.props.clubs.selectedClub.role === "owner" || this.props.clubs.selectedClub.role === "admin" ?
+                            <AddTrainingSession clubID={this.props.clubs.selectedClub.id} /> :
+                            <Text>Watch this space for updates.</Text>}
+                    </View>}
             </View>
-            <AddTrainingSession clubID={this.props.clubs.selectedClub.id}/>
+            <AddTrainingSession clubID={this.props.clubs.selectedClub.id} />
         </View> : <Text>Loading...</Text>
     }
 }
@@ -65,4 +65,4 @@ export default connect((state, ownProps) => {
         trainingSessions: state.trainingSessions,
         ...ownProps
     }
-}, {fetchClubSessions, selectClubTrainingSessions, selectClub})(Club);
+}, { fetchClubSessions, selectClubTrainingSessions, selectClub })(Club);

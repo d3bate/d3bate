@@ -1,11 +1,11 @@
 import React from "react";
-import {Text, TextInput, TouchableOpacity, View} from "react-native";
-import {connect} from "react-redux";
-import {receiveJWT} from "../state/";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { connect } from "react-redux";
+import { receiveJWT } from "../state/";
 import axios from "axios";
-import {backendURL} from "../constants";
-import {addCredentials, addMessage} from "../state";
-import {Redirect} from "../routing/routing"
+import { backendURL } from "../constants";
+import { addCredentials, addMessage } from "../state";
+import { Redirect } from "../routing/routing"
 
 class Login extends React.Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class Login extends React.Component {
     }
 
     login() {
-        axios.post(`${backendURL}/auth/login`, {identifier: this.state.identifier, password: this.state.password})
+        axios.post(`${backendURL}/auth/login`, { identifier: this.state.identifier, password: this.state.password })
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
@@ -41,32 +41,32 @@ class Login extends React.Component {
 
     render() {
         if (this.state.redirect)
-            return <Redirect to={this.state.redirect}/>;
+            return <Redirect to={this.state.redirect} />;
         return (
             <View>
-                <Text style={{fontSize: 24, marginBottom: 5}}>Login</Text>
-                <TextInput onChangeText={text => this.setState({identifier: text})} textContentType="username"
-                           placeholder="Username: "
-                           style={{
-                               padding: 10,
-                               borderWidth: 1,
-                               borderColor: "grey",
-                               borderRadius: 3,
-                               maxWidth: 300,
-                               marginBottom: 5
-                           }}/>
-                <TextInput onChangeText={text => this.setState({password: text})} secureTextEntry={true}
-                           textContentType="password" placeholder="Password: "
-                           style={{
-                               padding: 10,
-                               borderWidth: 1,
-                               borderColor: "grey",
-                               borderRadius: 3,
-                               maxWidth: 300,
-                               marginBottom: 5
-                           }}/>
-                <TouchableOpacity style={{backgroundColor: "lightgrey", padding: 10, maxWidth: 60, borderRadius: 3}}
-                                  onPress={this.login}>
+                <Text style={{ fontSize: 24, marginBottom: 5 }}>Login</Text>
+                <TextInput onChangeText={text => this.setState({ identifier: text })} textContentType="username"
+                    placeholder="Username: "
+                    style={{
+                        padding: 10,
+                        borderWidth: 1,
+                        borderColor: "grey",
+                        borderRadius: 3,
+                        maxWidth: 300,
+                        marginBottom: 5
+                    }} />
+                <TextInput onChangeText={text => this.setState({ password: text })} secureTextEntry={true}
+                    textContentType="password" placeholder="Password: "
+                    style={{
+                        padding: 10,
+                        borderWidth: 1,
+                        borderColor: "grey",
+                        borderRadius: 3,
+                        maxWidth: 300,
+                        marginBottom: 5
+                    }} />
+                <TouchableOpacity style={{ backgroundColor: "lightgrey", padding: 10, maxWidth: 60, borderRadius: 3 }}
+                    onPress={this.login}>
                     <Text>Login</Text>
                 </TouchableOpacity>
             </View>
@@ -79,4 +79,4 @@ export default connect((state, ownProps) => {
         auth: state.auth,
         ...ownProps
     }
-}, {receiveJWT, addCredentials, addMessage})(Login)
+}, { receiveJWT, addCredentials, addMessage })(Login)

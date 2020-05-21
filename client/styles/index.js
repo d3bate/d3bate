@@ -1,4 +1,4 @@
-import {StyleSheet} from "react-native";
+import { StyleSheet } from "react-native";
 
 const colours = {
     primary: "#ff7665",
@@ -38,4 +38,4 @@ const headerStyles = StyleSheet.create({
     }
 });
 
-export {baseStyles, headerStyles, colours};
+export { baseStyles, headerStyles, colours };

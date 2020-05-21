@@ -1,7 +1,7 @@
-import {applyMiddleware, combineReducers, createStore} from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
 import axios from "axios";
-import {backendURL} from "../constants";
+import { backendURL } from "../constants";
 
 const REQUEST_JWT = "REQUEST_JWT";
 const RECEIVE_JWT = "RECEIVE_JWT";
@@ -23,7 +23,7 @@ function requestJWT() {
 export function receiveJWT(token) {
     return {
         type: RECEIVE_JWT,
-        data: {token}
+        data: { token }
     }
 }
 
@@ -44,7 +44,7 @@ export function fetchJWTIfNeeded() {
 export function addCredentials(identifier, password) {
     return {
         type: ADD_CREDENTIALS,
-        data: {identifier, password}
+        data: { identifier, password }
     }
 }
 
@@ -98,12 +98,12 @@ export function deleteMessage(messageID) {
     }
 }
 
-function messages(state = {messages: []}, action) {
+function messages(state = { messages: [] }, action) {
     switch (action.type) {
         case ADD_MESSAGE:
-            return Object.assign({}, state, {messages: [{id: state.messages.length, ...action.data}, ...state.messages]});
+            return Object.assign({}, state, { messages: [{ id: state.messages.length, ...action.data }, ...state.messages] });
         case DELETE_MESSAGE:
-            return Object.assign({}, state, {messages: state.messages.filter(o => o.id !== action.data.id)});
+            return Object.assign({}, state, { messages: state.messages.filter(o => o.id !== action.data.id) });
         default:
             return state
     }
@@ -131,7 +131,7 @@ function receiveClubData(data) {
 export function fetchClubData() {
     return (dispatch, getState) => {
         dispatch(requestClubData());
-        axios.get(`${backendURL}/api/club/get_all`, {headers: {"Authorization": `Bearer ${getState().auth.jwt}`}})
+        axios.get(`${backendURL}/api/club/get_all`, { headers: { "Authorization": `Bearer ${getState().auth.jwt}` } })
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "data") {
@@ -164,7 +164,7 @@ function receiveJoinClub(club) {
 export function sendJoinClub(joinCode) {
     return (dispatch, getState) => {
         dispatch(fetchJWTIfNeeded());
-        axios.post(`${backendURL}/club/join`, {join_code: joinCode}, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+        axios.post(`${backendURL}/club/join`, { join_code: joinCode }, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
             .then(result => result.data)
             .then(json => {
                 if (json["type"] === "success") {
@@ -179,7 +179,7 @@ export function sendJoinClub(joinCode) {
 export function createClub(clubName, schoolWebsite) {
     return (dispatch, getState) => {
         axios.post(`${backendURL}/api/club/create`,
-            {club_name: clubName, school_website: schoolWebsite},
+            { club_name: clubName, school_website: schoolWebsite },
             {
                 headers: {
                     "Authorization": `Bearer ${getState().auth.jwt}`
@@ -204,7 +204,7 @@ export function selectClub(clubID) {
     }
 }
 
-function clubs(state = {fetching: false, clubs: [], selectedClub: false}, action) {
+function clubs(state = { fetching: false, clubs: [], selectedClub: false }, action) {
     switch (action.type) {
         case REQUEST_CLUB_DATA:
             return Object.assign({}, state, {
@@ -266,7 +266,7 @@ export function addTrainingSession(start, end, livestream, clubID) {
             end_time: end,
             livestream: livestream,
             club_id: clubID
-        }, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+        }, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
             .then(response => response.data)
             .then(json => {
                 if (json["type"] === "success+data") {
@@ -280,7 +280,7 @@ export function addTrainingSession(start, end, livestream, clubID) {
 
 export function fetchClubSessions(clubID) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/single_club`, {club_id: clubID}, {
+        axios.post(`${backendURL}/api/club/training/single_club`, { club_id: clubID }, {
             headers: {
                 "Authorization": `Bearer ${getState().auth.jwt}`
             }
@@ -301,7 +301,7 @@ export function fetchClubSessions(clubID) {
 
 export function fetchAllSessions() {
     return (dispatch, getState) => {
-        axios.get(`${backendURL}/api/club/training/all`, {headers: {Authorization: `Bearer ${getState().auth.jwt}`}})
+        axios.get(`${backendURL}/api/club/training/all`, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
             .then(result => result.data)
             .then(json => {
                 if (json["type"] === "data") {
@@ -327,20 +327,20 @@ function trainingSessions(state = {
 }, action) {
     switch (action.type) {
         case ADD_TRAINING_SESSION:
-            return Object.assign({}, state, {trainingSessions: [action.data, ...state.trainingSessions]});
+            return Object.assign({}, state, { trainingSessions: [action.data, ...state.trainingSessions] });
         case DELETE_TRAINING_SESSION:
-            return Object.assign({}, state, {trainingSessions: state.trainingSessions.filter(o.id !== action.data.id)});
+            return Object.assign({}, state, { trainingSessions: state.trainingSessions.filter(o.id !== action.data.id) });
         case UPDATE_TRAINING_SESSION:
             let dup = [...state.trainingSessions];
             let updateIndex = dup.find(o => o.id === action.data.id);
-            dup[updateIndex] = {...dup[updateIndex], ...action.data.update};
-            return Object.assign({}, state, {trainingSessions: dup});
+            dup[updateIndex] = { ...dup[updateIndex], ...action.data.update };
+            return Object.assign({}, state, { trainingSessions: dup });
         case SELECT_CLUB_TRAINING_SESSIONS:
-            return Object.assign({}, state, {selectedSessions: state.trainingSessions.filter(o => o.id === parseInt(action.data.clubID))});
+            return Object.assign({}, state, { selectedSessions: state.trainingSessions.filter(o => o.id === parseInt(action.data.clubID)) });
         case RECEIVE_CLUB_SESSIONS:
             return Object.assign({}, state, {
                 trainingSessions: [...action.data.trainingSessions,
-                    ...state.trainingSessions.filter(o => o.clubID !== action.data.clubID)]
+                ...state.trainingSessions.filter(o => o.clubID !== action.data.clubID)]
             });
         case RECEIVE_ALL_SESSIONS:
             return Object.assign({}, state, {
@@ -405,15 +405,15 @@ function livestream(state = {
 }, action) {
     switch (action.type) {
         case SELECT_LIVESTREAM:
-            return Object.assign({}, state, {selectedLivestream: action.data.id});
+            return Object.assign({}, state, { selectedLivestream: action.data.id });
         case STOP_LIVESTREAM:
-            return Object.assign({}, state, {selectedLivestream: null});
+            return Object.assign({}, state, { selectedLivestream: null });
         case RECEIVE_FRAME:
-            return Object.assign({}, state, {frames: [action.data, ...state.frames.filter(o => o.user_id !== action.data.userID)]});
+            return Object.assign({}, state, { frames: [action.data, ...state.frames.filter(o => o.user_id !== action.data.userID)] });
         case RECEIVE_SAMPLE:
-            return Object.assign({}, state, {frames: [action.data, ...state.samples.filter(o => o.user_id !== action.data.userID)]});
+            return Object.assign({}, state, { frames: [action.data, ...state.samples.filter(o => o.user_id !== action.data.userID)] });
         case SEND_FRAME:
-            return Object.assign({}, state, {ownFrame: action.data.frame});
+            return Object.assign({}, state, { ownFrame: action.data.frame });
         case SEND_SAMPLE:
             return state;
         default:
@@ -423,7 +423,7 @@ function livestream(state = {
     }
 }
 
-let rootReducer = combineReducers({auth, messages, trainingSessions, clubs, livestream});
+let rootReducer = combineReducers({ auth, messages, trainingSessions, clubs, livestream });
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
