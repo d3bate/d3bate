@@ -268,7 +268,7 @@ def get_club_training_sessions():
         })
     return jsonify({
         "type": "data",
-        "data": list(map(lambda x: training_session_to_json(x), club.training_sessions))
+        "data": list(map(training_session_to_json, club.training_sessions))
     })
 
 
@@ -281,5 +281,5 @@ def get_all_training_sessions():
     training_sessions = TrainingSession.query.filter(or_(*[(TrainingSession.club == club.id) for club in clubs]))
     return jsonify({
         "type": "data",
-        "data": list(map(lambda x: training_session_to_json(x), training_sessions))
+        "data": list(map(training_session_to_json, training_sessions))
     })
