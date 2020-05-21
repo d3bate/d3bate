@@ -204,36 +204,15 @@ export function addTrainingSession(start, end, livestream, clubID) {
 
 export function fetchClubSessions(clubID) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/single_club`, { club_id: clubID }, {
-            headers: {
-                "Authorization": `Bearer ${getState().auth.jwt}`
-            }
-        })
-            .then(response => response.data)
-            .then(json => {
-                if (json["type"] === "data") {
-                    dispatch(receiveClubSessions(clubID, json["data"]))
-                } else {
-                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
-                }
-            })
-            .catch(error => {
-                dispatch(addMessage("error", "An unexpected error occurred.", `Message: ${error}`))
-            })
+        makeRequest("post", " /api/club/training/single_club", { club_id: clubID }, dispatch, getState)
+            .then(data => dispatch(receiveClubSessions(clubID, data)))
     }
 }
 
 export function fetchAllSessions() {
     return (dispatch, getState) => {
-        axios.get(`${backendURL}/api/club/training/all`, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
-            .then(result => result.data)
-            .then(json => {
-                if (json["type"] === "data") {
-                    dispatch(receiveAllSessions(json["data"]))
-                } else {
-                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
-                }
-            })
+        makeRequest("post", " /api/club/training/all", {}, dispatch, getState)
+            .then(data => dispatch(receiveAllSessions(data)))
     }
 }
 
