@@ -70,3 +70,5 @@ ml/venv
 backend/venv
 
 client/node_modules
+
+.vscode
