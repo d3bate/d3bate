@@ -3,6 +3,7 @@ import { Switch, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { connect } from "react-redux";
 import { addTrainingSession } from "../../state";
 import { colours } from "../../styles";
+import DateInput from "../DateInput";
 
 const currentTime = () => {
     return {
@@ -39,41 +40,33 @@ class AddTrainingSession extends React.Component {
             <View style={{ backgroundColor: colours.tertiary, padding: 10, borderRadius: 3, }}>
                 <Text style={{ fontSize: 24 }}>Add a session.</Text>
                 <Text>Start time</Text>
+
                 <View style={{ display: "flex", flexDirection: "row", borderColor: "black" }}>
-                    <TextInput autoCompleteType={"cc-number"} placeholder="Year: "
-                        value={this.state.startTime.year.toString()}
-                        onChangeText={text => this.setState((prevState, props) => {
-                            let newState = prevState;
-                            newState.startTime.year = text;
-                            return newState
-                        })} />
-                    <TextInput autoCompleteType={"cc-number"} placeholder="Month: "
-                        value={this.state.startTime.month.toString()}
-                        onChangeText={text => this.setState((prevState, props) => {
-                            let newState = prevState;
-                            newState.startTime.month = text;
-                            return newState
-                        })} />
-                    <TextInput autoCompleteType={"cc-number"} placeholder="Day: "
-                        value={this.state.startTime.day.toString()}
-                        onChangeText={text => this.setState((prevState, props) => {
-                            let newState = prevState;
-                            newState.startTime.day = text;
-                            return newState
-                        })} />
-                    <TextInput placeholder="Hour: " value={this.state.startTime.hour.toString()}
-                        onChangeText={text => this.setState((prevState, props) => {
-                            let newState = prevState;
-                            newState.startTime.hour = text;
-                            return newState
-                        })} />
-                    <TextInput autoCompleteType={"cc-number"} placeholder="Minute: "
-                        value={this.state.startTime.minute.toString()}
-                        onChangeText={text => this.setState((prevState, props) => {
-                            let newState = prevState;
-                            newState.startTime.minute = text;
-                            return newState
-                        })} />
+                    <DateInput placeholder="Year: " startValue={this.state.startTime.year.toString()} update={text => this.setState((prevState, _) => {
+                        let newState = prevState;
+                        newState.startTime.year = text;
+                        return newState
+                    })} />
+                    <DateInput placeholder="Month: " startValue={this.state.startTime.month.toString()} update={text => this.setState((prevState, _) => {
+                        let newState = prevState;
+                        newState.startTime.month = text;
+                        return newState
+                    })} />
+                    <DateInput placeholder="Day: " startValue={this.state.startTime.day.toString()} update={text => this.setState((prevState, _) => {
+                        let newState = prevState;
+                        newState.startTime.day = text;
+                        return newState
+                    })} />
+                    <DateInput placeholder="Hour: " startValue={this.state.startTime.hour.toString()} update={text => this.setState((prevState, _) => {
+                        let newState = prevState;
+                        newState.startTime.hour = text;
+                        return newState
+                    })} />
+                    <DateInput placeholder="Minute: " startValue={this.state.startTime.minute.toString()} update={text => this.setState((prevState, _) => {
+                        let newState = prevState;
+                        newState.startTime.minute = text;
+                        return newState
+                    })} />
                 </View>
                 <Text>End time</Text>
                 <View style={{ display: "flex", flexDirection: "row", borderColor: "black" }}>
