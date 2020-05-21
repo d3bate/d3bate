@@ -4,24 +4,21 @@ import { connect } from "react-redux";
 import { addTrainingSession } from "../../state";
 import { colours } from "../../styles";
 
+const currentTime = () => {
+    return {
+        year: new Date().getFullYear() + 1,
+        month: new Date().getMonth() + 1,
+        day: new Date().getDate(),
+        hour: new Date().getHours(),
+        minute: new Date().getMinutes()
+    }
+}
 class AddTrainingSession extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            startTime: {
-                year: new Date().getFullYear() + 1,
-                month: new Date().getMonth() + 1,
-                day: new Date().getDate(),
-                hour: new Date().getHours(),
-                minute: new Date().getMinutes()
-            },
-            endTime: {
-                year: new Date().getFullYear() + 1,
-                month: new Date().getMonth() + 1,
-                day: new Date().getDate(),
-                hour: new Date().getHours(),
-                minute: new Date().getMinutes()
-            },
+            startTime: currentTime(),
+            endTime: currentTime(),
             livestream: false,
         };
         this.addSession = this.addSession.bind(this);
