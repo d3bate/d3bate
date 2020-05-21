@@ -28,11 +28,13 @@ class AddTrainingSession extends React.Component {
     }
 
     addSession() {
+        let computeDate = (date) => {
+            Math.round(new Date(date.startTime.year,
+                date.startTime.month, date.startTime.day, date.startTime.hour, date.startTime.minute).valueOf() / 1000)
+        }
         this.props.addTrainingSession(
-            Math.round(new Date(this.state.startTime.year,
-                this.state.startTime.month, this.state.startTime.day, this.state.startTime.hour, this.state.startTime.minute).valueOf() / 1000),
-            Math.round(new Date(this.state.endTime.year, this.state.endTime.month, this.state.endTime.day,
-                this.state.endTime.hour, this.state.endTime.minute).valueOf() / 1000), this.state.livestream, this.props.clubID);
+            computeDate(this.state.startTime),
+            computeDate(this.state.endTime), this.state.livestream, this.props.clubID);
     }
 
     render() {
