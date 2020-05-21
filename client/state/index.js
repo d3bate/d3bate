@@ -101,21 +101,30 @@ function receiveClubData(data) {
     }
 }
 
-export function fetchClubData() {
-    return (dispatch, getState) => {
-        dispatch(requestClubData());
-        axios.get(`${backendURL}/api/club/get_all`, { headers: { "Authorization": `Bearer ${getState().auth.jwt}` } })
+const makeRequest = (requestType, location, data, dispatch, getState) => {
+    if (requestType == "post") {
+        axios.get(`${backendURL}${location}`, data, { headers: { "Authorization": `Bearer ${getState().auth.jwt}` } })
             .then(response => response.data)
             .then(json => {
-                if (json["type"] === "data") {
-                    dispatch(receiveClubData(json["data"]))
-                } else {
+                if (json["type"] == "data" || json["type"] == "success+data") {
+                    return json["data"];
+                }
+                else {
                     dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
                 }
             })
             .catch(error => {
                 dispatch(addMessage("error", "An unexpected error occurred (yes, we have contingency plans for some errors).", `${error}`))
             })
+    } else if (requestType == "get") {
+
+    }
+}
+
+export function fetchClubData() {
+    return (dispatch, getState) => {
+        dispatch(requestClubData());
+        makeRequest("get", "/api/club/get_all", {}, dispatch, getState).then(data => dispatch(receiveClubData(data)))
     }
 }
 
@@ -137,34 +146,13 @@ function receiveJoinClub(club) {
 export function sendJoinClub(joinCode) {
     return (dispatch, getState) => {
         dispatch(fetchJWTIfNeeded());
-        axios.post(`${backendURL}/club/join`, { join_code: joinCode }, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
-            .then(result => result.data)
-            .then(json => {
-                if (json["type"] === "success") {
-                    dispatch(receiveJoinClub(json["data"]))
-                } else {
-                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
-                }
-            })
+        makeRequest("post", "/club/join", { join_code: joinCode }, dispatch, getState).then(data => dispatch(receiveJoinClub(data)));
     }
 }
 
 export function createClub(clubName, schoolWebsite) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/create`,
-            { club_name: clubName, school_website: schoolWebsite },
-            {
-                headers: {
-                    "Authorization": `Bearer ${getState().auth.jwt}`
-                }
-            })
-            .then(response => response.data)
-            .then(json => {
-                if (json["type"] === "data") {
-                    dispatch(receiveCreateClub(json["data"]))
-                }
-            })
-
+        makeRequest("post", "/api/club/create", { club_name: clubName, school_website: schoolWebsite }, dispatch, getState).then(data => dispatch(receiveCreateClub(data)))
     }
 }
 
@@ -210,20 +198,7 @@ function receiveAllSessions(data) {
 
 export function addTrainingSession(start, end, livestream, clubID) {
     return (dispatch, getState) => {
-        axios.post(`${backendURL}/api/club/training/add`, {
-            start_time: start,
-            end_time: end,
-            livestream: livestream,
-            club_id: clubID
-        }, { headers: { Authorization: `Bearer ${getState().auth.jwt}` } })
-            .then(response => response.data)
-            .then(json => {
-                if (json["type"] === "success+data") {
-                    dispatch(receiveAddTrainingSession(json["data"]))
-                } else {
-                    dispatch(addMessage(json["type"], json["message"], json["suggestion"]))
-                }
-            })
+        makeRequest("post", "/api/club/training/add", { start_time: start, end_time: end, livestream, club_id: clubID }).then(data => dispatch(receiveAddTrainingSession(data)))
     }
 }
 
