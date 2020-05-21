@@ -7,6 +7,15 @@ import { Redirect } from "../routing/routing";
 import { validEmail } from "../helpers";
 import { addMessage } from "../state";
 
+const textInputStyle = {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "grey",
+    borderRadius: 3,
+    maxWidth: 300,
+    marginBottom: 5
+};
+
 class Register extends React.Component {
     constructor(props) {
         super(props);
@@ -48,54 +57,19 @@ class Register extends React.Component {
             <View>
                 <Text style={{ fontSize: 24, marginBottom: 5 }}>Register</Text>
                 <TextInput value={this.state.name} placeholder="Name"
-                    onChangeText={value => this.setState({ name: value })} style={{
-                        padding: 10,
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 3,
-                        maxWidth: 300,
-                        marginBottom: 5
-                    }} />
+                    onChangeText={value => this.setState({ name: value })} style={textInputStyle} />
                 <TextInput value={this.state.username} placeholder="Username"
-                    onChangeText={value => this.setState({ username: value })} style={{
-                        padding: 10,
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 3,
-                        maxWidth: 300,
-                        marginBottom: 5
-                    }} />
+                    onChangeText={value => this.setState({ username: value })} style={textInputStyle} />
                 <TextInput value={this.state.email} placeholder="Email"
-                    onChangeText={value => this.setState({ email: value })} style={{
-                        padding: 10,
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 3,
-                        maxWidth: 300,
-                        marginBottom: 5
-                    }} />
+                    onChangeText={value => this.setState({ email: value })} style={textInputStyle} />
                 <TextInput value={this.state.password}
                     onChangeText={text => this.setState({ password: text })} secureTextEntry={true}
                     textContentType="password" placeholder="Password: "
-                    style={{
-                        padding: 10,
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 3,
-                        maxWidth: 300,
-                        marginBottom: 5
-                    }} />
+                    style={textInputStyle} />
                 <TextInput value={this.state.passwordConfirmation}
                     onChangeText={text => this.setState({ passwordConfirmation: text })} secureTextEntry={true}
                     textContentType="password" placeholder="Confirm your password: "
-                    style={{
-                        padding: 10,
-                        borderWidth: 1,
-                        borderColor: "grey",
-                        borderRadius: 3,
-                        maxWidth: 300,
-                        marginBottom: 5
-                    }} />
+                    style={textInputStyle} />
                 <TouchableOpacity style={{ backgroundColor: "lightgrey", padding: 10, maxWidth: 75, borderRadius: 3 }}
                     onPress={this.register}>
                     <Text>Register</Text>
