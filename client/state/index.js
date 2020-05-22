@@ -2,9 +2,10 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import thunkMiddleware from "redux-thunk";
 import axios from "axios";
 import { backendURL } from "../constants";
-import {auth} from "./auth";
-import {trainingSessions} from "./trainingSessions";
-import {livestream} from "./livestream";
+import { auth } from "./auth";
+import { clubs } from "./clubs";
+import { trainingSessions } from "./trainingSessions";
+import { livestream } from "./livestream";
 
 export const REQUEST_JWT = "REQUEST_JWT";
 export const RECEIVE_JWT = "RECEIVE_JWT";
