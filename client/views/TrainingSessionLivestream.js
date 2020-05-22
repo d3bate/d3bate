@@ -42,16 +42,16 @@ class TrainingSessionLivestream extends React.Component {
                         return <View key={otherIndex}><Svg><Path /></Svg></View>
                     }
                 ) : <Text>There are no other people in this debate.</Text>}
-                <Camera zoom={} ratio={} focusDepth={} onMountError={} pictureSize={} onCameraReady={} useCamera2Api={}
-                    onBarCodeScanned={} barCodeScannerSettings={} onFacesDetected={this.sendFaceData}
+                <Camera zoom={1} ratio={1} focusDepth={1} onMountError={1} pictureSize={1} onCameraReady={1} useCamera2Api={1}
+                    onBarCodeScanned={1} barCodeScannerSettings={1} onFacesDetected={this.sendFaceData}
                     faceDetectorSettings={{
                         mode: FaceDetector.Constants.Mode.fast,
                         detectLandmarks: FaceDetector.Constants.Landmarks.all,
                         runClassifications: FaceDetector.Constants.Classifications.all,
                         minDetectionInterval: 100,
                         tracking: true
-                    }} type={}
-                    flashMode={} videoStabilizationMode={} whiteBalance={} autoFocus={} Readonly={} name={} />
+                    }} type={1}
+                    flashMode={1} videoStabilizationMode={1} whiteBalance={1} autoFocus={1} Readonly={1} name={1} />
             </View>
         );
     }
