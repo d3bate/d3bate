@@ -5,6 +5,7 @@ import { Redirect } from "../routing/routing"
 import { Text, View } from "react-native";
 import AddTrainingSession from "../components/Club/AddTrainingSession";
 import { colours } from "../styles";
+import { authRedirect } from "../utils";
 
 const clubRoleOf = (selectedClub) => {
     return selectedClub.role === "owner" ? "You own this club" : selectedClub.role === "admin" ? "You are an administrator for this club" : "You are a member of this club"
@@ -31,8 +32,9 @@ class Club extends React.Component {
 
     render() {
         let trainingSessions = findTrainingSessions(this.props.trainingSessions, parseInt(this.props.match.match.params.clubID));
-        if (!this.props.auth.jwt)
-            return <Redirect to="/login" />;
+        if (!this.props.auth) {
+            return authRedirect(this.props.auth)
+        }
         return this.props.clubs.selectedClub ? <View>
             <Text style={{ fontSize: 24 }}>{this.props.clubs.selectedClub.name}</Text>
             <Text

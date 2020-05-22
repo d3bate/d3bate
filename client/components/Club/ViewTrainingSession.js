@@ -35,7 +35,7 @@ class ViewTrainingSession extends React.Component {
 
 }
 
-export default connect((state, ownProps) => {
+export default connect((_, ownProps) => {
     return {
         ...ownProps
     }
