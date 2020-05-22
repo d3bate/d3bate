@@ -6,6 +6,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import Club, User, TrainingSession
 from sqlalchemy import or_, and_
 
+import error_messages
+
 words = (
     "steel",
     "happy",
@@ -233,7 +235,7 @@ def add_training_session():
             "type": "success+data",
             "message": "The training session was successfully scheduled.",
             "suggestion": "",
-            "data": training_session_to_json(training_session),
+            "data": json_of_training_session(training_session),
         }
     )
 
@@ -255,20 +257,12 @@ def remove_debating_session():
     )
     if not user_has_privileges:
         return jsonify(
-            {
-                "type": "error",
-                "message": "You don't have permission to do that.",
-                "suggestion": "Ask for permission.",
-            }
+            error_messages.PERMISSION_ERROR
         )
     training_session = TrainingSession.query.get(session_id)
     if not training_session:
         return jsonify(
-            {
-                "type": "error",
-                "message": "That session doesn't exist.",
-                "suggestion": "",
-            }
+            error_messages.NO_SUCH_SESSION_ERROR
         )
     db.session.delete(training_session)
     db.session.commit()
@@ -281,6 +275,15 @@ def remove_debating_session():
     )
 
 
+def priviliges_of_user(id, club):
+    return Club.query.filter(
+        (
+            Club.owners.any(id=id)
+            | Club.admins.any(id=id)
+        )
+        & (Club.id == club)
+    ).first()
+
 @club_blueprint.route("/training/update", methods=("POST",))
 @jwt_required
 def update_training():
@@ -288,20 +291,10 @@ def update_training():
     session_id = request.json["session_id"]
     delta = request.json["delta"]
     training_session = TrainingSession.query.get(session_id)
-    user_has_privileges = Club.query.filter(
-        (
-            Club.owners.any(id=current_user["id"])
-            | Club.admins.any(id=current_user["id"])
-        )
-        & (Club.id == training_session.club)
-    ).first()
+    user_has_privileges = priviliges_of_user(current_user["id"], training_session.club)
     if not user_has_privileges:
         return jsonify(
-            {
-                "type": "error",
-                "message": "You don't have permission to do that.",
-                "suggestion": "Ask for permission.",
-            }
+            error_messages.PERMISSION_ERROR
         )
     for (key, value) in delta.items():
         if key == "start_time":
@@ -314,7 +307,7 @@ def update_training():
     return jsonify({"type": "success", "message": "", "suggestion": ""})
 
 
-def training_session_to_json(session):
+def json_of_training_session(session):
     return {
         "id": session.id,
         "club_id": session.club,
@@ -343,16 +336,12 @@ def get_club_training_sessions():
     ).first()
     if not club:
         return jsonify(
-            {
-                "type": "error",
-                "message": "Either that club does not exist, or you don't have permission to view it",
-                "suggestion": "",
-            }
+            error_messages.CLUB_DOESNT_EXIST_ERROR
         )
     return jsonify(
         {
             "type": "data",
-            "data": list(map(training_session_to_json, club.training_sessions)),
+            "data": list(map(json_of_training_session, club.training_sessions)),
         }
     )
 
@@ -370,5 +359,5 @@ def get_all_training_sessions():
         or_(*[(TrainingSession.club == club.id) for club in clubs])
     )
     return jsonify(
-        {"type": "data", "data": list(map(training_session_to_json, training_sessions))}
+        {"type": "data", "data": list(map(json_of_training_session, training_sessions))}
     )
