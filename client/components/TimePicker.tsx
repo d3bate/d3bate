@@ -11,35 +11,23 @@ interface TimePickerProps {
     timeMode: string
 }
 
-const TimePicker: FunctionComponent<TimePickerProps> = ({ pickerTitle, time, setParentState , timeMode}) => {
+const constructDatePicker = (subCategory, placeholder: string, timeMode, time, setParentState) => {
+    return <DateInput placeholder={placeholder} startValue={time[subCategory].toString()} update={text => setParentState((prevState, _) => {
+        let newState = prevState;
+        newState[timeMode].year = text;
+        return newState
+    })} />
+}
+
+const TimePicker: FunctionComponent<TimePickerProps> = ({ pickerTitle, time, setParentState, timeMode }) => {
     return <View>
         <Text>{pickerTitle}</Text>
         <View style={{ display: "flex", flexDirection: "row", borderColor: "black" }}>
-            <DateInput placeholder="Year: " startValue={time.year.toString()} update={text => setParentState((prevState, _) => {
-                let newState = prevState;
-                newState[timeMode].year = text;
-                return newState
-            })} />
-            <DateInput placeholder="Month: " startValue={time.month.toString()} update={text => setParentState((prevState, _) => {
-                let newState = prevState;
-                newState[timeMode].month = text;
-                return newState
-            })} />
-            <DateInput placeholder="Day: " startValue={time.day.toString()} update={text => setParentState((prevState, _) => {
-                let newState = prevState;
-                newState[timeMode].day = text;
-                return newState
-            })} />
-            <DateInput placeholder="Hour: " startValue={time.hour.toString()} update={text => setParentState((prevState, _) => {
-                let newState = prevState;
-                newState[timeMode].hour = text;
-                return newState
-            })} />
-            <DateInput placeholder="Minute: " startValue={time.minute.toString()} update={text => setParentState((prevState, _) => {
-                let newState = prevState;
-                newState[timeMode].minute = text;
-                return newState
-            })} />
+            {constructDatePicker("year", "Year:", timeMode, time, setParentState)}
+            {constructDatePicker("month", "Month:", timeMode, time, setParentState)}
+            {constructDatePicker("day", "Day:", timeMode, time, setParentState)}
+            {constructDatePicker("hour", "Hour:", timeMode, time, setParentState)}
+            {constructDatePicker("minute", "Minute:", timeMode, time, setParentState)}
         </View>
     </View>
 }
