@@ -1,0 +1,23 @@
+name: Backend tests
+
+on:
+  push:
+    paths:
+    - "client/**/*"
+  pull_request:
+    paths:
+    - "client/**/*"
+
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+      - run: |
+          cd client;
+          yarn install;
+          cd ../
+      - run: |
+          cd client
+          yarn test
+          cd ../
