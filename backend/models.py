@@ -4,24 +4,18 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db
 
-members = db.Table(
-    "club_members",
-    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+def create_join_table(table_name: str, table1: str, table2: str) -> db.Table:
+    return db.Table(
+    table_name,
+    db.Column("{}_id".format(table1), db.Integer, db.ForeignKey("{}.id".format(table1)), primary_key=True),
+    db.Column("{}_id".format(table2), db.Integer, db.ForeignKey("{}.id".format(table2)), primary_key=True),
 )
 
-admins = db.Table(
-    "administrators",
-    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-)
+members = create_join_table("club_members", "club", "user")
 
-owners = db.Table(
-    "club_owners",
-    db.Column("club_id", db.Integer, db.ForeignKey("club.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-)
+admins = create_join_table("administrators", "club", "user")
 
+owners = create_join_table("club_owners", "club", "user")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
