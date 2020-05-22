@@ -1,4 +1,4 @@
-import { Redirect } from "../routing";
+import { Redirect } from "../routing/routing";
 
 export const authRedirect = (auth) => {
     if (!auth.jwt)
