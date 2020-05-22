@@ -284,6 +284,16 @@ def priviliges_of_user(id, club):
         & (Club.id == club)
     ).first()
 
+def update_training_session(delta, training_session):
+    for (key, value) in delta.items():
+            if key == "start_time":
+                training_session.start_time = datetime.utcfromtimestamp(value)
+            elif key == "end_time":
+                training_session.end_time = datetime.utcfromtimestamp(value)
+            elif key == "livestream":
+                training_session.livestream = value
+
+
 @club_blueprint.route("/training/update", methods=("POST",))
 @jwt_required
 def update_training():
@@ -296,13 +306,7 @@ def update_training():
         return jsonify(
             error_messages.PERMISSION_ERROR
         )
-    for (key, value) in delta.items():
-        if key == "start_time":
-            training_session.start_time = datetime.utcfromtimestamp(value)
-        elif key == "end_time":
-            training_session.end_time = datetime.utcfromtimestamp(value)
-        elif key == "livestream":
-            training_session.livestream = value
+    update_training_session(delta, training_session)
     db.session.commit()
     return jsonify({"type": "success", "message": "", "suggestion": ""})
 
