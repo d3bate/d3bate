@@ -9,7 +9,7 @@ use schema::{
 
 #[derive(Queryable, Identifiable)]
 #[table_name = "user"]
-struct User {
+pub struct User {
     id: i32,
     name: String,
     email: String,

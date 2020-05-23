@@ -7,11 +7,15 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-juniper={version="0.14"}
-chrono="0.4"
+juniper={git="https://github.com/graphql-rust/juniper"}
+chrono={version="0.4", features=["serde"]}
 diesel = {version="1", features=["postgres", "chrono", "r2d2"]}
-warp="0.2"
-log="0.4"
-env_logger="0.7"
-tokio={version="0.2", features=["macros"]}
+actix-web = { version = "2.0.0", features = ["rustls"] }
+actix="0.9.0"
+actix-rt="1.0.0"
+tokio={version="0.2", features=["time"]}
 data={path="../data"}
+juniper_actix={git="https://github.com/graphql-rust/juniper"}
+jsonwebtoken="7"
+serde={version="1", features=["derive"]}
+futures="0.3"

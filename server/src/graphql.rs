@@ -1,8 +1,14 @@
 //! The GraphQL server.
-use juniper::FieldResult;
+use juniper::{EmptySubscription, FieldResult, RootNode};
+
+pub type Schema = RootNode<'static, Query, Mutations, EmptySubscription<Context>>;
+
+pub fn schema() -> Schema {
+    Schema::new(Query, Mutations, EmptySubscription::default())
+}
 
 #[derive(juniper::GraphQLObject)]
-struct User {
+pub struct User {
     id: i32,
     name: String,
     email: String,
@@ -68,16 +74,16 @@ struct ChatMessage {
 }
 
 /// Context for GraphQL queries. Includes a database and (optional) authentication.
-struct Context {
-    user: Option<User>,
-    pool: diesel::r2d2::ConnectionManager<diesel::PgConnection>,
+pub struct Context {
+    pub user: Option<data::User>,
+    pub connection: actix_web::web::Data<crate::Pool>,
 }
 
 impl juniper::Context for Context {}
 
-struct Query;
+pub struct Query;
 
-#[juniper::object(Context=Context)]
+#[juniper::graphql_object(Context=Context)]
 impl Query {
     fn user(context: &Context, id: i32) -> FieldResult<User> {
         todo!()
@@ -104,9 +110,9 @@ impl Query {
         todo!()
     }
 }
-struct Mutations;
+pub struct Mutations;
 
-#[juniper::object(Context=Context)]
+#[juniper::graphql_object(Context=Context)]
 impl Mutations {
     fn register_user(context: &Context, user: NewUser) -> FieldResult<User> {
         todo!()
