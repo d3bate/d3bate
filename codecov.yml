@@ -1,0 +1,2 @@
+output-type: covdir
+output-path: coverage.json

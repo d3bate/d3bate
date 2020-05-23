@@ -2,14 +2,9 @@ name: Backend tests
 
 on:
   push:
-    paths:
-    - "backend/**/*"
-  pull_request:
-    paths:
-    - "backend/**/*"
 
 jobs:
-  test:
+  python-test:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest]
@@ -39,3 +34,35 @@ jobs:
         flask db upgrade
         python -m unittest tests.py
         rm -rf test.db
+  rust-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+        - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --no-fail-fast
+        env:
+          CODECOV_TOKEN: {{secrets.CODECOV_TOKEN}}
+          CARGO_INCREMENTAL: '0'
+          RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
+      - uses: actions-rs/grcov@v0.1
+        with:
+          config: codecov.yml
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.json

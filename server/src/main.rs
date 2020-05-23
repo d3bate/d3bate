@@ -56,11 +56,8 @@ async fn main() -> std::io::Result<()> {
             )
             .service(
                 actix_web::web::resource("/data-explorer")
-                .route(actix_web::web::get().to(graphiql_route))
+                    .route(actix_web::web::get().to(graphiql_route)),
             )
     });
-    server
-        .bind(format!("127.0.0.1:{}", port))?
-        .run()
-        .await
+    server.bind(format!("127.0.0.1:{}", port))?.run().await
 }
