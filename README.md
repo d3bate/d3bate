@@ -1,5 +1,5 @@
 # d3bate
-![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/d3bate/d3bate?style=for-the-badge) ![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/d3bate/d3bate?style=for-the-badge)
+![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/d3bate/d3bate?style=for-the-badge) ![Codecov](https://img.shields.io/codecov/c/github/d3bate/d3bate?style=for-the-badge) ![GitHub Workflow Status](<https://img.shields.io/github/workflow/status/d3bate/d3bate/Backend tests?label=tests&style=for-the-badge>)
 
 d3bate is a digital debating platform. It's designed to make it easy to run debating-related activities. 
 # Quickstart
