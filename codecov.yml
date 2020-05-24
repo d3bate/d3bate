@@ -1,2 +1,2 @@
-output-type: covdir
-output-path: coverage.json
+output-type: lcov
+output-path: coverage.txt

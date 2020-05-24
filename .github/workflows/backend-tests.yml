@@ -65,7 +65,7 @@ jobs:
           config: codecov.yml
       - uses: codecov/codecov-action@v1
         with:
-          file: ./coverage.json
+          file: ./coverage.txt
       - name: Cache cargo registry
         uses: actions/cache@v1
         with:

@@ -77,7 +77,6 @@ mod tests {
     #[actix_rt::test]
     async fn test_authorised_works() {
         use actix_web::FromRequest;
-        use actix_web::HttpMessage;
         let key = jwt::encode(
             &jwt::Header::default(),
             &Claims {
@@ -97,5 +96,24 @@ mod tests {
         assert_eq!(claims_result.id, 0);
     }
     #[actix_rt::test]
-    async fn test_unauthorised_doesnt_work() {}
+    async fn test_unauthorised_doesnt_work() {
+        use actix_web::FromRequest;
+        let key = jwt::encode(
+            &jwt::Header::default(),
+            &Claims {
+                id: 0,
+                exp: chrono::Utc::now()
+                    .checked_add_signed(chrono::Duration::minutes(15))
+                    .unwrap(),
+                claims_type: ClaimsType::Login,
+            },
+            &jwt::EncodingKey::from_secret("invalid-secret".as_ref()),
+        )
+        .unwrap();
+        let test_request =
+            actix_web::test::TestRequest::with_header("x-api-token", key).to_http_request();
+
+        let claims_result = Claims::extract(&test_request).await;
+        assert!(claims_result.is_err())
+    }
 }
