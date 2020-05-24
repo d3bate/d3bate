@@ -86,7 +86,40 @@ pub struct Query;
 #[juniper::graphql_object(Context=Context)]
 impl Query {
     fn user(context: &Context, id: i32) -> FieldResult<User> {
-        todo!()
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match user::user
+                .find(id)
+                .first::<data::User>(&context.connection.get().unwrap())
+            {
+                Ok(u) => {
+                    if u.id == contextual_user.id {
+                        Ok(User {
+                            id: u.id,
+                            name: u.name.clone(),
+                            email: u.email.clone(),
+                            created: u.created,
+                            email_verified: u.email_verified,
+                        })
+                    } else {
+                        Err(juniper::FieldError::new(
+                            "You don't have permission to do that.",
+                            juniper::graphql_value!({"error": "permission error"}),
+                        ))
+                    }
+                }
+                Err(_) => Err(juniper::FieldError::new(
+                    "You don't have permission to do that.",
+                    juniper::graphql_value!({"error": "permission error"}),
+                )),
+            }
+        } else {
+            Err(juniper::FieldError::new(
+                "You must be logged in to access this type.",
+                juniper::graphql_value!({"error": "permission error"}),
+            ))
+        }
     }
     fn club(context: &Context, id: i32) -> FieldResult<Club> {
         todo!()

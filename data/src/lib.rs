@@ -10,13 +10,13 @@ use schema::{
 #[derive(Queryable, Identifiable)]
 #[table_name = "user"]
 pub struct User {
-    id: i32,
-    name: String,
-    email: String,
-    password_hash: String,
-    created: chrono::NaiveDateTime,
-    email_verified: bool,
-    pgp: Option<String>,
+    pub id: i32,
+    pub name: String,
+    pub email: String,
+    pub password_hash: String,
+    pub created: chrono::NaiveDateTime,
+    pub email_verified: bool,
+    pub pgp: Option<String>,
 }
 
 #[derive(Insertable)]

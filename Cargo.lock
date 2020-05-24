@@ -964,7 +964,7 @@ dependencies = [
 [[package]]
 name = "juniper"
 version = "0.14.2"
-source = "git+https://github.com/graphql-rust/juniper#2cb96d0fc4386b1ec5de8912cb0df0f271fa7cf8"
+source = "git+https://github.com/graphql-rust/juniper?rev=31d0888#31d08888e4a8229ec2be10e3f059f3577c28f20e"
 dependencies = [
  "bson",
  "chrono",
@@ -980,7 +980,7 @@ dependencies = [
 [[package]]
 name = "juniper_actix"
 version = "0.1.0"
-source = "git+https://github.com/graphql-rust/juniper#2cb96d0fc4386b1ec5de8912cb0df0f271fa7cf8"
+source = "git+https://github.com/graphql-rust/juniper?rev=31d0888#31d08888e4a8229ec2be10e3f059f3577c28f20e"
 dependencies = [
  "actix",
  "actix-rt",
@@ -997,7 +997,7 @@ dependencies = [
 [[package]]
 name = "juniper_codegen"
 version = "0.14.2"
-source = "git+https://github.com/graphql-rust/juniper#2cb96d0fc4386b1ec5de8912cb0df0f271fa7cf8"
+source = "git+https://github.com/graphql-rust/juniper?rev=31d0888#31d08888e4a8229ec2be10e3f059f3577c28f20e"
 dependencies = [
  "futures 0.3.5",
  "proc-macro-error",

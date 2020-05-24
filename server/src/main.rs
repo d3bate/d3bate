@@ -1,11 +1,11 @@
+#[macro_use]
+extern crate juniper;
 extern crate jsonwebtoken as jwt;
 
 mod auth;
 mod graphql;
 
 pub type Pool = diesel::r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::PgConnection>>;
-
-use serde::{Deserialize, Serialize};
 
 async fn graphiql_route() -> Result<actix_web::HttpResponse, actix_web::error::Error> {
     juniper_actix::graphiql_handler("/api", None).await
@@ -20,9 +20,23 @@ async fn graphql_route(
     payload: actix_web::web::Payload,
     schema: actix_web::web::Data<graphql::Schema>,
     pool: actix_web::web::Data<Pool>,
+    claims: Option<crate::auth::Claims>,
 ) -> Result<actix_web::HttpResponse, actix_web::Error> {
+    use data::schema::user::dsl as user;
+    use diesel::prelude::*;
     let context = graphql::Context {
-        user: None,
+        user: match claims {
+            Some(c) => {
+                match user::user
+                    .filter(user::id.eq(c.id))
+                    .first::<data::User>(&pool.get().unwrap())
+                {
+                    Ok(u) => Some(u),
+                    Err(_) => None,
+                }
+            }
+            None => None,
+        },
         connection: pool,
     };
     juniper_actix::graphql_handler(&schema, &context, req, payload).await
@@ -57,6 +71,10 @@ async fn main() -> std::io::Result<()> {
             .service(
                 actix_web::web::resource("/data-explorer")
                     .route(actix_web::web::get().to(graphiql_route)),
+            )
+            .service(
+                actix_web::web::resource("/playground")
+                    .route(actix_web::web::get().to(playground_route)),
             )
     });
     server.bind(format!("127.0.0.1:{}", port))?.run().await
