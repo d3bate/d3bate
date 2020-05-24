@@ -112,7 +112,13 @@ mod tests {
         .unwrap();
         let test_request =
             actix_web::test::TestRequest::with_header("x-api-token", key).to_http_request();
-
+        let claims_result = Claims::extract(&test_request).await;
+        assert!(claims_result.is_err())
+    }
+    #[actix_rt::test]
+    async fn test_no_token_doesnt_work() {
+        use actix_web::FromRequest;
+        let test_request = actix_web::test::TestRequest::default().to_http_request();
         let claims_result = Claims::extract(&test_request).await;
         assert!(claims_result.is_err())
     }
