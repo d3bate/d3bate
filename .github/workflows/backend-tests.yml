@@ -52,7 +52,7 @@ jobs:
         with:
           toolchain: nightly
           override: true
-      - run: sudo apt-get postgresql-client-12 && cargo install diesel_cli --no-default-features --features postgres
+      - run: sudo apt-get install postgresql-client-12 && cargo install diesel_cli --no-default-features --features postgres
       - run: diesel migration run --database-url postgres://postgres:postgres@localhost/postgres
       - uses: actions-rs/cargo@v1
         with:
