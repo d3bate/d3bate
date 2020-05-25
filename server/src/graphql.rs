@@ -22,6 +22,7 @@ struct NewUser {
     name: String,
     email: String,
     password: String,
+    pgp: Option<String>,
 }
 
 #[derive(juniper::GraphQLObject)]
@@ -98,8 +99,22 @@ pub struct Query;
 
 fn auth_error() -> juniper::FieldError {
     juniper::FieldError::new(
-        "You must be logged in to access this type.",
-        juniper::graphql_value!({"error": "permission error"}),
+        "You must be logged in to access this.",
+        juniper::graphql_value!({"http_error_code": "403"}),
+    )
+}
+
+fn permission_error() -> juniper::FieldError {
+    juniper::FieldError::new(
+        "You don't have permission to do that.",
+        juniper::graphql_value!({"http_error_code": "403"}),
+    )
+}
+
+fn server_error() -> juniper::FieldError {
+    juniper::FieldError::new(
+        "There was a server error processing your request.",
+        juniper::graphql_value!({"http_error_code": "500"}),
     )
 }
 
@@ -123,16 +138,10 @@ impl Query {
                             email_verified: u.email_verified,
                         })
                     } else {
-                        Err(juniper::FieldError::new(
-                            "You don't have permission to do that.",
-                            juniper::graphql_value!({"error": "permission error"}),
-                        ))
+                        Err(permission_error())
                     }
                 }
-                Err(_) => Err(juniper::FieldError::new(
-                    "You don't have permission to do that.",
-                    juniper::graphql_value!({"error": "permission error"}),
-                )),
+                Err(_) => Err(permission_error()),
             }
         } else {
             Err(auth_error())
@@ -238,10 +247,7 @@ impl Query {
                             },
                         })
                     } else {
-                        Err(juniper::FieldError::new(
-                            "You don't have permission to do that.",
-                            juniper::graphql_value!({"error": "403"}),
-                        ))
+                        Err(permission_error())
                     }
                 }
                 Err(_) => Err(juniper::FieldError::new(
@@ -267,8 +273,39 @@ pub struct Mutations;
 
 #[juniper::graphql_object(Context=Context)]
 impl Mutations {
-    fn register_user(context: &Context, user: NewUser) -> FieldResult<User> {
-        todo!()
+    fn register_user(context: &Context, new_user: NewUser) -> FieldResult<User> {
+        use bcrypt::{hash, DEFAULT_COST};
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        let password_hash: String = match hash(new_user.password, DEFAULT_COST) {
+            Ok(h) => h,
+            Err(_) => {
+                return Err(juniper::FieldError::new(
+                    "Couldn't hash the provided password.",
+                    juniper::graphql_value!({"error": "500"}),
+                ))
+            }
+        };
+        match diesel::insert_into(user::user)
+            .values(data::NewUser {
+                name: &new_user.name,
+                email: &new_user.email,
+                password_hash: &password_hash,
+                pgp: new_user.pgp.as_deref(),
+                created: chrono::Utc::now().naive_utc(),
+                email_verified: false,
+            })
+            .get_result::<data::User>(&context.connection.get().unwrap())
+        {
+            Ok(u) => Ok(User {
+                id: u.id,
+                name: u.name,
+                email_verified: u.email_verified,
+                email: u.email,
+                created: u.created,
+            }),
+            Err(_) => return Err(server_error()),
+        }
     }
     fn request_password_reset(context: &Context, email: String) -> FieldResult<User> {
         todo!()

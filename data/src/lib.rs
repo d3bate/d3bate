@@ -21,13 +21,13 @@ pub struct User {
 
 #[derive(Insertable)]
 #[table_name = "user"]
-struct NewUser<'a> {
-    name: &'a str,
-    email: &'a str,
-    password_hash: &'a str,
-    created: chrono::NaiveDateTime,
-    email_verified: bool,
-    pgp: Option<&'a str>,
+pub struct NewUser<'a> {
+    pub name: &'a str,
+    pub email: &'a str,
+    pub password_hash: &'a str,
+    pub created: chrono::NaiveDateTime,
+    pub email_verified: bool,
+    pub pgp: Option<&'a str>,
 }
 
 #[derive(AsChangeset)]

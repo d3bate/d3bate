@@ -4,6 +4,8 @@ extern crate jsonwebtoken as jwt;
 
 mod auth;
 mod graphql;
+#[cfg(test)]
+mod tests;
 
 pub type Pool = diesel::r2d2::Pool<diesel::r2d2::ConnectionManager<diesel::PgConnection>>;
 
