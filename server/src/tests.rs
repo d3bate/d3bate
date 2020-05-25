@@ -36,29 +36,22 @@ fn test_e2e() {
         &schema,
         &vars,
         &context1,
-    )).unwrap();
+    ))
+    .unwrap();
     match result.0 {
         juniper::Value::Object(o) => {
             let register_user = o.get_field_value("registerUser").unwrap();
             let name = match register_user {
-                juniper::Value::Object(n) => {
-                    match n.get_field_value("name").unwrap() {
-                        juniper::Value::Scalar(d) => {
-                            match d {
-                                juniper::DefaultScalarValue::String(s) => {
-                                    assert_eq!(s, "Test User")
-                                } 
-                                _ => panic!()
-                            }
-                        }
-                        _ => panic!("")
-                    }
-                }
-                _ => panic!("")
+                juniper::Value::Object(n) => match n.get_field_value("name").unwrap() {
+                    juniper::Value::Scalar(d) => match d {
+                        juniper::DefaultScalarValue::String(s) => assert_eq!(s, "Test User"),
+                        _ => panic!(),
+                    },
+                    _ => panic!(""),
+                },
+                _ => panic!(""),
             };
         }
-        _ => {
-            panic!("Invalid return type for registering of user.")
-        }
+        _ => panic!("Invalid return type for registering of user."),
     }
 }

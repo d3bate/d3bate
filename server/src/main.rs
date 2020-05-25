@@ -3,6 +3,9 @@ extern crate juniper;
 extern crate jsonwebtoken as jwt;
 
 mod auth;
+#[cfg(feature = "email")]
+mod email;
+
 mod graphql;
 #[cfg(test)]
 mod tests;

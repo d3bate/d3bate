@@ -7,7 +7,8 @@ There are multiple ways (listed here in order of complexity) to use d3bate.
 1. [The hosted web application](https://debating.web.app)
 2. Hosting on a (free) cloud platform
 3. Hosting on your own servers
+
 # Contributing
-We welcome contributions. The current version of the app uses Google Firebase to host and store data. Currently, the application is being rewritten with a Python backend (using the Flask web framework). To go with this backend, we're writing a web application using React Native (yes, React *Native*).
+Contributions are welcome! If you're stuck getting started, our [CodeClimate integration](https://codeclimate.com/github/d3bate/d3bate) which lists files that could do with a bit of tidying up.
 
 The backend can always do with more testing. Currently the backend has a set of end to end tests - any additional tests (even if they fail) are welcomed. 

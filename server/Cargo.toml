@@ -20,3 +20,8 @@ jsonwebtoken="7"
 serde={version="1", features=["derive"]}
 futures="0.3"
 bcrypt = "0.8"
+reqwest={version="0.10.4", optional=true}
+
+[features]
+default=["email"]
+email=["reqwest"]
