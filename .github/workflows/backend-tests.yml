@@ -52,6 +52,8 @@ jobs:
         with:
           toolchain: nightly
           override: true
+      - run: cargo install diesel
+      - run: diesel migration run --database-url postgres://postgres:postgres@localhost/postgres
       - uses: actions-rs/cargo@v1
         with:
           command: test
