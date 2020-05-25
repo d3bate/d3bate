@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:10.8
+        image: postgres:12
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -52,7 +52,7 @@ jobs:
         with:
           toolchain: nightly
           override: true
-      - run: sudo apt-get install postgresql-client-12 && cargo install diesel_cli --no-default-features --features postgres
+      - run: sudo apt-get install postgresql-12 && cargo install diesel_cli --no-default-features --features postgres
       - run: diesel migration run --database-url postgres://postgres:postgres@localhost/postgres
       - uses: actions-rs/cargo@v1
         with:
