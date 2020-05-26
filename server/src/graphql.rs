@@ -156,9 +156,13 @@ impl Query {
     fn club(context: &Context, id: i32) -> FieldResult<Club> {
         if let Some(contextual_user) = &context.user {
             use data::schema::club::dsl as club;
+            use data::schema::club_member::dsl as club_member;
+            use data::schema::user::dsl as user;
             use diesel::prelude::*;
             match club::club
                 .find(id)
+                .inner_join(club_member::club_member.inner_join(user::user))
+                .select(data::schema::club::all_columns)
                 .first::<data::Club>(&context.connection.get().unwrap())
             {
                 Ok(club) => Ok(club.into()),
