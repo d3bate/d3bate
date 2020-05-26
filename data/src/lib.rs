@@ -139,10 +139,10 @@ pub struct TrainingSessionAttendance {
 
 #[derive(Insertable)]
 #[table_name = "training_session_attendance"]
-struct NewTrainingSessionAttendance {
-    training_session_id: i32,
-    user_id: i32,
-    attending: bool,
+pub struct NewTrainingSessionAttendance {
+    pub training_session_id: i32,
+    pub user_id: i32,
+    pub attending: bool,
 }
 
 #[derive(AsChangeset)]

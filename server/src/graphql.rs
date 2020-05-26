@@ -26,6 +26,7 @@ struct NewUser {
 }
 
 #[derive(juniper::GraphQLObject)]
+#[graphql(description = "A single debating club.")]
 struct Club {
     pub id: i32,
     pub name: String,
@@ -49,6 +50,7 @@ impl std::convert::From<data::Club> for Club {
 }
 
 #[derive(juniper::GraphQLObject)]
+#[graphql(description = "A single training session.")]
 struct TrainingSession {
     id: i32,
     start_time: chrono::NaiveDateTime,
@@ -59,6 +61,7 @@ struct TrainingSession {
 }
 
 #[derive(juniper::GraphQLObject)]
+#[graphql(description = "Attendance of a user for a training session.")]
 struct TrainingSessionAttendance {
     id: i32,
     training_session: TrainingSession,
@@ -67,6 +70,7 @@ struct TrainingSessionAttendance {
 }
 
 #[derive(juniper::GraphQLObject)]
+#[graphql(description = "A thread of chat messages.")]
 /// A chat message thread
 struct ChatMessageThread {
     id: i32,
@@ -77,6 +81,7 @@ struct ChatMessageThread {
 }
 
 #[derive(juniper::GraphQLObject)]
+#[graphql(description = "A single chat message.")]
 /// Represents a single chat message.
 struct ChatMessage {
     id: i32,
@@ -162,6 +167,7 @@ impl Query {
             match club::club
                 .find(id)
                 .inner_join(club_member::club_member.inner_join(user::user))
+                .filter(user::id.eq(contextual_user.id))
                 .select(data::schema::club::all_columns)
                 .first::<data::Club>(&context.connection.get().unwrap())
             {
@@ -456,6 +462,135 @@ impl Mutations {
         session_id: i32,
         attending: bool,
     ) -> FieldResult<TrainingSessionAttendance> {
-        todo!()
+        use data::schema::club::dsl as club;
+        use data::schema::training_session::dsl as training_session;
+        use data::schema::training_session_attendance::dsl as training_session_attendance;
+        use diesel::prelude::*;
+
+        if let Some(contextual_user) = &context.user {
+            let training_session_id = match training_session::training_session
+                .filter(training_session::id.eq(session_id))
+                .select(training_session::id)
+                .first::<i32>(&context.connection.get().unwrap())
+            {
+                Ok(t) => t,
+                Err(_) => {
+                    return Err(server_error());
+                }
+            };
+            if match diesel::dsl::select(diesel::dsl::exists(
+                training_session_attendance::training_session_attendance
+                    .filter(training_session_attendance::user_id.eq(contextual_user.id))
+                    .filter(training_session_attendance::training_session_id.eq(session_id)),
+            ))
+            .get_result(&context.connection.get().unwrap())
+            {
+                Ok(t) => t,
+                Err(_) => return Err(server_error()),
+            } {
+                match diesel::update(training_session_attendance::training_session_attendance)
+                    .set(training_session_attendance::attending.eq(attending))
+                    .filter(
+                        training_session_attendance::training_session_id.eq(training_session_id),
+                    )
+                    .filter(training_session_attendance::user_id.eq(contextual_user.id))
+                    .get_result::<data::TrainingSessionAttendance>(
+                        &context.connection.get().unwrap(),
+                    ) {
+                    Ok(training_session) => Ok(TrainingSessionAttendance {
+                        id: training_session.id,
+                        training_session: match training_session::training_session
+                            .find(training_session.training_session_id)
+                            .inner_join(club::club)
+                            .select((
+                                data::schema::training_session::all_columns,
+                                data::schema::club::all_columns,
+                            ))
+                            .first::<(data::TrainingSession, data::Club)>(
+                                &context.connection.get().unwrap(),
+                            ) {
+                            Ok((session, club)) => TrainingSession {
+                                id: session.id,
+                                start_time: session.start_time,
+                                end_time: session.end_time,
+                                livestream: session.livestream,
+                                description: session.description,
+                                club: Club {
+                                    id: club.id,
+                                    name: club.name,
+                                    registered_school: club.registered_school,
+                                    school_verified: club.school_verified,
+                                    created: club.created,
+                                    join_code: club.join_code,
+                                },
+                            },
+                            Err(_) => return Err(server_error()),
+                        },
+                        user: User {
+                            id: contextual_user.id,
+                            name: contextual_user.name.clone(),
+                            created: contextual_user.created,
+                            email: contextual_user.email.clone(),
+                            email_verified: contextual_user.email_verified,
+                        },
+                        attending,
+                    }),
+                    Err(_) => Err(server_error()),
+                }
+            } else {
+                match diesel::insert_into(training_session_attendance::training_session_attendance)
+                    .values(data::NewTrainingSessionAttendance {
+                        training_session_id: training_session_id,
+                        user_id: contextual_user.id,
+                        attending,
+                    })
+                    .returning(data::schema::training_session_attendance::all_columns)
+                    .get_result::<data::TrainingSessionAttendance>(
+                        &context.connection.get().unwrap(),
+                    ) {
+                    Ok(t) => Ok(TrainingSessionAttendance {
+                        id: training_session_id,
+                        training_session: match training_session::training_session
+                            .find(training_session_id)
+                            .inner_join(club::club)
+                            .select((
+                                data::schema::training_session::all_columns,
+                                data::schema::club::all_columns,
+                            ))
+                            .first::<(data::TrainingSession, data::Club)>(
+                                &context.connection.get().unwrap(),
+                            ) {
+                            Ok((session, club)) => TrainingSession {
+                                id: session.id,
+                                start_time: session.start_time,
+                                end_time: session.end_time,
+                                livestream: session.livestream,
+                                description: session.description,
+                                club: Club {
+                                    id: club.id,
+                                    name: club.name,
+                                    registered_school: club.registered_school,
+                                    school_verified: club.school_verified,
+                                    created: club.created,
+                                    join_code: club.join_code,
+                                },
+                            },
+                            Err(_) => return Err(server_error()),
+                        },
+                        user: User {
+                            id: contextual_user.id,
+                            name: contextual_user.name.clone(),
+                            created: contextual_user.created,
+                            email: contextual_user.email.clone(),
+                            email_verified: contextual_user.email_verified,
+                        },
+                        attending,
+                    }),
+                    Err(_) => return Err(server_error()),
+                }
+            }
+        } else {
+            Err(server_error())
+        }
     }
 }
