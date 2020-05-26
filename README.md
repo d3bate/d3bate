@@ -9,6 +9,6 @@ There are multiple ways (listed here in order of complexity) to use d3bate.
 3. Hosting on your own servers
 
 # Contributing
-Contributions are welcome! If you're stuck getting started, our [CodeClimate integration](https://codeclimate.com/github/d3bate/d3bate) which lists files that could do with a bit of tidying up.
+Contributions are welcome! If you're stuck getting started, our [CodeClimate integration](https://codeclimate.com/github/d3bate/d3bate) lists files that could do with a bit of tidying up.
 
 The backend can always do with more testing. Currently the backend has a set of end to end tests - any additional tests (even if they fail) are welcomed. 
