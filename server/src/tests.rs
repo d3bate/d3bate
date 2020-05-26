@@ -69,17 +69,20 @@ async fn test_e2e() {
         &jwt::EncodingKey::from_secret("secret".as_bytes()),
     )
     .unwrap();
-    let req = actix_web::test::TestRequest::get()
+    let verify_email_req = actix_web::test::TestRequest::get()
         .uri(&format!("/auth/verify/{}", email_token))
         .to_request();
-    let resp = actix_web::test::call_service(&mut app, req).await;
-    assert_eq!(resp.status(), actix_web::http::StatusCode::OK);
-    
-    match user::user.find(user_id).first::<data::User>(&pool.get().unwrap()) {
+    let verify_email_resp = actix_web::test::call_service(&mut app, verify_email_req).await;
+    assert_eq!(verify_email_resp.status(), actix_web::http::StatusCode::OK);
+
+    match user::user
+        .find(user_id)
+        .first::<data::User>(&pool.get().unwrap())
+    {
         Ok(found_user) => {
             assert_eq!(found_user.email_verified, true);
         }
-        Err(_) => panic!()
+        Err(_) => panic!(),
     };
 
     let invalid_email_token = jwt::encode(
@@ -92,5 +95,43 @@ async fn test_e2e() {
         .uri(&format!("/auth/verify/{}", invalid_email_token))
         .to_request();
     let invalid_email_resp = actix_web::test::call_service(&mut app, invalid_email_req).await;
-    assert_eq!(invalid_email_resp.status(), actix_web::http::StatusCode::BAD_REQUEST);
+    assert_eq!(
+        invalid_email_resp.status(),
+        actix_web::http::StatusCode::BAD_REQUEST
+    );
+
+    let context2 = crate::graphql::Context {
+        user: Some(match user::user.find(user_id).first(&pool.get().unwrap()) {
+            Ok(u) => u,
+            Err(_) => panic!(),
+        }),
+        connection: actix_web::web::Data::new(pool),
+    };
+
+    juniper::execute(
+        "mutation {
+        updatePassword(oldPassword:\"none\", newPassword: \"none2\") {name}
+      }
+      ",
+        None,
+        &schema,
+        &vars,
+        &context2,
+    )
+    .await
+    .unwrap();
+
+    match user::user
+        .find(user_id)
+        .first::<data::User>(&context2.connection.get().unwrap())
+    {
+        Ok(found_user) => {
+            use bcrypt::verify;
+            match verify("none2", &found_user.password_hash) {
+                Ok(verified) => assert_eq!(verified, true),
+                Err(e) => panic!("{:?}", e),
+            }
+        }
+        Err(_) => panic!(),
+    };
 }
