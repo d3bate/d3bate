@@ -172,7 +172,45 @@ impl Query {
         }
     }
     fn training_session(context: &Context, id: i32) -> FieldResult<TrainingSession> {
-        todo!()
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::training_session::dsl as training_session;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match user::user
+                .find(contextual_user.id)
+                .inner_join(
+                    club_member::club_member
+                        .inner_join(club::club.inner_join(training_session::training_session)),
+                )
+                .select((
+                    data::schema::training_session::all_columns,
+                    data::schema::club::all_columns,
+                ))
+                .filter(training_session::id.eq(id))
+                .first::<(data::TrainingSession, data::Club)>(&context.connection.get().unwrap())
+            {
+                Ok((training_session_instance, club_instance)) => Ok(TrainingSession {
+                    id: training_session_instance.id,
+                    start_time: training_session_instance.start_time,
+                    end_time: training_session_instance.end_time,
+                    livestream: training_session_instance.livestream,
+                    description: training_session_instance.description,
+                    club: Club {
+                        id: club_instance.id,
+                        name: club_instance.name,
+                        registered_school: club_instance.registered_school,
+                        school_verified: club_instance.school_verified,
+                        created: club_instance.created,
+                        join_code: club_instance.join_code,
+                    },
+                }),
+                Err(_) => Err(server_error()),
+            }
+        } else {
+            Err(permission_error(Some("You are not logged in.".into())))
+        }
     }
     fn training_session_attendance(
         context: &Context,

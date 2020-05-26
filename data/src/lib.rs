@@ -4,7 +4,8 @@ extern crate diesel;
 pub mod schema;
 
 use schema::{
-    chat_message, chat_message_thread, club, training_session, training_session_attendance, user,
+    chat_message, chat_message_thread, club, club_member, training_session,
+    training_session_attendance, user,
 };
 
 #[derive(Queryable, Identifiable)]
@@ -70,6 +71,29 @@ struct UpdateClub<'a> {
     school_verified: Option<bool>,
     created: Option<bool>,
     join_code: Option<&'a str>,
+}
+
+#[derive(Queryable, Identifiable)]
+#[table_name = "club_member"]
+pub struct ClubMember {
+    id: i32,
+    user_id: i32,
+    club_id: i32,
+    role: i32,
+}
+
+#[derive(Insertable)]
+#[table_name = "club_member"]
+pub struct NewClubMember {
+    user_id: i32,
+    club_id: i32,
+}
+
+#[derive(AsChangeset)]
+#[table_name = "club_member"]
+pub struct UpdateClubMember {
+    user_id: Option<i32>,
+    club_id: Option<i32>,
 }
 
 #[derive(Queryable, Identifiable)]
