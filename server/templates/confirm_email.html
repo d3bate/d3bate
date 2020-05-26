@@ -1,0 +1,6 @@
+{% extends "email_base.html" %}
+{% block content %}
+<h1>Confirm your email for d3bate.</h1>
+<p>Visit <a href="{{confirm_url}}">{{confirm_url}}</a>.</p>
+<p>This link will expire 15 minutes after creation. If it has expired, you can get a new one from <a href="https://debating.web.app">the website</a>.</p>
+{% endblock content %}

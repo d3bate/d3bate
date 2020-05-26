@@ -297,13 +297,38 @@ impl Mutations {
             })
             .get_result::<data::User>(&context.connection.get().unwrap())
         {
-            Ok(u) => Ok(User {
-                id: u.id,
-                name: u.name,
-                email_verified: u.email_verified,
-                email: u.email,
-                created: u.created,
-            }),
+            Ok(u) => {
+                #[cfg(feature = "email")]
+                #[cfg(not(test))]
+                {
+                    use askama::Template;
+                    let jwt =
+                        crate::auth::Claims::new(u.id, None, crate::auth::ClaimsType::EmailVerify);
+                    // TODO: find a nicer solution (don't use `futures::executor::block_on`)
+                    futures::executor::block_on(
+                        crate::email::Email::new(
+                            vec![&u.email],
+                            "Confirm your d3bate email",
+                            "bureaucrat+do_not_reply@debating.web.app",
+                            Some(
+                                crate::templates::ConfirmEmailTemplate::new("")
+                                    .render()
+                                    .unwrap()
+                                    .as_str(),
+                            ),
+                            Some(""),
+                        )
+                        .send(),
+                    );
+                }
+                Ok(User {
+                    id: u.id,
+                    name: u.name,
+                    email_verified: u.email_verified,
+                    email: u.email,
+                    created: u.created,
+                })
+            }
             Err(_) => return Err(server_error()),
         }
     }

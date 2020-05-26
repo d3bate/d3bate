@@ -30,6 +30,7 @@ impl<'a> Email<'a> {
     }
     /// Constructs an email message for later sending.
     fn build_message(&self) -> String {
+        // backslashes are used to place everything on one line (reduced message size)
         format!(
             "\
         {{\"personalizations\": [\

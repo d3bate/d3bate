@@ -1,10 +1,13 @@
 #[macro_use]
 extern crate juniper;
+extern crate askama;
+extern crate cfg_if;
 extern crate jsonwebtoken as jwt;
-
 mod auth;
-#[cfg(feature = "email")]
+#[cfg(any(feature = "email", test))]
 mod email;
+
+mod templates;
 
 mod graphql;
 #[cfg(test)]
@@ -65,7 +68,7 @@ async fn main() -> std::io::Result<()> {
         };
         let pool: Pool =
             diesel::r2d2::Pool::new(diesel::r2d2::ConnectionManager::new(database_url)).unwrap();
-        actix_web::App::new()
+        let app = actix_web::App::new()
             .data(pool)
             .data(graphql::schema())
             .service(
@@ -80,7 +83,14 @@ async fn main() -> std::io::Result<()> {
             .service(
                 actix_web::web::resource("/playground")
                     .route(actix_web::web::get().to(playground_route)),
-            )
+            );
+        cfg_if::cfg_if! {
+            if #[cfg(feature="email")] {
+                app.service(crate::auth::confirm_email)
+            } else {
+                app
+            }
+        }
     });
     server.bind(format!("127.0.0.1:{}", port))?.run().await
 }
