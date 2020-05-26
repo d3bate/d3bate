@@ -4,37 +4,7 @@ on:
   push:
 
 jobs:
-  python-test:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, macos-latest]
-        python-version: ['3.6', '3.7', '3.8']
-    runs-on: ${{matrix.platform}}
-    name: Python (${{matrix.python-version}})
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{matrix.python-version}}
-    - name: Install dependencies
-      run: |
-        cd backend
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        cd ../
-    - name: Run tests
-      run: |
-        cd backend
-        export FLASK_APP=app:create_app
-        export DATABASE_URL=sqlite:///test.db
-        export TESTING=true
-        export SECRET_KEY=afghrbej3424thnr1452@lafd2t.ewgrf4t4njhnr-gsfdjknbmv
-        flask db upgrade
-        python -m unittest tests.py
-        rm -rf test.db
-  rust-test:
+  rust:
     runs-on: ubuntu-latest
     services:
       postgres:
