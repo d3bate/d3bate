@@ -76,10 +76,10 @@ struct UpdateClub<'a> {
 #[derive(Queryable, Identifiable)]
 #[table_name = "club_member"]
 pub struct ClubMember {
-    id: i32,
-    user_id: i32,
-    club_id: i32,
-    role: i32,
+    pub id: i32,
+    pub user_id: i32,
+    pub club_id: i32,
+    pub role: i32,
 }
 
 #[derive(Insertable)]
@@ -87,6 +87,7 @@ pub struct ClubMember {
 pub struct NewClubMember {
     pub user_id: i32,
     pub club_id: i32,
+    pub role: i32,
 }
 
 #[derive(AsChangeset)]
@@ -109,13 +110,12 @@ pub struct TrainingSession {
 
 #[derive(Insertable)]
 #[table_name = "training_session"]
-struct NewTrainingSession<'a> {
-    id: i32,
-    start_time: chrono::NaiveDateTime,
-    end_time: chrono::NaiveDateTime,
-    livestream: bool,
-    description: &'a str,
-    club_id: i32,
+pub struct NewTrainingSession<'a> {
+    pub start_time: chrono::NaiveDateTime,
+    pub end_time: chrono::NaiveDateTime,
+    pub livestream: bool,
+    pub description: &'a str,
+    pub club_id: i32,
 }
 
 #[derive(AsChangeset)]

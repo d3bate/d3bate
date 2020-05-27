@@ -10,8 +10,20 @@ async fn test_e2e() {
     ))
     .unwrap();
 
+    use data::schema::club::dsl as club;
+    use data::schema::club_member::dsl as club_member;
+    use data::schema::training_session::dsl as training_session;
     use data::schema::user::dsl as user;
     diesel::delete(user::user)
+        .execute(&pool.get().unwrap())
+        .unwrap();
+    diesel::delete(club::club)
+        .execute(&pool.get().unwrap())
+        .unwrap();
+    diesel::delete(training_session::training_session)
+        .execute(&pool.get().unwrap())
+        .unwrap();
+    diesel::delete(club_member::club_member)
         .execute(&pool.get().unwrap())
         .unwrap();
 
@@ -22,7 +34,7 @@ async fn test_e2e() {
     )
     .await;
 
-    let context1 = crate::graphql::Context {
+    let context_unauthenticated = crate::graphql::Context {
         user: None,
         connection: actix_web::web::Data::new(pool.clone()),
     };
@@ -42,7 +54,7 @@ async fn test_e2e() {
         None,
         &schema,
         &vars,
-        &context1,
+        &context_unauthenticated,
     )
     .await
     .unwrap();
@@ -100,11 +112,20 @@ async fn test_e2e() {
         actix_web::http::StatusCode::BAD_REQUEST
     );
 
-    let context2 = crate::graphql::Context {
-        user: Some(match user::user.find(user_id).first(&pool.get().unwrap()) {
-            Ok(u) => u,
-            Err(_) => panic!(),
-        }),
+    let authenticated_owner_id: i32;
+    let context_authenticated_owner = crate::graphql::Context {
+        user: Some(
+            match user::user
+                .find(user_id)
+                .first::<data::User>(&pool.get().unwrap())
+            {
+                Ok(u) => {
+                    authenticated_owner_id = u.id;
+                    u
+                }
+                Err(_) => panic!(),
+            },
+        ),
         connection: actix_web::web::Data::new(pool),
     };
 
@@ -116,14 +137,14 @@ async fn test_e2e() {
         None,
         &schema,
         &vars,
-        &context2,
+        &context_authenticated_owner,
     )
     .await
     .unwrap();
 
     match user::user
         .find(user_id)
-        .first::<data::User>(&context2.connection.get().unwrap())
+        .first::<data::User>(&context_authenticated_owner.connection.get().unwrap())
     {
         Ok(found_user) => {
             use bcrypt::verify;
@@ -148,14 +169,13 @@ async fn test_e2e() {
         None,
         &schema,
         &vars,
-        &context2,
+        &context_authenticated_owner,
     )
     .await
     .unwrap();
-    use data::schema::club::dsl as club;
-    match club::club
+    let created_club_id: i32 = match club::club
         .filter(club::name.eq("Test Club"))
-        .first::<data::Club>(&context1.connection.get().unwrap())
+        .first::<data::Club>(&context_unauthenticated.connection.get().unwrap())
     {
         Ok(new_club) => {
             assert_eq!(new_club.name, "Test Club");
@@ -167,7 +187,46 @@ async fn test_e2e() {
                     .get(0..6)
                     .unwrap()
             );
+            new_club.id
         }
         Err(_) => panic!("Could not create club!"),
+    };
+    match club_member::club_member
+        .filter(club_member::user_id.eq(authenticated_owner_id))
+        .first::<data::ClubMember>(&context_authenticated_owner.connection.get().unwrap())
+    {
+        Ok(membership) => {
+            assert_eq!(membership.club_id, created_club_id);
+        }
+        Err(_) => panic!("Not a club member."),
+    }
+    juniper::execute(
+        &format!(
+            "mutation {{
+            addTrainingSession(trainingSession: {{
+              startTime: 1577894400,
+              endTime: 1577901600,
+              livestream: false,
+              description: \"Test Session\",
+              clubId: {}
+            }}) {{id}}
+          }}",
+            created_club_id
+        ),
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_owner,
+    )
+    .await
+    .unwrap();
+    match training_session::training_session
+        .filter(training_session::club_id.eq(created_club_id))
+        .first::<data::TrainingSession>(&context_unauthenticated.connection.get().unwrap())
+    {
+        Ok(sess) => {
+            assert_eq!(sess.description, "Test Session");
+        }
+        Err(_) => panic!("Could not get the training session from the database."),
     };
 }

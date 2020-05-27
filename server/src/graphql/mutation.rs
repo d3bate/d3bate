@@ -13,6 +13,15 @@ struct NewClub {
     school_website: String,
 }
 
+#[derive(GraphQLInputObject)]
+struct NewTrainingSession {
+    start_time: chrono::NaiveDateTime,
+    end_time: chrono::NaiveDateTime,
+    livestream: bool,
+    description: String,
+    club_id: i32,
+}
+
 #[juniper::graphql_object(Context=Context)]
 impl Mutations {
     fn register_user(context: &Context, new_user: NewUser) -> FieldResult<User> {
@@ -151,6 +160,7 @@ impl Mutations {
                         .values(data::NewClubMember {
                             user_id: contextual_user.id,
                             club_id: club_result.id,
+                            role: 3,
                         })
                         .execute(&context.connection.get().unwrap())
                     {
@@ -187,8 +197,60 @@ impl Mutations {
     fn remove_chat_message(context: &Context) -> FieldResult<ChatMessage> {
         todo!()
     }
-    fn add_training_session(context: &Context) -> FieldResult<ChatMessage> {
-        todo!()
+    fn add_training_session(
+        context: &Context,
+        training_session: NewTrainingSession,
+    ) -> FieldResult<TrainingSession> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::training_session::dsl as training_session;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contexual_user) = &context.user {
+            if diesel::select(diesel::dsl::exists(
+                club::club
+                    .inner_join(club_member::club_member.inner_join(user::user))
+                    .filter(club::id.eq(training_session.club_id))
+                    .filter(user::id.eq(contexual_user.id)),
+            ))
+            .get_result(&context.connection.get().unwrap())
+            .unwrap()
+            {
+                match diesel::insert_into(training_session::training_session)
+                    .values(data::NewTrainingSession {
+                        start_time: training_session.start_time,
+                        end_time: training_session.end_time,
+                        livestream: training_session.livestream,
+                        description: &training_session.description,
+                        club_id: training_session.club_id,
+                    })
+                    .returning(data::schema::training_session::all_columns)
+                    .get_result::<data::TrainingSession>(&context.connection.get().unwrap())
+                {
+                    Ok(training_session) => {
+                        return Ok(TrainingSession {
+                            id: training_session.id,
+                            start_time: training_session.start_time,
+                            end_time: training_session.end_time,
+                            livestream: training_session.livestream,
+                            description: training_session.description,
+                            club: match club::club
+                                .find(training_session.club_id)
+                                .first::<data::Club>(&context.connection.get().unwrap())
+                            {
+                                Ok(s) => s.into(),
+                                Err(_) => return Err(server_error()),
+                            },
+                        })
+                    }
+                    Err(_) => return Err(server_error()),
+                };
+            } else {
+                return Err(permission_error(None));
+            }
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
     }
     fn remove_training_session(context: &Context, id: i32) -> FieldResult<DeleteOperationSuccess> {
         use data::schema::club::dsl as club;
