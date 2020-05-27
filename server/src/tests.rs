@@ -302,4 +302,36 @@ async fn test_e2e() {
         }
         Err(_) => panic!("Could not get the training session from the database."),
     };
+
+    juniper::execute(
+        &format!(
+            "mutation {{
+                leaveClub(clubId: {}) {{
+                  message
+                }}
+              }}",
+            created_club_id
+        ),
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    match club_member::club_member
+        .filter(club_member::user_id.eq(context_authenticated_administrator_id))
+        .first::<data::ClubMember>(
+            &context_authenticated_administrator
+                .connection
+                .get()
+                .unwrap(),
+        ) {
+        Ok(_) => panic!("Should not still be in the club."),
+        Err(e) => match e {
+            diesel::result::Error::NotFound => {}
+            _ => panic!("Wrong kind of error."),
+        },
+    }
 }

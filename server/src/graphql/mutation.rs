@@ -3,7 +3,7 @@ pub struct Mutations;
 use super::*;
 
 #[derive(GraphQLObject)]
-struct DeleteOperationSuccess {
+struct SuccessfulDeletionOperation {
     message: String,
 }
 
@@ -222,8 +222,28 @@ impl Mutations {
         }
         todo!()
     }
-    fn leave_club(context: &Context, club_id: i32) -> FieldResult<Club> {
-        todo!()
+    /// Removes a user from a club.
+    /// TODO: make this more robust so that all clubs must have at least one owner
+    fn leave_club(context: &Context, club_id: i32) -> FieldResult<SuccessfulDeletionOperation> {
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match diesel::delete(club_member::club_member)
+                .filter(club_member::user_id.eq(contextual_user.id))
+                .filter(club_member::club_id.eq(club_id))
+                .execute(&context.connection.get().unwrap())
+            {
+                Ok(_) => {
+                    return Ok(SuccessfulDeletionOperation {
+                        message: "You have been removed from that club.".into(),
+                    })
+                }
+                Err(_) => return Err(server_error()),
+            };
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
     }
     fn add_chat_message(context: &Context) -> FieldResult<ChatMessage> {
         todo!()
@@ -286,7 +306,10 @@ impl Mutations {
             return Err(not_logged_in_permission_error());
         }
     }
-    fn remove_training_session(context: &Context, id: i32) -> FieldResult<DeleteOperationSuccess> {
+    fn remove_training_session(
+        context: &Context,
+        id: i32,
+    ) -> FieldResult<SuccessfulDeletionOperation> {
         use data::schema::club::dsl as club;
         use data::schema::club_member::dsl as club_member;
         use data::schema::training_session::dsl as training_session;
@@ -312,7 +335,7 @@ impl Mutations {
                     .execute(&context.connection.get().unwrap())
                 {
                     Ok(_) => {
-                        return Ok(DeleteOperationSuccess {
+                        return Ok(SuccessfulDeletionOperation {
                             message: "Sucessfully deleted that training session.".into(),
                         })
                     }
