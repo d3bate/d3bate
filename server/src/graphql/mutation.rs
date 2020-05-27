@@ -2,6 +2,11 @@ pub struct Mutations;
 
 use super::*;
 
+#[derive(GraphQLObject)]
+struct DeleteOperationSuccess {
+    message: String,
+}
+
 #[juniper::graphql_object(Context=Context)]
 impl Mutations {
     fn register_user(context: &Context, new_user: NewUser) -> FieldResult<User> {
@@ -134,7 +139,7 @@ impl Mutations {
     fn add_training_session(context: &Context) -> FieldResult<ChatMessage> {
         todo!()
     }
-    fn remove_training_session(context: &Context, id: i32) -> FieldResult<()> {
+    fn remove_training_session(context: &Context, id: i32) -> FieldResult<DeleteOperationSuccess> {
         use data::schema::club::dsl as club;
         use data::schema::club_member::dsl as club_member;
         use data::schema::training_session::dsl as training_session;
@@ -159,7 +164,11 @@ impl Mutations {
                     .filter(training_session::id.eq(id))
                     .execute(&context.connection.get().unwrap())
                 {
-                    Ok(_) => return Ok(()),
+                    Ok(_) => {
+                        return Ok(DeleteOperationSuccess {
+                            message: "Sucessfully deleted that training session.".into(),
+                        })
+                    }
                     Err(_) => return Err(server_error()),
                 };
             } else {
