@@ -36,24 +36,24 @@ create table if not exists training_session (
   end_time timestamp not null,
   livestream boolean not null,
   description text not null check (length(description) < 256),
-  club_id integer not null references club (id)
+  club_id integer not null references club (id) on delete cascade
 );
 create table if not exists training_session_attendance (
   id serial primary key,
-  training_session_id integer not null references training_session (id),
-  user_id integer not null references "user" (id),
+  training_session_id integer not null references training_session (id) on delete cascade,
+  user_id integer not null references "user" (id) on delete cascade,
   attending boolean not null default 'f'
 );
 create table if not exists chat_message_thread (
   id serial primary key,
   last_active timestamp not null default now(),
-  club_id integer not null references club (id),
+  club_id integer not null references club (id) on delete cascade,
   title text not null check (length(title) < 256),
   unique(title)
 );
 create table if not exists chat_message (
   id serial primary key,
-  thread_id integer not null references chat_message_thread (id),
+  thread_id integer not null references chat_message_thread (id) on delete cascade,
   chat_message_id integer references chat_message (id),
   created timestamp not null default now(),
   content text not null check (length(content) < 4096),

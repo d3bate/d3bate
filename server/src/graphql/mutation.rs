@@ -116,6 +116,9 @@ impl Mutations {
     fn update_email(context: &Context, password: String) -> FieldResult<User> {
         todo!()
     }
+    fn create_club(context: &Context) -> FieldResult<Club> {
+        todo!()
+    }
     fn join_club(context: &Context, join_code: String) -> FieldResult<Club> {
         todo!()
     }
@@ -131,8 +134,42 @@ impl Mutations {
     fn add_training_session(context: &Context) -> FieldResult<ChatMessage> {
         todo!()
     }
-    fn remove_training_session(context: &Context) -> FieldResult<TrainingSession> {
-        todo!()
+    fn remove_training_session(context: &Context, id: i32) -> FieldResult<()> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::training_session::dsl as training_session;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            if match diesel::select(diesel::dsl::exists(
+                training_session::training_session
+                    .find(id)
+                    .inner_join(
+                        club::club.inner_join(club_member::club_member.inner_join(user::user)),
+                    )
+                    .filter(club_member::role.gt(1))
+                    .filter(user::id.eq(contextual_user.id)),
+            ))
+            .get_result(&context.connection.get().unwrap())
+            {
+                Ok(t) => t,
+                Err(_) => return Err(server_error()),
+            } {
+                match diesel::delete(training_session::training_session)
+                    .filter(training_session::id.eq(id))
+                    .execute(&context.connection.get().unwrap())
+                {
+                    Ok(_) => return Ok(()),
+                    Err(_) => return Err(server_error()),
+                };
+            } else {
+                return Err(permission_error(Some(
+                    "You don't have permission to do that.".into(),
+                )));
+            }
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
     }
     fn set_training_session_attendance(
         context: &Context,
