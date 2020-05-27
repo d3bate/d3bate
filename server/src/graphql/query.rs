@@ -54,6 +54,38 @@ impl Query {
             Err(auth_error())
         }
     }
+    fn clubs_of_user(context: &Context, role: i32) -> FieldResult<Vec<Club>> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match user::user
+                .find(contextual_user.id)
+                .inner_join(club_member::club_member.inner_join(club::club))
+                .select(data::schema::club::all_columns)
+                .filter(club_member::role.eq(role))
+                .load::<data::Club>(&context.connection.get().unwrap())
+            {
+                Ok(clubs) => {
+                    return Ok(clubs
+                        .iter()
+                        .map(|club| Club {
+                            id: club.id,
+                            name: club.name.clone(),
+                            registered_school: club.registered_school.clone(),
+                            school_verified: club.school_verified,
+                            created: club.created,
+                            join_code: club.join_code.clone(),
+                        })
+                        .collect::<Vec<Club>>())
+                }
+                Err(_) => return Err(server_error()),
+            };
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
+    }
     fn training_session(context: &Context, id: i32) -> FieldResult<TrainingSession> {
         use data::schema::club::dsl as club;
         use data::schema::club_member::dsl as club_member;

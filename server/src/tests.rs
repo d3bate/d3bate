@@ -273,6 +273,51 @@ async fn test_e2e() {
         Err(_) => panic!("Not in the club."),
     };
 
+    let user_joined_club = juniper::execute(
+        "query {
+                clubsOfUser(role: 1) {
+                  id,
+                  registeredSchool
+                }
+              }",
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    match user_joined_club.0 {
+        juniper::Value::Object(object) => match object.get_field_value("clubsOfUser") {
+            Some(fields) => match fields {
+                juniper::Value::List(clubs) => {
+                    let user_club = clubs.iter().next().unwrap();
+                    match user_club {
+                        juniper::Value::Object(club_object) => {
+                            match club_object.get_field_value("registeredSchool") {
+                                Some(value) => match value {
+                                    juniper::Value::Scalar(scalar_value) => match scalar_value {
+                                        juniper::DefaultScalarValue::String(name) => {
+                                            assert_eq!(name, "https://debating.web.app")
+                                        }
+                                        _ => panic!("Couldn't find."),
+                                    },
+                                    _ => panic!("Expected scalar."),
+                                },
+                                None => panic!("Expected value."),
+                            }
+                        }
+                        _ => panic!(""),
+                    }
+                }
+                _ => panic!("Expected list."),
+            },
+            None => panic!("Expected value."),
+        },
+        _ => panic!(""),
+    }
+
     juniper::execute(
         &format!(
             "mutation {{
