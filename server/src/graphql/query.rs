@@ -92,7 +92,7 @@ impl Query {
                 Err(_) => Err(server_error()),
             }
         } else {
-            Err(permission_error(Some("You are not logged in.".into())))
+            Err(not_logged_in_permission_error())
         }
     }
     fn training_session_attendance(
@@ -292,10 +292,51 @@ impl Query {
                 return Err(permission_error(None));
             }
         } else {
-            return Err(server_error());
+            return Err(not_logged_in_permission_error());
         }
     }
     fn chat_message(context: &Context, id: i32) -> FieldResult<ChatMessage> {
-        todo!()
+        use data::schema::chat_message::dsl as chat_message;
+        use data::schema::chat_message_thread::dsl as chat_message_thread;
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match chat_message::chat_message
+                .find(id)
+                .inner_join(chat_message_thread::chat_message_thread.inner_join(
+                    club::club.inner_join(club_member::club_member.inner_join(user::user)),
+                ))
+                .select(data::schema::chat_message::all_columns)
+                .first::<data::ChatMessage>(&context.connection.get().unwrap())
+            {
+                Ok(message) => {
+                    return Ok(ChatMessage {
+                        id: message.id,
+                        thread_id: message.thread_id,
+                        parent_id: message.chat_message_id,
+                        created: message.created,
+                        content: message.content,
+                        author: match user::user
+                            .find(message.user_id)
+                            .first::<data::User>(&context.connection.get().unwrap())
+                        {
+                            Ok(user) => User {
+                                id: user.id,
+                                name: user.name,
+                                email: user.email,
+                                created: user.created,
+                                email_verified: user.email_verified,
+                            },
+                            Err(_) => return Err(server_error()),
+                        },
+                    })
+                }
+                Err(_) => return Err(server_error()),
+            };
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
     }
 }

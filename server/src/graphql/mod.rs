@@ -127,6 +127,10 @@ fn permission_error(optional_explanation: Option<String>) -> juniper::FieldError
     }
 }
 
+fn not_logged_in_permission_error() -> juniper::FieldError {
+    permission_error(Some("You must be logged in to do this.".into()))
+}
+
 fn server_error() -> juniper::FieldError {
     juniper::FieldError::new(
         "There was a server error processing your request.",
