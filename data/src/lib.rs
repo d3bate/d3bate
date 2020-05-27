@@ -157,10 +157,11 @@ struct UpdateTrainingSessionAttendance {
 #[table_name = "chat_message"]
 pub struct ChatMessage {
     pub id: i32,
+    pub thread_id: i32,
     pub chat_message_id: Option<i32>,
     pub created: chrono::NaiveDateTime,
     pub content: String,
-    pub user_id: Option<i32>,
+    pub user_id: i32,
 }
 
 #[derive(Insertable)]

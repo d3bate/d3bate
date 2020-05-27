@@ -368,7 +368,59 @@ impl Query {
         }
     }
     fn chat_message_thread_messages(context: &Context, id: i32) -> FieldResult<Vec<ChatMessage>> {
-        todo!()
+        use data::schema::chat_message::dsl as chat_message;
+        use data::schema::chat_message_thread::dsl as chat_message_thread;
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            if diesel::select(diesel::dsl::exists(
+                chat_message_thread::chat_message_thread
+                    .inner_join(
+                        club::club.inner_join(club_member::club_member.inner_join(user::user)),
+                    )
+                    .filter(user::id.eq(contextual_user.id)),
+            ))
+            .get_result(&context.connection.get().unwrap())
+            .unwrap()
+            {
+                match chat_message_thread::chat_message_thread
+                    .inner_join(chat_message::chat_message.inner_join(user::user))
+                    .filter(user::id.eq(contextual_user.id))
+                    .select((
+                        data::schema::chat_message::all_columns,
+                        data::schema::user::all_columns,
+                    ))
+                    .load::<(data::ChatMessage, data::User)>(&context.connection.get().unwrap())
+                {
+                    Ok(messages) => {
+                        return Ok(messages
+                            .into_iter()
+                            .map(|(message, author)| ChatMessage {
+                                id: message.id,
+                                thread_id: message.thread_id,
+                                parent_id: message.chat_message_id,
+                                created: message.created,
+                                content: message.content,
+                                author: User {
+                                    id: author.id,
+                                    name: author.name,
+                                    email: author.email,
+                                    created: author.created,
+                                    email_verified: author.email_verified,
+                                },
+                            })
+                            .collect::<Vec<ChatMessage>>())
+                    }
+                    Err(_) => return Err(server_error()),
+                }
+            } else {
+                return Err(permission_error(None));
+            }
+        } else {
+            return Err(server_error());
+        }
     }
     fn chat_message(context: &Context, id: i32) -> FieldResult<ChatMessage> {
         todo!()
