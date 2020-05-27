@@ -23,6 +23,7 @@ bcrypt = "0.8"
 reqwest={version="0.10.4", optional=true}
 askama = "0.8"
 cfg-if="0.1"
+base64="0.12"
 
 [features]
 default=["email"]

@@ -45,7 +45,7 @@ async fn test_e2e() {
             registerUser(newUser: {
               name:\"Test User\",
               email:\"test@debating.web.app\",
-              pgp: \"he/they\",
+              pgp: \"name only\",
               password: \"none\"
             }) {
               name, id
@@ -126,6 +126,42 @@ async fn test_e2e() {
                 Err(_) => panic!(),
             },
         ),
+        connection: actix_web::web::Data::new(pool.clone()),
+    };
+
+    juniper::execute(
+        "mutation {
+            registerUser(newUser: {
+              name:\"Test Admin\",
+              email:\"test_admin@debating.web.app\",
+              pgp: \"she/they\",
+              password: \"none\"
+            }) {
+              name, id
+            }
+          }",
+        None,
+        &schema,
+        &vars,
+        &context_unauthenticated,
+    )
+    .await
+    .unwrap();
+
+    let context_authenticated_administrator_id: i32;
+    let context_authenticated_administrator = crate::graphql::Context {
+        user: Some(
+            match user::user
+                .filter(user::name.eq("Test Admin"))
+                .first::<data::User>(&context_unauthenticated.connection.get().unwrap())
+            {
+                Ok(u) => {
+                    context_authenticated_administrator_id = u.id;
+                    u
+                }
+                Err(_) => panic!("Couldn't find the administrator context."),
+            },
+        ),
         connection: actix_web::web::Data::new(pool),
     };
 
@@ -173,7 +209,7 @@ async fn test_e2e() {
     )
     .await
     .unwrap();
-    let created_club_id: i32 = match club::club
+    let (created_club_id, created_club_join_code): (i32, String) = match club::club
         .filter(club::name.eq("Test Club"))
         .first::<data::Club>(&context_unauthenticated.connection.get().unwrap())
     {
@@ -182,15 +218,19 @@ async fn test_e2e() {
             assert_eq!(new_club.registered_school, "https://debating.web.app");
             assert_eq!(
                 new_club.join_code,
-                bcrypt::hash("Test Club", bcrypt::DEFAULT_COST)
-                    .unwrap()
-                    .get(0..6)
-                    .unwrap()
+                base64::encode(
+                    bcrypt::hash("Test Club", bcrypt::DEFAULT_COST)
+                        .unwrap()
+                        .get(0..6)
+                        .unwrap()
+                )
+                .as_str()
             );
-            new_club.id
+            (new_club.id, new_club.join_code)
         }
         Err(_) => panic!("Could not create club!"),
     };
+
     match club_member::club_member
         .filter(club_member::user_id.eq(authenticated_owner_id))
         .first::<data::ClubMember>(&context_authenticated_owner.connection.get().unwrap())
@@ -200,6 +240,39 @@ async fn test_e2e() {
         }
         Err(_) => panic!("Not a club member."),
     }
+
+    juniper::execute(
+        &format!(
+            "mutation {{
+            joinClub(joinCode: \"{}\") {{
+              id
+            }}
+          }}
+          ",
+            &created_club_join_code
+        ),
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    match club_member::club_member
+        .filter(club_member::user_id.eq(context_authenticated_administrator_id))
+        .first::<data::ClubMember>(
+            &context_authenticated_administrator
+                .connection
+                .get()
+                .unwrap(),
+        ) {
+        Ok(cm) => {
+            assert_eq!(cm.club_id, created_club_id);
+        }
+        Err(_) => panic!("Not in the club."),
+    };
+
     juniper::execute(
         &format!(
             "mutation {{

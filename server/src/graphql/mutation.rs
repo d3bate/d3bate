@@ -147,10 +147,13 @@ impl Mutations {
                     registered_school: &club.school_website,
                     school_verified: false,
                     created: chrono::Utc::now().naive_utc(),
-                    join_code: &bcrypt::hash(&club.name, bcrypt::DEFAULT_COST)
-                        .unwrap()
-                        .get(0..6)
-                        .unwrap(),
+                    join_code: &base64::encode(
+                        &bcrypt::hash(&club.name, bcrypt::DEFAULT_COST)
+                            .unwrap()
+                            .get(0..6)
+                            .unwrap()
+                            .as_bytes(),
+                    ),
                 })
                 .returning(data::schema::club::all_columns)
                 .get_result::<data::Club>(&context.connection.get().unwrap())
@@ -186,6 +189,37 @@ impl Mutations {
         }
     }
     fn join_club(context: &Context, join_code: String) -> FieldResult<Club> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match club::club
+                .filter(club::join_code.eq(join_code))
+                .first::<data::Club>(&context.connection.get().unwrap())
+            {
+                Ok(club) => {
+                    match diesel::insert_into(club_member::club_member)
+                        .values(data::NewClubMember {
+                            club_id: club.id,
+                            user_id: contextual_user.id,
+                            role: 1,
+                        })
+                        .execute(&context.connection.get().unwrap())
+                    {
+                        Ok(_) => return Ok(Club::from(club)),
+                        Err(_) => return Err(server_error()),
+                    }
+                }
+                Err(_) => {
+                    return Err(permission_error(Some(
+                        "The join code provided is invalid.".into(),
+                    )))
+                }
+            }
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
         todo!()
     }
     fn leave_club(context: &Context, club_id: i32) -> FieldResult<Club> {

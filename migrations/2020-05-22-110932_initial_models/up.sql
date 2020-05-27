@@ -23,8 +23,8 @@ create table if not exists club (
 );
 create table if not exists club_member (
   id serial primary key,
-  user_id integer not null references "user" (id),
-  club_id integer not null references club (id),
+  user_id integer not null references "user" (id) on delete cascade,
+  club_id integer not null references club (id) on delete cascade,
   role integer not null check (
     role > 0
     and role <= 3
