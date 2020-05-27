@@ -155,12 +155,12 @@ struct UpdateTrainingSessionAttendance {
 
 #[derive(Queryable, Identifiable)]
 #[table_name = "chat_message"]
-struct ChatMessage {
-    id: i32,
-    chat_message_id: Option<i32>,
-    created: chrono::NaiveDateTime,
-    content: String,
-    user_id: Option<i32>,
+pub struct ChatMessage {
+    pub id: i32,
+    pub chat_message_id: Option<i32>,
+    pub created: chrono::NaiveDateTime,
+    pub content: String,
+    pub user_id: Option<i32>,
 }
 
 #[derive(Insertable)]
@@ -185,11 +185,11 @@ struct UpdateChatMessage<'a> {
 
 #[derive(Queryable, Identifiable)]
 #[table_name = "chat_message_thread"]
-struct ChatMessageThread {
-    id: i32,
-    last_active: chrono::NaiveDateTime,
-    club_id: i32,
-    title: String,
+pub struct ChatMessageThread {
+    pub id: i32,
+    pub last_active: chrono::NaiveDateTime,
+    pub club_id: i32,
+    pub title: String,
 }
 #[derive(Insertable)]
 #[table_name = "chat_message_thread"]

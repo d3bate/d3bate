@@ -314,7 +314,58 @@ impl Query {
         }
     }
     fn chat_message_thread(context: &Context, id: i32) -> FieldResult<ChatMessageThread> {
-        todo!()
+        use data::schema::chat_message::dsl as chat_message;
+        use data::schema::chat_message_thread::dsl as chat_message_thread;
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            if diesel::select(diesel::dsl::exists(
+                chat_message_thread::chat_message_thread
+                    .inner_join(
+                        club::club.inner_join(club_member::club_member.inner_join(user::user)),
+                    )
+                    .filter(user::id.eq(contextual_user.id)),
+            ))
+            .get_result(&context.connection.get().unwrap())
+            .unwrap()
+            {
+                let (chat_message_thread, selected_club) =
+                    match chat_message_thread::chat_message_thread
+                        .find(id)
+                        .inner_join(club::club)
+                        .select((
+                            data::schema::chat_message_thread::all_columns,
+                            data::schema::club::all_columns,
+                        ))
+                        .first::<(data::ChatMessageThread, data::Club)>(
+                            &context.connection.get().unwrap(),
+                        ) {
+                        Ok(thread) => thread,
+                        Err(_) => return Err(server_error()),
+                    };
+                let chat_messages = match chat_message::chat_message
+                    .filter(chat_message::thread_id.eq(id))
+                    .select(chat_message::id)
+                    .load::<i32>(&context.connection.get().unwrap())
+                {
+                    Ok(c) => c,
+                    Err(_) => return Err(server_error()),
+                };
+                return Ok(ChatMessageThread {
+                    id: chat_message_thread.id,
+                    last_active: chat_message_thread.last_active,
+                    club: selected_club.into(),
+                    title: chat_message_thread.title,
+                    message_ids: chat_messages,
+                });
+            } else {
+                return Err(permission_error(None));
+            };
+        } else {
+            return Err(permission_error(None));
+        }
     }
     fn chat_message_thread_messages(context: &Context, id: i32) -> FieldResult<Vec<ChatMessage>> {
         todo!()
