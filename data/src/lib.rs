@@ -4,7 +4,8 @@ extern crate diesel;
 pub mod schema;
 
 use schema::{
-    chat_message, chat_message_thread, club, training_session, training_session_attendance, user,
+    chat_message, chat_message_thread, club, club_member, training_session,
+    training_session_attendance, user,
 };
 
 #[derive(Queryable, Identifiable)]
@@ -48,18 +49,18 @@ pub struct Club {
     pub name: String,
     pub registered_school: String,
     pub school_verified: bool,
-    pub created: bool,
+    pub created: chrono::NaiveDateTime,
     pub join_code: String,
 }
 
 #[derive(Insertable)]
 #[table_name = "club"]
-struct NewClub<'a> {
-    name: &'a str,
-    registered_school: &'a str,
-    school_verified: bool,
-    created: bool,
-    join_code: &'a str,
+pub struct NewClub<'a> {
+    pub name: &'a str,
+    pub registered_school: &'a str,
+    pub school_verified: bool,
+    pub created: chrono::NaiveDateTime,
+    pub join_code: &'a str,
 }
 
 #[derive(AsChangeset)]
@@ -68,8 +69,32 @@ struct UpdateClub<'a> {
     name: Option<&'a str>,
     registered_school: Option<&'a str>,
     school_verified: Option<bool>,
-    created: Option<bool>,
+    created: Option<chrono::NaiveDateTime>,
     join_code: Option<&'a str>,
+}
+
+#[derive(Queryable, Identifiable)]
+#[table_name = "club_member"]
+pub struct ClubMember {
+    pub id: i32,
+    pub user_id: i32,
+    pub club_id: i32,
+    pub role: i32,
+}
+
+#[derive(Insertable)]
+#[table_name = "club_member"]
+pub struct NewClubMember {
+    pub user_id: i32,
+    pub club_id: i32,
+    pub role: i32,
+}
+
+#[derive(AsChangeset)]
+#[table_name = "club_member"]
+pub struct UpdateClubMember {
+    pub user_id: Option<i32>,
+    pub club_id: Option<i32>,
 }
 
 #[derive(Queryable, Identifiable)]
@@ -85,13 +110,12 @@ pub struct TrainingSession {
 
 #[derive(Insertable)]
 #[table_name = "training_session"]
-struct NewTrainingSession<'a> {
-    id: i32,
-    start_time: chrono::NaiveDateTime,
-    end_time: chrono::NaiveDateTime,
-    livestream: bool,
-    description: &'a str,
-    club_id: i32,
+pub struct NewTrainingSession<'a> {
+    pub start_time: chrono::NaiveDateTime,
+    pub end_time: chrono::NaiveDateTime,
+    pub livestream: bool,
+    pub description: &'a str,
+    pub club_id: i32,
 }
 
 #[derive(AsChangeset)]
@@ -115,10 +139,10 @@ pub struct TrainingSessionAttendance {
 
 #[derive(Insertable)]
 #[table_name = "training_session_attendance"]
-struct NewTrainingSessionAttendance {
-    training_session_id: i32,
-    user_id: i32,
-    attending: bool,
+pub struct NewTrainingSessionAttendance {
+    pub training_session_id: i32,
+    pub user_id: i32,
+    pub attending: bool,
 }
 
 #[derive(AsChangeset)]
@@ -131,12 +155,13 @@ struct UpdateTrainingSessionAttendance {
 
 #[derive(Queryable, Identifiable)]
 #[table_name = "chat_message"]
-struct ChatMessage {
-    id: i32,
-    chat_message_id: Option<i32>,
-    created: chrono::NaiveDateTime,
-    content: String,
-    user_id: Option<i32>,
+pub struct ChatMessage {
+    pub id: i32,
+    pub thread_id: i32,
+    pub chat_message_id: Option<i32>,
+    pub created: chrono::NaiveDateTime,
+    pub content: String,
+    pub user_id: i32,
 }
 
 #[derive(Insertable)]
@@ -161,11 +186,11 @@ struct UpdateChatMessage<'a> {
 
 #[derive(Queryable, Identifiable)]
 #[table_name = "chat_message_thread"]
-struct ChatMessageThread {
-    id: i32,
-    last_active: chrono::NaiveDateTime,
-    club_id: i32,
-    title: String,
+pub struct ChatMessageThread {
+    pub id: i32,
+    pub last_active: chrono::NaiveDateTime,
+    pub club_id: i32,
+    pub title: String,
 }
 #[derive(Insertable)]
 #[table_name = "chat_message_thread"]

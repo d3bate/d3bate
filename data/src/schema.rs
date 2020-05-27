@@ -24,8 +24,17 @@ table! {
         name -> Text,
         registered_school -> Text,
         school_verified -> Bool,
-        created -> Bool,
+        created -> Timestamp,
         join_code -> Text,
+    }
+}
+
+table! {
+    club_member (id) {
+        id -> Int4,
+        user_id -> Int4,
+        club_id -> Int4,
+        role -> Int4,
     }
 }
 
@@ -64,6 +73,8 @@ table! {
 joinable!(chat_message -> chat_message_thread (thread_id));
 joinable!(chat_message -> user (user_id));
 joinable!(chat_message_thread -> club (club_id));
+joinable!(club_member -> club (club_id));
+joinable!(club_member -> user (user_id));
 joinable!(training_session -> club (club_id));
 joinable!(training_session_attendance -> training_session (training_session_id));
 joinable!(training_session_attendance -> user (user_id));
@@ -72,6 +83,7 @@ allow_tables_to_appear_in_same_query!(
     chat_message,
     chat_message_thread,
     club,
+    club_member,
     training_session,
     training_session_attendance,
     user,
