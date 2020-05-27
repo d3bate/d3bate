@@ -7,6 +7,12 @@ struct DeleteOperationSuccess {
     message: String,
 }
 
+#[derive(GraphQLInputObject)]
+struct NewClub {
+    name: String,
+    school_website: String,
+}
+
 #[juniper::graphql_object(Context=Context)]
 impl Mutations {
     fn register_user(context: &Context, new_user: NewUser) -> FieldResult<User> {
@@ -121,8 +127,53 @@ impl Mutations {
     fn update_email(context: &Context, password: String) -> FieldResult<User> {
         todo!()
     }
-    fn create_club(context: &Context) -> FieldResult<Club> {
-        todo!()
+    fn create_club(context: &Context, club: NewClub) -> FieldResult<Club> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match diesel::insert_into(club::club)
+                .values(data::NewClub {
+                    name: &club.name,
+                    registered_school: &club.school_website,
+                    school_verified: false,
+                    created: chrono::Utc::now().naive_utc(),
+                    join_code: &bcrypt::hash(&club.name, bcrypt::DEFAULT_COST)
+                        .unwrap()
+                        .get(0..6)
+                        .unwrap(),
+                })
+                .returning(data::schema::club::all_columns)
+                .get_result::<data::Club>(&context.connection.get().unwrap())
+            {
+                Ok(club_result) => {
+                    match diesel::insert_into(club_member::club_member)
+                        .values(data::NewClubMember {
+                            user_id: contextual_user.id,
+                            club_id: club_result.id,
+                        })
+                        .execute(&context.connection.get().unwrap())
+                    {
+                        Ok(_) => {
+                            return Ok(Club {
+                                id: club_result.id,
+                                name: club_result.name,
+                                registered_school: club_result.registered_school,
+                                school_verified: club_result.school_verified,
+                                created: club_result.created,
+                                join_code: club_result.join_code,
+                            });
+                        }
+                        Err(_) => {
+                            return Err(server_error());
+                        }
+                    };
+                }
+                Err(_) => return Err(server_error()),
+            };
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
     }
     fn join_club(context: &Context, join_code: String) -> FieldResult<Club> {
         todo!()
@@ -271,7 +322,7 @@ impl Mutations {
                     .get_result::<data::TrainingSessionAttendance>(
                         &context.connection.get().unwrap(),
                     ) {
-                    Ok(t) => Ok(TrainingSessionAttendance {
+                    Ok(_) => Ok(TrainingSessionAttendance {
                         id: training_session_id,
                         training_session: match training_session::training_session
                             .find(training_session_id)

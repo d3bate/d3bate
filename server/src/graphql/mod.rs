@@ -39,7 +39,7 @@ struct Club {
     pub name: String,
     pub registered_school: String,
     pub school_verified: bool,
-    pub created: bool,
+    pub created: chrono::NaiveDateTime,
     pub join_code: String,
 }
 

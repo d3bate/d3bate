@@ -15,7 +15,7 @@ create table if not exists club (
   name text not null,
   registered_school text not null check (length (registered_school) < 256),
   school_verified boolean not null,
-  created boolean not null,
+  created timestamp not null default now(),
   join_code text not null check (length (join_code) < 256),
   unique(name),
   unique(registered_school),

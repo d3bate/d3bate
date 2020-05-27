@@ -49,18 +49,18 @@ pub struct Club {
     pub name: String,
     pub registered_school: String,
     pub school_verified: bool,
-    pub created: bool,
+    pub created: chrono::NaiveDateTime,
     pub join_code: String,
 }
 
 #[derive(Insertable)]
 #[table_name = "club"]
-struct NewClub<'a> {
-    name: &'a str,
-    registered_school: &'a str,
-    school_verified: bool,
-    created: bool,
-    join_code: &'a str,
+pub struct NewClub<'a> {
+    pub name: &'a str,
+    pub registered_school: &'a str,
+    pub school_verified: bool,
+    pub created: chrono::NaiveDateTime,
+    pub join_code: &'a str,
 }
 
 #[derive(AsChangeset)]
@@ -69,7 +69,7 @@ struct UpdateClub<'a> {
     name: Option<&'a str>,
     registered_school: Option<&'a str>,
     school_verified: Option<bool>,
-    created: Option<bool>,
+    created: Option<chrono::NaiveDateTime>,
     join_code: Option<&'a str>,
 }
 
@@ -85,15 +85,15 @@ pub struct ClubMember {
 #[derive(Insertable)]
 #[table_name = "club_member"]
 pub struct NewClubMember {
-    user_id: i32,
-    club_id: i32,
+    pub user_id: i32,
+    pub club_id: i32,
 }
 
 #[derive(AsChangeset)]
 #[table_name = "club_member"]
 pub struct UpdateClubMember {
-    user_id: Option<i32>,
-    club_id: Option<i32>,
+    pub user_id: Option<i32>,
+    pub club_id: Option<i32>,
 }
 
 #[derive(Queryable, Identifiable)]

@@ -105,7 +105,7 @@ impl actix_web::FromRequest for Claims {
                     &jwt::Validation::default(),
                 ) {
                     Ok(claims) => futures::future::ok(claims.claims),
-                    Err(e) => futures::future::err(actix_web::error::ErrorBadRequest(
+                    Err(_) => futures::future::err(actix_web::error::ErrorBadRequest(
                         "The token supplied is invalid.",
                     )),
                 }

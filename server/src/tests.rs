@@ -134,4 +134,40 @@ async fn test_e2e() {
         }
         Err(_) => panic!(),
     };
+
+    juniper::execute(
+        "mutation {
+            createClub(club: {
+              name: \"Test Club\",
+              schoolWebsite: \"https://debating.web.app\"
+            }) {
+              name
+            }
+          }
+      ",
+        None,
+        &schema,
+        &vars,
+        &context2,
+    )
+    .await
+    .unwrap();
+    use data::schema::club::dsl as club;
+    match club::club
+        .filter(club::name.eq("Test Club"))
+        .first::<data::Club>(&context1.connection.get().unwrap())
+    {
+        Ok(new_club) => {
+            assert_eq!(new_club.name, "Test Club");
+            assert_eq!(new_club.registered_school, "https://debating.web.app");
+            assert_eq!(
+                new_club.join_code,
+                bcrypt::hash("Test Club", bcrypt::DEFAULT_COST)
+                    .unwrap()
+                    .get(0..6)
+                    .unwrap()
+            );
+        }
+        Err(_) => panic!("Could not create club!"),
+    };
 }

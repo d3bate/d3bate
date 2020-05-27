@@ -24,7 +24,7 @@ table! {
         name -> Text,
         registered_school -> Text,
         school_verified -> Bool,
-        created -> Bool,
+        created -> Timestamp,
         join_code -> Text,
     }
 }
