@@ -1,39 +1,29 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "~3.7.2"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w -ws _ ",
+    "clean": "bsb -clean-world",
+    "server": "moduleserve ./ --port 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "keywords": [
+    "BuckleScript",
+    "ReasonReact",
+    "reason-react"
+  ],
+  "author": "",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "bs-css-emotion": "^1.2.0",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "reason-react": ">=0.7.1"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "devDependencies": {
+    "@jsiebern/bs-material-ui-ppx": "^1.0.6",
+    "bs-platform": "^7.3.2",
+    "moduleserve": "^0.9.0"
   }
 }

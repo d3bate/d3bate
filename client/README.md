@@ -1,44 +1,61 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ReasonReact Template & Examples
 
-## Available Scripts
+This is:
+- A template for your new ReasonReact project.
+- A collection of thin examples illustrating ReasonReact usage.
+- Extra helper documentation for ReasonReact (full ReasonReact docs [here](https://reasonml.github.io/reason-react/)).
 
-In the project directory, you can run:
+`src` contains 4 sub-folders, each an independent, self-contained ReasonReact example. Feel free to delete any of them and shape this into your project! This template's more malleable than you might be used to =).
 
-### `yarn start`
+The point of this template and examples is to let you understand and personally tweak the entirely of it. We **don't** give you an opaque, elaborate mega build setup just to put some boxes on the screen. It strikes to stay transparent, learnable, and simple. You're encouraged to read every file; it's a great feeling, having the full picture of what you're using and being able to touch any part.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Run
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+```sh
+npm install
+npm run server
+# in a new tab
+npm start
+```
 
-### `yarn test`
+Open a new web page to `http://localhost:8000/`. Change any `.re` file in `src` to see the page auto-reload. **You don't need any bundler when you're developing**!
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**How come we don't need any bundler during development**? We highly encourage you to open up `index.html` to check for yourself!
 
-### `yarn build`
+# Features Used
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+|                           | Blinking Greeting | Reducer from ReactJS Docs | Fetch Dog Pictures | Reason Using JS Using Reason |
+|---------------------------|-------------------|---------------------------|--------------------|------------------------------|
+| No props                  |                   | ✓                         |                    |                              |
+| Has props                 |                   |                           |                    | ✓                            |
+| Children props            | ✓                 |                           |                    |                              |
+| No state                  |                   |                           |                    | ✓                            |
+| Has state                 | ✓                 |                           |  ✓                 |                              |
+| Has state with useReducer |                   | ✓                         |                    |                              |
+| ReasonReact using ReactJS |                   |                           |                    | ✓                            |
+| ReactJS using ReasonReact |                   |                           |                    | ✓                            |
+| useEffect                 | ✓                 |                           |  ✓                 |                              |
+| Dom attribute             | ✓                 | ✓                         |                    | ✓                            |
+| Styling                   | ✓                 | ✓                         |  ✓                 | ✓                            |
+| React.array               |                   |                           |  ✓                 |                              |
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+# Bundle for Production
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+We've included a convenience `UNUSED_webpack.config.js`, in case you want to ship your project to production. You can rename and/or remove that in favor of other bundlers, e.g. Rollup.
 
-### `yarn eject`
+We've also provided a barebone `indexProduction.html`, to serve your bundle.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```sh
+npm install webpack webpack-cli
+# rename file
+mv UNUSED_webpack.config.js webpack.config.js
+# call webpack to bundle for production
+./node_modules/.bin/webpack
+open indexProduction.html
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Handle Routing Yourself
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+To serve the files, this template uses a minimal dependency called `moduleserve`. A URL such as `localhost:8000/scores/john` resolves to the file `scores/john.html`. If you'd like to override this and handle URL resolution yourself, change the `server` command in `package.json` from `moduleserve ./ --port 8000` to `moduleserve ./ --port 8000 --spa` (for "single page application"). This will make `moduleserve` serve the default `index.html` for any URL. Since `index.html` loads `Index.bs.js`, you can grab hold of the URL in the corresponding `Index.re` and do whatever you want.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+By the way, ReasonReact comes with a small [router](https://reasonml.github.io/reason-react/docs/en/router) you might be interested in.

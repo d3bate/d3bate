@@ -80,3 +80,5 @@ client/node_modules
 .vscode
 
 target/
+
+**.bs.js
