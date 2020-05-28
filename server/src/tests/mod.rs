@@ -380,6 +380,42 @@ async fn test_e2e() {
         "Test Session"
     );
 
+    match training_session::training_session
+        .filter(training_session::club_id.eq(created_club_id))
+        .first::<data::TrainingSession>(
+            &context_authenticated_administrator
+                .connection
+                .get()
+                .unwrap(),
+        ) {
+        Ok(sess) => {
+            let can_read_single_training_session = juniper::execute(
+                &format!(
+                    "query {{
+                        trainingSession(id: {}) {{
+                          description
+                        }}
+                      }}",
+                    sess.id
+                ),
+                None,
+                &schema,
+                &vars,
+                &context_authenticated_administrator,
+            )
+            .await
+            .unwrap();
+            assert_eq!(
+                utils::extract_key_of_string(
+                    "description",
+                    &utils::extract_key("trainingSession", &can_read_single_training_session.0)
+                ),
+                "Test Session"
+            );
+        }
+        Err(_) => panic!("Couldn't get training session."),
+    }
+
     juniper::execute(
         &format!(
             "mutation {{
