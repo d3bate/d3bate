@@ -1,5 +1,6 @@
 //! Integration tests for the GraphQL API.
 
+mod utils;
 #[actix_rt::test]
 async fn test_e2e() {
     use diesel::prelude::*;
@@ -347,6 +348,37 @@ async fn test_e2e() {
         }
         Err(_) => panic!("Could not get the training session from the database."),
     };
+
+    let can_read_training_sessions = juniper::execute(
+        &format!(
+            "query {{
+                trainingSessionsOfClub(id: {}) {{
+                  description
+                }}
+              }}",
+            created_club_id
+        ),
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    assert_eq!(
+        utils::extract_key_of_string(
+            "description",
+            utils::extract_list(&utils::extract_key(
+                "trainingSessionsOfClub",
+                &can_read_training_sessions.0
+            ))
+            .iter()
+            .next()
+            .unwrap()
+        ),
+        "Test Session"
+    );
 
     juniper::execute(
         &format!(

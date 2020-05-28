@@ -86,6 +86,50 @@ impl Query {
             return Err(not_logged_in_permission_error());
         }
     }
+    fn training_sessions_of_club(context: &Context, id: i32) -> FieldResult<Vec<TrainingSession>> {
+        use data::schema::club::dsl as club;
+        use data::schema::club_member::dsl as club_member;
+        use data::schema::training_session::dsl as training_session;
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        if let Some(contextual_user) = &context.user {
+            match club::club
+                .find(id)
+                .inner_join(training_session::training_session)
+                .inner_join(club_member::club_member.inner_join(user::user))
+                .filter(user::id.eq(contextual_user.id))
+                .select((
+                    data::schema::training_session::all_columns,
+                    data::schema::club::all_columns,
+                ))
+                .load::<(data::TrainingSession, data::Club)>(&context.connection.get().unwrap())
+            {
+                Ok(sessions) => {
+                    return Ok(sessions
+                        .iter()
+                        .map(|(ts_instance, club_instance)| TrainingSession {
+                            id: ts_instance.id,
+                            start_time: ts_instance.start_time,
+                            end_time: ts_instance.end_time,
+                            livestream: ts_instance.livestream,
+                            description: ts_instance.description.clone(),
+                            club: Club {
+                                id: club_instance.id,
+                                name: club_instance.name.clone(),
+                                registered_school: club_instance.registered_school.clone(),
+                                school_verified: club_instance.school_verified,
+                                created: club_instance.created,
+                                join_code: club_instance.join_code.clone(),
+                            },
+                        })
+                        .collect::<Vec<TrainingSession>>())
+                }
+                Err(_) => return Err(server_error()),
+            };
+        } else {
+            return Err(not_logged_in_permission_error());
+        }
+    }
     fn training_session(context: &Context, id: i32) -> FieldResult<TrainingSession> {
         use data::schema::club::dsl as club;
         use data::schema::club_member::dsl as club_member;
