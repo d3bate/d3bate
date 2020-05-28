@@ -14,8 +14,12 @@ async fn test_e2e() {
     use data::schema::club::dsl as club;
     use data::schema::club_member::dsl as club_member;
     use data::schema::training_session::dsl as training_session;
+    use data::schema::training_session_attendance::dsl as training_session_attendance;
     use data::schema::user::dsl as user;
     diesel::delete(user::user)
+        .execute(&pool.get().unwrap())
+        .unwrap();
+    diesel::delete(training_session_attendance::training_session_attendance)
         .execute(&pool.get().unwrap())
         .unwrap();
     diesel::delete(club::club)
@@ -412,6 +416,42 @@ async fn test_e2e() {
                 ),
                 "Test Session"
             );
+
+            juniper::execute(
+                &format!(
+                    "mutation {{
+                        setTrainingSessionAttendance(sessionId: {}, attending: true) {{
+                          trainingSession {{
+                            description
+                          }}
+                        }}
+                      }}",
+                    sess.id
+                ),
+                None,
+                &schema,
+                &vars,
+                &context_authenticated_administrator,
+            )
+            .await
+            .unwrap();
+
+            match training_session_attendance::training_session_attendance
+                .filter(training_session_attendance::training_session_id.eq(sess.id))
+                .filter(
+                    training_session_attendance::user_id.eq(context_authenticated_administrator_id),
+                )
+                .first::<data::TrainingSessionAttendance>(
+                    &context_authenticated_administrator
+                        .connection
+                        .get()
+                        .unwrap(),
+                ) {
+                Ok(tsa) => {
+                    assert_eq!(tsa.attending, true);
+                }
+                Err(_) => panic!("Should be attending."),
+            };
         }
         Err(_) => panic!("Couldn't get training session."),
     }
