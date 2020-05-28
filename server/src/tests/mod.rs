@@ -1,5 +1,6 @@
 //! Integration tests for the GraphQL API.
 
+mod utils;
 #[actix_rt::test]
 async fn test_e2e() {
     use diesel::prelude::*;
@@ -13,8 +14,12 @@ async fn test_e2e() {
     use data::schema::club::dsl as club;
     use data::schema::club_member::dsl as club_member;
     use data::schema::training_session::dsl as training_session;
+    use data::schema::training_session_attendance::dsl as training_session_attendance;
     use data::schema::user::dsl as user;
     diesel::delete(user::user)
+        .execute(&pool.get().unwrap())
+        .unwrap();
+    diesel::delete(training_session_attendance::training_session_attendance)
         .execute(&pool.get().unwrap())
         .unwrap();
     diesel::delete(club::club)
@@ -273,6 +278,51 @@ async fn test_e2e() {
         Err(_) => panic!("Not in the club."),
     };
 
+    let user_joined_club = juniper::execute(
+        "query {
+                clubsOfUser(role: 1) {
+                  id,
+                  registeredSchool
+                }
+              }",
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    match user_joined_club.0 {
+        juniper::Value::Object(object) => match object.get_field_value("clubsOfUser") {
+            Some(fields) => match fields {
+                juniper::Value::List(clubs) => {
+                    let user_club = clubs.iter().next().unwrap();
+                    match user_club {
+                        juniper::Value::Object(club_object) => {
+                            match club_object.get_field_value("registeredSchool") {
+                                Some(value) => match value {
+                                    juniper::Value::Scalar(scalar_value) => match scalar_value {
+                                        juniper::DefaultScalarValue::String(name) => {
+                                            assert_eq!(name, "https://debating.web.app")
+                                        }
+                                        _ => panic!("Couldn't find."),
+                                    },
+                                    _ => panic!("Expected scalar."),
+                                },
+                                None => panic!("Expected value."),
+                            }
+                        }
+                        _ => panic!(""),
+                    }
+                }
+                _ => panic!("Expected list."),
+            },
+            None => panic!("Expected value."),
+        },
+        _ => panic!(""),
+    }
+
     juniper::execute(
         &format!(
             "mutation {{
@@ -302,6 +352,109 @@ async fn test_e2e() {
         }
         Err(_) => panic!("Could not get the training session from the database."),
     };
+
+    let can_read_training_sessions = juniper::execute(
+        &format!(
+            "query {{
+                trainingSessionsOfClub(id: {}) {{
+                  description
+                }}
+              }}",
+            created_club_id
+        ),
+        None,
+        &schema,
+        &vars,
+        &context_authenticated_administrator,
+    )
+    .await
+    .unwrap();
+
+    assert_eq!(
+        utils::extract_key_of_string(
+            "description",
+            utils::extract_list(&utils::extract_key(
+                "trainingSessionsOfClub",
+                &can_read_training_sessions.0
+            ))
+            .iter()
+            .next()
+            .unwrap()
+        ),
+        "Test Session"
+    );
+
+    match training_session::training_session
+        .filter(training_session::club_id.eq(created_club_id))
+        .first::<data::TrainingSession>(
+            &context_authenticated_administrator
+                .connection
+                .get()
+                .unwrap(),
+        ) {
+        Ok(sess) => {
+            let can_read_single_training_session = juniper::execute(
+                &format!(
+                    "query {{
+                        trainingSession(id: {}) {{
+                          description
+                        }}
+                      }}",
+                    sess.id
+                ),
+                None,
+                &schema,
+                &vars,
+                &context_authenticated_administrator,
+            )
+            .await
+            .unwrap();
+            assert_eq!(
+                utils::extract_key_of_string(
+                    "description",
+                    &utils::extract_key("trainingSession", &can_read_single_training_session.0)
+                ),
+                "Test Session"
+            );
+
+            juniper::execute(
+                &format!(
+                    "mutation {{
+                        setTrainingSessionAttendance(sessionId: {}, attending: true) {{
+                          trainingSession {{
+                            description
+                          }}
+                        }}
+                      }}",
+                    sess.id
+                ),
+                None,
+                &schema,
+                &vars,
+                &context_authenticated_administrator,
+            )
+            .await
+            .unwrap();
+
+            match training_session_attendance::training_session_attendance
+                .filter(training_session_attendance::training_session_id.eq(sess.id))
+                .filter(
+                    training_session_attendance::user_id.eq(context_authenticated_administrator_id),
+                )
+                .first::<data::TrainingSessionAttendance>(
+                    &context_authenticated_administrator
+                        .connection
+                        .get()
+                        .unwrap(),
+                ) {
+                Ok(tsa) => {
+                    assert_eq!(tsa.attending, true);
+                }
+                Err(_) => panic!("Should be attending."),
+            };
+        }
+        Err(_) => panic!("Couldn't get training session."),
+    }
 
     juniper::execute(
         &format!(

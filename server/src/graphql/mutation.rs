@@ -220,7 +220,6 @@ impl Mutations {
         } else {
             return Err(not_logged_in_permission_error());
         }
-        todo!()
     }
     /// Removes a user from a club.
     /// TODO: make this more robust so that all clubs must have at least one owner
