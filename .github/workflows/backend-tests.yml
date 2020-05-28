@@ -2,6 +2,7 @@ name: Backend tests
 
 on:
   push:
+  pull_request:
 
 jobs:
   check-formatting:
@@ -11,7 +12,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: table
-      - uses: actions-rs/cargoV1
+      - uses: actions-rs/cargo@v1
         with: 
           command: fmt
           args: -- --check
