@@ -1,5 +1,5 @@
 {
-  "name": "reason-react-examples",
+  "name": "d3bate",
   "reason": {
     "react-jsx": 3
   },
@@ -22,7 +22,16 @@
   "bs-dependencies": [
     "reason-react",
     "bs-css-emotion",
-    "bs-css"
+    "bs-css",
+    "reason-react",
+    "reason-promise",
+    "bs-fetch",
+    "reductive",
+    "reason-react",
+    "reason-apollo"
+  ],
+  "ppx-flags": [
+    "@baransu/graphql_ppx_re/ppx"
   ],
   "refmt": 3
 }

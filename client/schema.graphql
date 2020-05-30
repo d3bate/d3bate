@@ -1,0 +1,120 @@
+schema {
+  query: Query
+  mutation: Mutations
+}
+
+"""A single chat message."""
+type ChatMessage {
+  id: Int!
+  threadId: Int!
+  parentId: Int
+  created: NaiveDateTime!
+  content: String!
+  author: User!
+}
+
+"""A thread of chat messages."""
+type ChatMessageThread {
+  id: Int!
+  lastActive: NaiveDateTime!
+  club: Club!
+  title: String!
+  messageIds: [Int!]!
+}
+
+"""A single debating club."""
+type Club {
+  id: Int!
+  name: String!
+  registeredSchool: String!
+  schoolVerified: Boolean!
+  created: NaiveDateTime!
+  joinCode: String!
+}
+
+type Mutations {
+  registerUser(newUser: NewUser!): User!
+  requestPasswordReset(email: String!): User!
+  updatePassword(oldPassword: String!, newPassword: String!): User!
+  updateEmail(password: String!): User!
+  createClub(club: NewClub!): Club!
+  joinClub(joinCode: String!): Club!
+
+  """
+  Removes a user from a club.
+  TODO: make this more robust so that all clubs must have at least one owner
+  """
+  leaveClub(clubId: Int!): SuccessfulDeletionOperation!
+  addChatMessage: ChatMessage!
+  removeChatMessage: ChatMessage!
+  addTrainingSession(trainingSession: NewTrainingSession!): TrainingSession!
+  removeTrainingSession(id: Int!): SuccessfulDeletionOperation!
+  setTrainingSessionAttendance(sessionId: Int!, attending: Boolean!): TrainingSessionAttendance!
+}
+
+"""NaiveDateTime"""
+scalar NaiveDateTime
+
+input NewClub {
+  name: String!
+  schoolWebsite: String!
+}
+
+input NewTrainingSession {
+  startTime: NaiveDateTime!
+  endTime: NaiveDateTime!
+  livestream: Boolean!
+  description: String!
+  clubId: Int!
+}
+
+"""Register as a new user."""
+input NewUser {
+  name: String!
+  email: String!
+  password: String!
+  pgp: String
+}
+
+type Query {
+  user(id: Int!): User!
+  club(id: Int!): Club!
+  clubsOfUser(role: Int!): [Club!]!
+  trainingSessionsOfClub(id: Int!): [TrainingSession!]!
+  trainingSession(id: Int!): TrainingSession!
+  trainingSessionAttendance(id: Int!): TrainingSessionAttendance!
+  chatMessageThread(id: Int!): ChatMessageThread!
+  chatMessageThreadMessages(id: Int!): [ChatMessage!]!
+  chatMessage(id: Int!): ChatMessage!
+}
+
+type SuccessfulDeletionOperation {
+  message: String!
+}
+
+"""A single training session."""
+type TrainingSession {
+  id: Int!
+  startTime: NaiveDateTime!
+  endTime: NaiveDateTime!
+  livestream: Boolean!
+  description: String!
+  club: Club!
+}
+
+"""Attendance of a user for a training session."""
+type TrainingSessionAttendance {
+  id: Int!
+  trainingSession: TrainingSession!
+  user: User!
+  attending: Boolean!
+}
+
+type User {
+  id: Int!
+  name: String!
+  email: String!
+  created: NaiveDateTime!
+  emailVerified: Boolean!
+}
+

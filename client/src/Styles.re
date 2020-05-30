@@ -25,22 +25,9 @@ let navbar_drawer =
   ]);
 
 let navbar_link_of_no_circle =
-  style([
-    color(white),
-    textDecoration(none),
-    width(auto),
-    marginRight(px(20)),
-  ]);
+  style([color(white), textDecoration(none), width(auto)]);
 
-let navbar_link =
-  style([
-    color(white),
-    textDecoration(none),
-    border(px(1), solid, white),
-    borderRadius(px(10)),
-    width(auto),
-    marginRight(px(20)),
-  ]);
+let navbar_link = style([color(white), textDecoration(none), width(auto)]);
 
 let navbar_icon = Css.(merge([top_left, extra_big, inline_text]));
 
@@ -49,16 +36,15 @@ let hide = style([display(none)]);
 let navbar =
   style([
     boxShadow(Shadow.box(~y=px(3), ~blur=px(5), rgba(0, 0, 0, 0.3))),
-    backgroundColor(hex("f4d03f")),
+    backgroundColor(grey),
     color(white),
-    paddingTop(px(5)),
-    paddingBottom(px(5)),
-    margin(px(0)),
     height(pct(100.0)),
-    maxWidth(pct(50.0)),
     fontSize(rem(2.0)),
     animationName(slide),
     animationDuration(750),
+    zIndex(6),
+    position(absolute),
+    paddingRight(px(40)),
   ]);
 
 let navbar_list =
