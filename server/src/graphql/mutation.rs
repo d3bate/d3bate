@@ -2,7 +2,7 @@ pub struct Mutations;
 
 use super::*;
 
-#[derive(GraphQLObject)]
+#[derive(juniper::GraphQLObject)]
 struct SuccessfulDeletionOperation {
     message: String,
 }

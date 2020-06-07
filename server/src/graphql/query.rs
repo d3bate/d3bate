@@ -2,8 +2,46 @@ pub struct Query;
 
 use super::*;
 
+fn encode_login_token(user_id: i32) -> Result<String, jwt::errors::Error> {
+    jwt::encode(
+        &jwt::Header::default(),
+        &crate::auth::Claims {
+            id: user_id,
+            exp: chrono::Utc::now()
+                .checked_add_signed(chrono::Duration::minutes(15))
+                .unwrap(),
+            claims_type: crate::auth::ClaimsType::Login,
+        },
+        &jwt::EncodingKey::from_secret(std::env::var("SECRET_KEY").unwrap().as_bytes()),
+    )
+}
+
 #[juniper::graphql_object(Context=Context)]
 impl Query {
+    fn login_user(
+        context: &Context,
+        identifier: String,
+        password: String,
+    ) -> FieldResult<UserAuth> {
+        use data::schema::user::dsl as user;
+        use diesel::prelude::*;
+        let found_user = match user::user
+            .filter(user::email.eq(&identifier))
+            .or_filter(user::name.eq(&identifier))
+            .first::<data::User>(&context.connection.get().unwrap())
+        {
+            Ok(u) => u,
+            Err(_) => return Err(permission_error(None)),
+        };
+        if bcrypt::verify(password, &found_user.password_hash).unwrap() {
+            Ok(UserAuth {
+                token: encode_login_token(found_user.id).unwrap(),
+                user: found_user.into(),
+            })
+        } else {
+            Err(auth_error())
+        }
+    }
     fn user(context: &Context, id: i32) -> FieldResult<User> {
         use data::schema::user::dsl as user;
         use diesel::prelude::*;

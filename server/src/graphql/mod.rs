@@ -23,6 +23,18 @@ pub struct User {
     email_verified: bool,
 }
 
+impl std::convert::From<data::User> for User {
+    fn from(user: data::User) -> Self {
+        User {
+            id: user.id,
+            name: user.name.clone(),
+            email: user.email.clone(),
+            created: user.created,
+            email_verified: user.email_verified,
+        }
+    }
+}
+
 #[derive(juniper::GraphQLInputObject)]
 #[graphql(description = "Register as a new user.")]
 struct NewUser {
@@ -30,6 +42,12 @@ struct NewUser {
     email: String,
     password: String,
     pgp: Option<String>,
+}
+
+#[derive(juniper::GraphQLObject)]
+struct UserAuth {
+    user: User,
+    token: String,
 }
 
 #[derive(juniper::GraphQLObject)]
