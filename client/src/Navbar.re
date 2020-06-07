@@ -1,5 +1,5 @@
 [@react.component]
-let make = () => {
+let make = (~children) => {
   let (show, setShow) = React.useState(() => false);
   <div>
     {show
@@ -32,16 +32,19 @@ let make = () => {
        : {
          <div />;
        }}
-    <div className=Styles.navbar_drawer>
-      <a
-        href="#"
-        className=Styles.navbar_link_of_no_circle
-        onClick={_ => setShow(_ => true)}>
-        <span className={"material-icons " ++ Styles.inline_text}>
-          {ReasonReact.string("menu")}
-        </span>
-        {ReasonReact.string("d3bate")}
-      </a>
+    <div className="flexbox flex-column">
+      <div className=Styles.navbar_drawer>
+        <a
+          href="#"
+          className=Styles.navbar_link_of_no_circle
+          onClick={_ => setShow(_ => true)}>
+          <span className={"material-icons " ++ Styles.inline_text}>
+            {ReasonReact.string("menu")}
+          </span>
+          {ReasonReact.string("d3bate")}
+        </a>
+      </div>
+      <div className="pa4"> children </div>
     </div>
   </div>;
 };

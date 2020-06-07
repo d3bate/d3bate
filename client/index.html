@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>d3bate</title>
-  <style>
+  <head>
+    <meta charset="UTF-8">
+    <title>d3bate</title>
+    <style>
     body {
       margin: 0;
       font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+      background-color: #FFFFFF;
     }
     body, html {
       height: 100%;
@@ -15,11 +16,13 @@
       height: 100%;
     }
   </style>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"/>
-</head>
-<body>
-  <script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet" />
+    <link rel="stylesheet"
+      href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css" />
+  </head>
+  <body>
+    <script>
     // stub a variable ReactJS checks. ReactJS assumes you're using a bundler, NodeJS or similar system that provides it the `process.env.NODE_ENV` variable.
     window.process = {
       env: {
@@ -27,12 +30,11 @@
       }
     };
   </script>
-
-  <div id="root">
-  </div>
-  <!-- This is https://github.com/marijnh/moduleserve, the secret sauce that allows us not need to bundle things during development, and have instantaneous iteration feedback, without any hot-reloading or extra build pipeline needed. -->
-  <script src="/moduleserve/load.js" data-module="/src/Index.bs.js"></script>
-  <!-- Our little watcher. Super clean. Check it out! -->
-  <script src="/watcher.js"></script>
-</body>
+    <div id="root">
+    </div>
+    <!-- This is https://github.com/marijnh/moduleserve, the secret sauce that allows us not need to bundle things during development, and have instantaneous iteration feedback, without any hot-reloading or extra build pipeline needed. -->
+    <script src="/moduleserve/load.js" data-module="/src/Index.bs.js"></script>
+    <!-- Our little watcher. Super clean. Check it out! -->
+    <script src="/watcher.js"></script>
+  </body>
 </html>

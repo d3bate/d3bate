@@ -18,7 +18,7 @@ let inline_text = style([verticalAlign(`middle)]);
 
 let navbar_drawer =
   style([
-    backgroundColor(hex("f4d03f")),
+    backgroundColor(hex("001B44")),
     boxShadow(Shadow.box(~y=px(3), ~blur=px(5), rgba(0, 0, 0, 0.3))),
     padding(px(15)),
     fontSize(em(1.5)),
@@ -36,12 +36,12 @@ let hide = style([display(none)]);
 let navbar =
   style([
     boxShadow(Shadow.box(~y=px(3), ~blur=px(5), rgba(0, 0, 0, 0.3))),
-    backgroundColor(grey),
+    backgroundColor(hex("FFD700")),
     color(white),
     height(pct(100.0)),
     fontSize(rem(2.0)),
     animationName(slide),
-    animationDuration(750),
+    animationDuration(250),
     zIndex(6),
     position(absolute),
     paddingRight(px(40)),

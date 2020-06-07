@@ -7,18 +7,14 @@ type url = {
 [@react.component]
 let make = () => {
   let url = ReasonReactRouter.useUrl();
-  switch (url.path) {
-  | [] =>
-    (
-      () => {
-        <div className=Styles.full_height> <Navbar /> </div>;
-      }
-    )()
-  | _ =>
-    (
-      () => {
-        <h1> {ReasonReact.string("Not found.")} </h1>;
-      }
-    )()
-  };
+  <div className=Styles.full_height>
+    <Navbar>
+      {switch (url.path) {
+       | [] => <p> {ReasonReact.string("Hello World")} </p>
+       | ["auth", "login"] => <Login />
+       | ["auth", "register"] => <Register />
+       | _ => <h1> {ReasonReact.string("Not found.")} </h1>
+       }}
+    </Navbar>
+  </div>;
 };

@@ -1,5 +1,22 @@
+let contextHandler = () => {
+  let token = Binding.getItem("token");
+  let headers = {
+    "headers": {
+      "x-api-token": token,
+    },
+  };
+  headers;
+};
+
+let authLink = ApolloLinks.createContextLink(contextHandler);
+
+let httpLink = ApolloLinks.createHttpLink(~uri="", ());
+
 let inMemoryCache = ApolloInMemoryCache.createInMemoryCache();
-let httpLink =
-  ApolloLinks.createHttpLink(~uri="http://localhost:8080/api", ());
-let instance =
-  ReasonApollo.createApolloClient(~link=httpLink, ~cache=inMemoryCache, ());
+
+let apolloClient =
+  ReasonApollo.createApolloClient(
+    ~cache=inMemoryCache,
+    ~link=ApolloLinks.from([|authLink, httpLink|]),
+    (),
+  );
