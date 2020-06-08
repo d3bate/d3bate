@@ -72,13 +72,14 @@ ml/venv
 # dotenv environment variables file
 .env
 
-# backend virtual environment
-backend/venv
-
 client/node_modules
 
+# .vscode configuration
 .vscode
 
+# Rust
 target/
 
 **.bs.js
+
+.graphql_ppx_cache/
