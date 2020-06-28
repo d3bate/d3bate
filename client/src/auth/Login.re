@@ -17,7 +17,11 @@ let make = () => {
   let (dispatchQuery, setDispatchQuery) = React.useState(() => false);
   switch (dispatchQuery) {
   | false =>
-    <form onSubmit={_submitEvent => {()}}>
+    <form
+      onSubmit={e => {
+        ReactEvent.Form.preventDefault(e);
+        setDispatchQuery(_ => true);
+      }}>
       <div className="flex flex-column">
         <h1 className="ma2 pa2"> {ReasonReact.string("Login.")} </h1>
         <input
