@@ -28,7 +28,7 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/react-native": "^0.62.10",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "expo": "~36.0.0",
     "expo-camera": "^8.0.0",
     "expo-face-detector": "^8.0.1",
